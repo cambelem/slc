@@ -1,0 +1,47 @@
+.problemLink {
+	cursor:pointer;
+}
+
+.problemLink:hover {
+	font-weight:bold;
+}
+
+.issue:hover {
+	background-color:#FADD76;
+}
+
+.button {
+	border: outset 1px black;
+	position:relative;
+	right:2px;
+	background-color:#FBFBFB;
+	cursor:pointer;
+	font-weight:bold;
+	padding-right:6px;
+	padding-left:6px;
+}
+
+th {
+    background-color: lightgrey;
+    border: 0px solid black;
+    text-align : center;
+    padding : 4px;
+}
+td.dataCell {
+    border: 0px solid black;
+    text-align : center;
+}
+
+.divLandlordCell {
+	position:absolute;	
+}
+
+td.landlord {
+    text-align  : left;
+    font-weight : bold;
+    white-space : nowrap;
+}
+
+td.Total {
+    font-weight : bold;
+}
