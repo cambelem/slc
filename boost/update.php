@@ -114,7 +114,14 @@ function slc_update(&$content, $current_version) {
                             'mod/slc/boost/updates/update_2_0_6.sql');
             if(PHPWS_Error::logIfError($result)){
                 return $result;
-            } 
+             }
+
+        case version_compare($currentVersion, '2.0.7', '<'):
+         	$db = new PHPWS_DB();
+         	$result = $db->importFile(PHPWS_SOURCE_DIR . 'mod/slc/boost/updates/update_2_0_7.sql');
+         	if (PEAR::isError($result)) {
+ 	        	return $result;
+         	}    
     }
     return true;
 }

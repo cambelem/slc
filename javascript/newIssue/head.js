@@ -62,9 +62,17 @@ var appendedIssues = 0;
     	// Return Button
     	$('[id^="RETURN"]').on('click', null, null, function() { // Followup buttons
     		var clientID = $("#CLIENT_ID").html();
-    		
-    		// redirect 
-    		window.location ="index.php?module=slc&view=Client&banner_id="+clientID;
+    		$.post(
+    			'index.php?module=slc&action=POSTSendMail',
+    			{"client_id": clientID},
+    			function() {
+	    			
+	    			//alert(clientID);
+	    			
+	    			// redirect 
+					window.location ="index.php?module=slc&view=Client&banner_id="+ clientID;
+	    			
+    			})    		
     	});
     });
     

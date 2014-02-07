@@ -42,7 +42,7 @@ class ViewClient extends SLCView {
 		$tpl = new PHPWS_Template('slc');
 		$tpl->setFile('ClientVisits.tpl');
 		$content['CLIENT_ID'] = $client->id;
-		$content['CLIENT_NAME'] = unserialize($_SESSION['cname']);//$client->name;
+		$content['CLIENT_NAME'] = $_SESSION['cname'];
 		$content['CLIENT_INFO'] = $client->classification." - ".$client->major." Major";
 		$content['FIRST_VISIT'] = prettyTime($client->first_visit);
 		
