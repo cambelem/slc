@@ -1,7 +1,7 @@
 <?php 
 
-class ViewClient extends SLCView {
-	public function display(CommandContext $context) {
+class ViewClient extends slc\View {
+	public function display(\CommandContext $context) {
 		$HTMLcontent = "";
 		$referral = "";
 		

@@ -1,7 +1,9 @@
 <?php
 
-abstract class SLCView {
-    abstract function display(CommandContext $context);
+namespace slc;
+
+abstract class View {
+    abstract function display(\CommandContext $context);
     
     protected function useTemplate($content) {
     	
@@ -12,7 +14,7 @@ abstract class SLCView {
     	$tpl = array();
     	$tpl['CONTENT'] = $content;
     		
-    	return PHPWS_Template::process($tpl, 'slc', 'Default.tpl');
+    	return \PHPWS_Template::process($tpl, 'slc', 'Default.tpl');
     }
 }
 

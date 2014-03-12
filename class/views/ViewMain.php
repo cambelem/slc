@@ -1,7 +1,7 @@
 <?php
 
-class ViewMain extends SLCView {
-	 public function display(CommandContext $context) {
+class ViewMain extends slc\View {
+	 public function display(\CommandContext $context) {
 
 	 	$form = new PHPWS_Form('client_id_entry');
 	 	$form->addHidden('module', 'slc');
@@ -9,7 +9,7 @@ class ViewMain extends SLCView {
 	 	//$form->addHidden('action','GETClientData');
 	 	$form->addText('banner_id');
 	 	$form->setLabel('banner_id', 'Enter Client ID: ');
-	 	$form->addSubmit('GO');
+	 	$form->addSubmit('View Issues');
 
 	 	$tpl = $form->getTemplate();
 	 	

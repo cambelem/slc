@@ -1,6 +1,6 @@
 <?php
-class ViewReports extends SLCView {
-	public function display(CommandContext $context) {
+class ViewReports extends slc\View {
+	public function display(\CommandContext $context) {
 		javascriptMod('slc', 'report');
 		$content = array();		
 		$HTMLcontent = "";

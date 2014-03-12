@@ -1,6 +1,6 @@
 <?php
-	class ViewNewClient extends SLCView {
-		public function display(CommandContext $context) {
+	class ViewNewClient extends slc\View {
+		public function display(\CommandContext $context) {
 			$this->setupTree();
 		}
 			

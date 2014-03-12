@@ -1,7 +1,7 @@
 <?php
 
-class ViewNewIssue extends SLCView {
-	public function display(CommandContext $context) {
+class ViewNewIssue extends slc\View {
+	public function display(\CommandContext $context) {
 		$content = array();
 		    	
 		$form = new PHPWS_Form('filter_box');

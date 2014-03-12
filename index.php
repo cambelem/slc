@@ -24,6 +24,7 @@ PHPWS_Core::initModClass('slc', 'indexes/VisitClient.php');
 // Interfaces
 PHPWS_Core::initModClass('slc', 'ajax/AJAX.php');
 PHPWS_Core::initModClass('slc', 'views/View.php');
+PHPWS_Core::initModClass('slc', 'views/NavLinks.php');
 
 // Factories
 PHPWS_Core::initModClass('slc', 'AJAXFactory.php');
@@ -87,5 +88,8 @@ Layout::add($panel);
 // Setup Styles
 Layout::addStyle('controlpanel');
 
+// Add the top bar
+$navLinks = new NavLinks();
+Layout::plug($navLinks->display(), 'NAV_LINKS');
 
 ?>
