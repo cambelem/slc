@@ -99,6 +99,7 @@ CREATE TABLE IF NOT EXISTS slc_student_data (
 	id 	 int not null,
 	fname	 varchar(50),
 	lname	 varchar(50),
+	username varchar(50),
 	classification	 varchar(50),
 	major	 varchar(50),
 	living_location	varchar(50),

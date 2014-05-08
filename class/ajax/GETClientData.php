@@ -33,21 +33,23 @@ class GETClientData extends AJAX {
 	        	$this->addResult("msg", "Client not in ASU Database");
 	        	return;
 	        }
+	        
+	        //store id in session because about to be encoded
+	        $_SESSION['actID'] = $tClient->id;
 	       
 	        
 	        // Store the name in session, as after the banner is encrypted, there's no way to get it
-	        $_SESSION['cname'] = serialize($tClient->fname . ' ' . $tClient->lname);
+	        $_SESSION['cname'] = $tClient->fname . ' ' . $tClient->lname;
 	        
 	        // encode banner
 	        $_REQUEST['banner_id'] = encode($_REQUEST['banner_id']);
 		}
 			
 		$banner = $_REQUEST['banner_id'];
-		
+        
 		//$client = new Client($banner);
         $client->id = $banner;
 		
-       
         
 		// check that client exists in database
 		$db = new PHPWS_DB($this->_table);

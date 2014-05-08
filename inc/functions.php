@@ -20,11 +20,13 @@ function encode($banner = null) {
 	//return $banner;
 	
 	if (!isset($banner)) 
-		throw new BannerNotDefinedException();
+		throw new BannerNotDefinedException('Missing Banner ID');
 		
 	$hashString  = $banner;
 	
-    $blowfish_salt = "$2a$07$".ENCODE_SALT."$";
+	$encode_salt = PHPWS_Settings::get('slc', 'encode_salt');
+	
+    $blowfish_salt = "$2a$07$".$encode_salt."$";
     return crypt($hashString, $blowfish_salt);
 }
 

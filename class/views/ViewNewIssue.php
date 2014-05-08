@@ -66,7 +66,7 @@ class ViewNewIssue extends slc\View {
 		$db = new PHPWS_DB("slc_visit");
 		$results = $db->select(NULL, $query);
 		$content['CLIENTID'] = $results[0]['c_id'];
-		$content['TITLE'] = "Create New Issue for ".unserialize($_SESSION['cname']);
+		$content['TITLE'] = "Create New Issue for ".$_SESSION['cname'];
 		$content['SELECTED_ISSUES'] = "<span style='width:100%;' id='selectedIssue' title='-1'>[ none ]</span>";
 		$content['PROBLEMS'] = $tree->get();
 		$content['LANDLORD_PICKER'] = PHPWS_Template::process(array("landlords"=>$this->landlords), 'slc', 'LandlordPicker.tpl');

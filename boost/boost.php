@@ -1,7 +1,7 @@
 <?php
 
 $proper_name  = 'Student Legal Clinic Tracker';
-$version      = '2.0.6';
+$version      = '2.0.7';
 $register     = false;
 $unregister   = false;
 $import_sql   = true;
