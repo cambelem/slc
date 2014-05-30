@@ -5,8 +5,32 @@ $(document).ready( function() {
 	/*********************
 	 * Activate Report Type Dropdown *
 	 *********************/
-	$("#report_picker, .datepicker").change(function() {
-		var report_type = ($("#report_picker").val() != -1 ? $("#report_picker").val() : null);
+	$("#report_picker").on('change', function() {
+	    updateReport();
+	});
+
+
+    $(".datepicker").on('changeDate', function() {
+        updateReport();
+    });
+
+    // Export report to CSV
+    $("button").on('click', null, null, 
+        function() {
+            var report_type = ($("#report_picker").val() != -1 ? $("#report_picker").val() : null);
+            // If date pickers are blank, use extremes of UNIX epoch.
+            var start_date = $("#timespan_start_date").val() == "" ? "12/13/1901" : $("#timespan_start_date").val();
+            var end_date = $("#timespan_end_date").val() == "" ? "01/18/2038" : $("#timespan_end_date").val();
+
+            if (report_type != null && start_date != null && end_date != null) {
+                window.location.href = "index.php?module=slc&action=ExportCSV&report_type=" + report_type + "&start_date=" + start_date + "&end_date=" + end_date;
+            }
+        }
+    );
+});
+
+function updateReport() {
+        var report_type = ($("#report_picker").val() != -1 ? $("#report_picker").val() : null);
         // If date pickers are blank, use extremes of UNIX epoch
         var start_date_string = $("#timespan_start_date").val() == "" ? '12/13/1901' : $("#timespan_start_date").val();
         var end_date_string = $("#timespan_end_date").val() == "" ? '01/18/2038' : $("#timespan_end_date").val();
@@ -46,22 +70,7 @@ $(document).ready( function() {
                 $("#report-area").append("The start date can not be after the end date.<br />");
             }
         }
-	});
-
-    // Export report to CSV
-    $("button").on('click', null, null, 
-        function() {
-            var report_type = ($("#report_picker").val() != -1 ? $("#report_picker").val() : null);
-            // If date pickers are blank, use extremes of UNIX epoch.
-            var start_date = $("#timespan_start_date").val() == "" ? "12/13/1901" : $("#timespan_start_date").val();
-            var end_date = $("#timespan_end_date").val() == "" ? "01/18/2038" : $("#timespan_end_date").val();
-
-            if (report_type != null && start_date != null && end_date != null) {
-                window.location.href = "index.php?module=slc&action=ExportCSV&report_type=" + report_type + "&start_date=" + start_date + "&end_date=" + end_date;
-            }
-        }
-    );
-});
+}
 
 // http://fixed-header-using-jquery.blogspot.com/
 function fnAdjustTable (){
