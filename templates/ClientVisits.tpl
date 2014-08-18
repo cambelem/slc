@@ -1,8 +1,7 @@
-<table
-	id="visits_table" style="width:100%; border-collapse: collapse; padding-right:3%; padding-left:3%;">
+<table id="visits_table" class="table">
 	<tr>
-		<th style="width: *;">Visits:</th>
-		<th style="width:120px; padding-right:0px;text-align:right;"><span id="NEWVISIT" class="button"">&nbsp;<span style="font-weight:900;font-size:13px;">+</span>&nbsp;New Visit&nbsp;</span></th>
+		<th><span class="pull-left">Visits:</span></th>
+		<th><button type="button" id="NEWVISIT" class="btn btn-primary pull-right"><i class="fa fa-plus"></i> New Visit</button></th>
 	</tr>
 	<tr><td colspan="2">
 	<div id="VISITLIST">
@@ -14,7 +13,7 @@
 		<tr>
 			<td id="VISIT{VISITID}-Issues" style="" COLSPAN="2">
 			<!-- BEGIN issues -->
-			<table id="VISIT_ISSUE-{VISITID}-{ISSUEID}" class="issue" style="padding-left:20px;border-collapse:collapse; padding-top:5px; display:block;">
+			<table id="VISIT_ISSUE-{VISITID}-{ISSUEID}" class="table issue">
 				<tr>
 					<td id="ISSUE{ISSUEID}-Issue" style="width:350px;">
 					{ISSUE}{LANDLORD}
@@ -23,7 +22,7 @@
 					<span id="VISITCOUNT-{VISSITISSUEID}">{VISITCOUNT}</span> visit(s)
 					</td>
 					<td style="width:75px;text-align:right;">
-					<span id="FOLLOWUP-{VISSITISSUEID}" class="button">{FOLLOWUP}</span>
+					<button type="button" id="FOLLOWUP-{VISSITISSUEID}" class="btn btn-default"><i class="fa fa-plus"></i> {FOLLOWUP}</button>
 					</td>
 				</tr>
 				<tr>

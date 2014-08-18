@@ -30,9 +30,9 @@ class ViewClient extends slc\View {
 			$result = $ajax->result(); 
 			$r = $result['referral_picker'];
 		
-			$referral = "<h3 id='referralDiv' style='width:100%; background:#FFEC8B;margin-top:-15px; padding-top:3px; padding-bottom:3px;margin-bottom:7px;'>&nbsp;Referred By: <span style='font-weight:bold;'>".$r."</span></h3>";
+			$referral = "<div id='referralDiv'>" . $r . "</div>";
 		} else {
-			$referral = "<h3 id='referralDiv' style='width:100%; background:#FFFFFF;margin-top:-15px; padding-top:3px; padding-bottom:3px;margin-bottom:7px;'>&nbsp;Referred By: ".$client->referralString."</h3>";
+			$referral = "<div id='referralDiv'>" . $client->referralString."</div>";
 		}
 		
 		
