@@ -1,7 +1,7 @@
 <div id="CLIENT_ID" style="display:none;">{CLIENTID}</div>
 <h1>{TITLE}
-	<span style="display:inline-block;float:right;margin-right:5px;font-size:12px;">
-		<span style="float:right;" id="RETURN-{VISITID}" class="button">Return</span>
+	<span style="float:right;margin-right:5px;font-size:12px;">
+		<button type="button" id="RETURN-{VISITID}" class="btn btn-default"><i class="fa fa-chevron-left"></i> Return</button>
 	</span>
 </h1>
 
@@ -13,6 +13,6 @@
 	</span>
 	
 {END_FORM}<hr />
-<h2>Problems<div style="display:inline-block;float:right;margin-right:5px;"><span style="font-size:14px;float:right;" id="CREATEISSUE-{VISITID}" class="button">Create Issue</span></div></h2>
+<h2>Problems<div style="float:right;"><button type="button" id="CREATEISSUE-{VISITID}" class="btn btn-primary"><i class="fa fa-plus"></i> Create Issue</button></div></h2>
 {PROBLEMS}
 
