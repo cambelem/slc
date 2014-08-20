@@ -1,6 +1,6 @@
 <?php 
 
-require_once 'lib/Swift/lib/swift_required.php';
+require_once PHPWS_SOURCE_DIR . 'lib/Swift/lib/swift_required.php';
 
 class POSTSendMail extends AJAX {
 
@@ -13,12 +13,10 @@ class POSTSendMail extends AJAX {
 		
 		
 		$template = array("cName" => $_SESSION['cname']);
-		$module = "slc";
-		$file  = "emailslc.tpl";
 
-		$content = PHPWS_Template::process($template, $module, $file);
+		$content = PHPWS_Template::process($template, 'slc', 'studentSurveyEmail.tpl');
 
-		$banner = $_SESSION['actID'];		
+		$banner = $_SESSION['actID'];
 
 		$query = 'SELECT username FROM slc_student_data WHERE id =' . $banner;
 		
@@ -28,7 +26,7 @@ class POSTSendMail extends AJAX {
 		
 		$message = Swift_Message::newInstance();
 
-		$message->setSubject('Check-in Confirmation');
+		$message->setSubject('How was your experience with Student Legal Clinic?');
 		$message->setFrom('studentconduct@appstate.edu');
 		$message->setTo($username . '@appstate.edu');
 
