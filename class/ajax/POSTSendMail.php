@@ -27,7 +27,7 @@ class POSTSendMail extends AJAX {
 		$message = Swift_Message::newInstance();
 
 		$message->setSubject('How was your experience with Student Legal Clinic?');
-		$message->setFrom('studentconduct@appstate.edu');
+		$message->setFrom('dos@appstate.edu');
 		$message->setTo($username . '@appstate.edu');
 
 		$message->setBody($content);
