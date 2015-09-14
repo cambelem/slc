@@ -1,4 +1,6 @@
 <?php
+namespace slc\ajax;
+
 class GETReport extends AJAX {
 	
 	public function execute() {

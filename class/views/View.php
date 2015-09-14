@@ -1,6 +1,6 @@
 <?php
 
-namespace slc;
+namespace slc\views;
 
 abstract class View {
     abstract function display(\CommandContext $context);
@@ -8,7 +8,7 @@ abstract class View {
     protected function useTemplate($content) {
     	
     	if (!isset($content)) {
-    		throw new TemplateContentNotDefinedException();
+    		throw new \slc\exceptions\TemplateContentNotDefinedException();
     	}
     	
     	$tpl = array();

@@ -21,12 +21,7 @@
 	padding-left:6px;
 }
 
-th {
-    background-color: lightgrey;
-    border: 0px solid black;
-    text-align : center;
-    padding : 4px;
-}
+
 td.dataCell {
     border: 0px solid black;
     text-align : center;

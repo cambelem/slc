@@ -1,4 +1,5 @@
 <?php 
+namespace slc\ajax;
 
 abstract class AJAX {
 	protected $result = array();

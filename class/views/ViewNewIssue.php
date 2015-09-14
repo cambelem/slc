@@ -1,10 +1,11 @@
 <?php
+namespace slc\views;
 
-class ViewNewIssue extends slc\View {
-	public function display(\CommandContext $context) {
+class ViewNewIssue extends View {
+	public function display(\slc\CommandContext $context) {
 		$content = array();
 		    	
-		$form = new PHPWS_Form('filter_box');
+		$form = new \PHPWS_Form('filter_box');
 	 	$form->addHidden('module', 'slc');
 	 	$form->addHidden('view','NewIssue');
 	 	$form->addText('issuename');
@@ -14,7 +15,7 @@ class ViewNewIssue extends slc\View {
 		
 		$this->setupTree();
 		
-		$tree = new PHPWS_Template('slc');
+		$tree = new \PHPWS_Template('slc');
 		$tree->setFile('IssueTree.tpl');
 
 		foreach( $this->theTree["Type Of Problem"] as $pType ) {
@@ -60,17 +61,18 @@ class ViewNewIssue extends slc\View {
 		}		
 		
 		$content['VISITID'] = $_REQUEST['visitid'];
-		
+
 		// extract client from visitid
-		$query = "SELECT c_id FROM slc_visit WHERE id='".$_REQUEST['visitid']."'";	
-		$db = new PHPWS_DB("slc_visit");
+		$query = "SELECT client_id FROM slc_visit WHERE id='".$_REQUEST['visitid']."'";	
+		$db = new \PHPWS_DB("slc_visit");
 		$results = $db->select(NULL, $query);
-		$content['CLIENTID'] = $results[0]['c_id'];
-		$content['TITLE'] = "Create New Issue for ".$_SESSION['cname'];
+		$content['CLIENTID'] = $results[0]['client_id'];
+		$content['TITLE'] = "Create New Issue for ".$_REQUEST['cname'];
+
 		$content['SELECTED_ISSUES'] = "<span style='width:100%;' id='selectedIssue' title='-1'>[ none ]</span>";
 		$content['PROBLEMS'] = $tree->get();
-		$content['LANDLORD_PICKER'] = PHPWS_Template::process(array("landlords"=>$this->landlords), 'slc', 'LandlordPicker.tpl');
-    	$content = PHPWS_Template::process($content, 'slc', 'NewIssue.tpl');
+		$content['LANDLORD_PICKER'] = \PHPWS_Template::process(array("landlords"=>$this->landlords), 'slc', 'LandlordPicker.tpl');
+    	$content = \PHPWS_Template::process($content, 'slc', 'NewIssue.tpl');
     	
     	return parent::useTemplate($content);
 	}
@@ -85,11 +87,11 @@ class ViewNewIssue extends slc\View {
         // Don't select Criminal sub-types
 		$query = "SELECT * FROM slc_problem WHERE id NOT IN (25,26,27,28,29,30,31,32,33,34,995)";
 		
-		$db = new PHPWS_DB("slc_problem");
+		$db = new \PHPWS_DB("slc_problem");
 		$results = $db->select(NULL, $query);
         
-        if(PHPWS_Error::logIfError($results)){
-            throw new DatabaseException();
+        if(\PHPWS_Error::logIfError($results)){
+            throw new \slc\exceptions\DatabaseException();
         	$this->addResult("msg", "Database Exception");
 	        return;
         }
@@ -103,11 +105,11 @@ class ViewNewIssue extends slc\View {
 		$this->landlords = array();
 		$query = "SELECT * FROM slc_landlord";
 		
-		$db = new PHPWS_DB("slc_landlord");
+		$db = new \PHPWS_DB("slc_landlord");
 		$results = $db->select(NULL, $query);
         
-        if(PHPWS_Error::logIfError($results)){
-            throw new DatabaseException();
+        if(\PHPWS_Error::logIfError($results)){
+            throw new \slc\exceptions\DatabaseException();
         	$this->addResult("msg", "Database Exception");
 	        return;
         }
@@ -116,7 +118,7 @@ class ViewNewIssue extends slc\View {
         	$this->landlords[] = array("LANDLORD_ID" => $r['id'], "NAME"=>$r['name']);
         }
 
-		javascriptMod('slc', 'newIssue');
+		\javascriptMod('slc', 'newIssue');
 	}
 	
 	private $theTree = array();

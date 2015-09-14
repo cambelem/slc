@@ -1,7 +1,8 @@
-<?php 
+<?php
+namespace slc\ajax; 
 
 class POSTNewVisit extends AJAX {
-	private $_table = "slc_visit";
+	
 	
 	public function execute() {
 		if ( !isset($_REQUEST['banner_id']) ) {
@@ -10,23 +11,19 @@ class POSTNewVisit extends AJAX {
 			return;
 		}
 		
-		$visit = new Visit();
-		$visit->initial_date = timestamp(); // TOOD: Use current timestamp as int
-		$visit->c_id = $_REQUEST['banner_id'];
-		
+		$time = timestamp();
+		$visit = new \slc\Visit($_REQUEST['banner_id'], $time);
+		 // TOOD: Use current timestamp as int
+
+
 		//test($visit);
 		
 		// Save the Visit
-        $db = new PHPWS_DB($this->_table);
-		$results = $db->saveObject($visit);
-        
-		if(PHPWS_Error::logIfError($results)){
-            throw new DatabaseException();
-        }
-        
+        $results = VisitFactory::saveVisit($visit);
+
         $visitID = $results;
         
-        $html = '<table style="width:100%;"><tr><td colspan="2"><span style="font-weight:bold;">'.prettyTime($visit->initial_date).'</span><span style="position:relative; font-size:10px;right:-5px;font-weight:100;padding-top:10px;"><span style="font-size:12px;font-weight:bold;">[</span> <a href="index.php?module=slc&view=NewIssue&visitid='.$visitID.'">NEW ISSUE</a> <span style="font-size:12px;font-weight:bold;">]</span></span></td></tr>';
+        $html = '<table style="width:100%;"><tr><td colspan="2"><span style="font-weight:bold;">'.prettyTime($visit->getInitialDate()).'</span><span style="position:relative; font-size:10px;right:-5px;font-weight:100;padding-top:10px;"><span style="font-size:12px;font-weight:bold;">[</span> <a href="index.php?module=slc&view=NewIssue&visitid='.$visitID.'">NEW ISSUE</a> <span style="font-size:12px;font-weight:bold;">]</span></span></td></tr>';
         
         
         $this->addResult("msg", $results);

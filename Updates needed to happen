@@ -1,0 +1,3 @@
+update slc_referral_type set name="Internet" where id=16;
+update slc_referral_type set name="Off-campus Presentation" where id=17;
+update slc_referral_type set name="Orientation" where id=18;

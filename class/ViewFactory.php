@@ -1,4 +1,5 @@
 <?php
+namespace slc;
 /*
  * View Factory
  *
@@ -20,14 +21,15 @@ class ViewFactory {
 
         $file = "{$class}.php";
 
-        if ( !PHPWS_Core::initModClass( 'slc', 'views/'.$file ) ) {
-            throw new ViewNotFoundException( "Could not find view '$file'" );
+        if ( ! file_exists( '\\mod\\slc\\class\\views\\'.$file ) ) {
+            throw new \slc\exceptions\ViewNotFoundException( "Could not find view '$file'" );
         }
 
-        if ( ! class_exists( $class ) ) {
-            throw new ViewNotFoundException( "No view class '$class' located" );
+        if ( ! class_exists( "\\slc\\views\\".$class ) ) {
+            throw new \slc\exceptions\ViewNotFoundException( "No view class '$class' located" );
         }
        
+        $class = "\\slc\\views\\".$class;
         $view = new $class();
         
         return $view;

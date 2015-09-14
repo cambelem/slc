@@ -1,4 +1,5 @@
 <?php 
+namespace slc;
 
 class Issue {
 	
@@ -19,6 +20,97 @@ class Issue {
 	public function __construct($issueID = null) {
 		$this->id = $issueID;
 
+	}
+
+	public function getId()
+	{
+		return $this->id;
+	}
+
+	public function getProblemId()
+	{
+		return $this->problem_id;
+	}
+
+	public function getLandlordId()
+	{
+		return $this->landlord_id;
+	}
+
+	public function getName()
+	{
+		return $this->name;
+	}
+
+	public function getLastAccess()
+	{
+		return $this->last_access;
+	}
+
+	public function getCounter()
+	{
+		return $this->counter;
+	}
+
+	public function getResolutionDate()
+	{
+		return $this->resolution_date;
+	}
+
+	public function getVisitIssueId()
+	{
+		return $this->visit_issue_id;
+	}
+
+	public function getLandlordName()
+	{
+		return $this->landlord_name;
+	}
+
+
+	public function setId($id)
+	{
+		$this->id = $id;
+	}
+
+	public function setProblemId($problem_id)
+	{
+		$this->problem_id = $problem_id;
+	}
+
+	public function setLandlordId($landlord_id)
+	{
+		$this->landlord_id = $landlord_id;
+	}
+
+	public function setName($name)
+	{
+		$this->name = $name;
+	}
+
+	public function setLastAccess($lAccess)
+	{
+		$this->last_access = $lAccess;
+	}
+
+	public function setCounter($counter)
+	{
+		$this->counter = $counter;
+	}
+
+	public function setResolutionDate($rDate)
+	{
+		$this->resolution_date = $rDate;
+	}
+
+	public function setVisitIssueId($vIssueId)
+	{
+		$this->visit_issue_id = $vIssueId;
+	}
+
+	public function setLandlordName($lName)
+	{
+		$this->landlord_name = $lName;
 	}
 }
 

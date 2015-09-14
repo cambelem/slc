@@ -1,16 +1,23 @@
 <?php 
+namespace slc\views;
 
-class ViewClient extends slc\View {
-	public function display(\CommandContext $context) {
+class ViewClient extends View {
+	public function display(\slc\CommandContext $context) {
+
 		$HTMLcontent = "";
 		$referral = "";
-		
-		$ajax = AjaxFactory::get("client");
+	/*	
+		$ajax = \slc\AjaxFactory::get("client");
 		$ajax->loadCall("GETClientData");
 		$ajax->execute();
 		
 		$result = $ajax->result(); 
-		
+
+echo("<pre>");		
+var_dump($result);
+echo("</pre>");
+exit;
+
 		if (isset($result['msg']) && $result['msg'] == "Client not in ASU Database" ) {
 			$HTMLcontent .= "<span style='font-weight:bold;'>Client not in ASU Database<br /></span><span style='font-size:-1;margin-left:20px;'>This could be due to the client being a non-student or the database not being updated.</span>";
 			return parent::useTemplate($HTMLcontent); // Insert into the accessible div
@@ -23,7 +30,7 @@ class ViewClient extends slc\View {
 		//test($result);
 		
 		if ( $newClient ) {
-			$ajax = AjaxFactory::get("referral");
+			$ajax = \slc\AjaxFactory::get("referral");
 			$ajax->loadCall("GETReferralBox");
 			$ajax->execute();
 			
@@ -39,7 +46,7 @@ class ViewClient extends slc\View {
 		$banner = $client->id;
 
 		$content = array();
-		$tpl = new PHPWS_Template('slc');
+		$tpl = new \PHPWS_Template('slc');
 		$tpl->setFile('ClientVisits.tpl');
 		$content['CLIENT_ID'] = $client->id;
 		$content['CLIENT_NAME'] = $_SESSION['cname'];
@@ -49,7 +56,7 @@ class ViewClient extends slc\View {
 		
 		
 		// Get visits
-		$ajax = AjaxFactory::get("visits");
+		$ajax = \slc\AjaxFactory::get("visits");
 		$ajax->loadCall("GETClientVisits");
 		$ajax->execute();
 		$visits = $ajax->result(); 
@@ -89,10 +96,12 @@ class ViewClient extends slc\View {
 	 	$content['CLIENT_VISITS'] = $tpl->get();
 	 	$content['CLIENT_BANNER'] = $banner;
 	 	$content['REFERRAL'] = $referral; 
-	 		
-		javascriptMod('slc', 'viewClient');
+*/
+	 	$content = array();
+
+		\javascriptMod('slc', 'viewClient', array('BANNER_ID'=>$_REQUEST['banner_id']));
 			 
-	 	$HTMLcontent .= PHPWS_Template::process($content, 'slc', 'Client.tpl');
+	 	$HTMLcontent .= \PHPWS_Template::process($content, 'slc', 'Client.tpl');
 	 	
 	 	return parent::useTemplate($HTMLcontent); // Insert into the accessible div
 	}

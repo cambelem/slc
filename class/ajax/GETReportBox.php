@@ -1,4 +1,6 @@
 <?php
+namespace slc\ajax;
+
 class GETReportBox extends AJAX {
 	
 	public function execute() {
@@ -24,7 +26,7 @@ class GETReportBox extends AJAX {
         	$rTypes[] = array("VALUE" => $r, "NAME"=>$v);
         }
 		
-        $reportPicker = PHPWS_Template::process(array("reports"=>$rTypes), 'slc', 'ReportPicker.tpl');
+        $reportPicker = \PHPWS_Template::process(array("reports"=>$rTypes), 'slc', 'ReportPicker.tpl');
 		
 		$this->addResult("report_picker", $reportPicker);    
 	}

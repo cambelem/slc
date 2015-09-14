@@ -1,4 +1,6 @@
 <?php
+namespace slc\ajax;
+
 /**
  * ExportCSV
  *

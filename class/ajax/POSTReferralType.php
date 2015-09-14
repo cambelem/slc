@@ -1,4 +1,5 @@
 <?php 
+namespace slc\ajax;
 
 class POSTReferralType extends AJAX {
 	private $_table = "client";
@@ -18,11 +19,17 @@ class POSTReferralType extends AJAX {
 			return;
 		}
 
-		$qry = "UPDATE slc_client SET referral=".$_REQUEST['referral_type']." WHERE id='".$_REQUEST['banner_id']."'";
+
+		$db = \Database::newDB();
+		$pdo = $db->getPDO();
+
+		$query = "UPDATE slc_client SET referral=:rType WHERE id=:bId";
 		
-		$results = PHPWS_DB::query($qry);
+		$sth = $pdo->prepare($query);
+		$sth->execute(array('rType'=>$_REQUEST['referral_type'], 'bId'=>$_REQUEST['banner_id']));
+		$results = $sth->fetchAll(\PDO::FETCH_ASSOC);
         
-		if(PHPWS_Error::logIfError($results)){
+		if(\PHPWS_Error::logIfError($results)){
             $this->addResult("error", "Database Exception");
 			//throw new DatabaseException();
 			return;

@@ -1,4 +1,6 @@
 <?php
+namespace slc\ajax;
+
 class GETVisits extends AJAX {
 	private $_table = "slc_visits";
 	
@@ -13,16 +15,16 @@ class GETVisits extends AJAX {
 		$banner = encode($_REQUEST['banner_id']);
 
 		// check that client exists in database, if not create
-		$db = new PHPWS_DB($this->_table);
+		$db = new \PHPWS_DB($this->_table);
 		$db->addWhere("id", $banner);
         $results = $db->count();
         
-        if(PHPWS_Error::logIfError($results)){
-            throw new DatabaseException();
+        if(\PHPWS_Error::logIfError($results)){
+            throw new \slc\exceptions\DatabaseException();
         }
 
         if ( $results == 0 ) {
-        	$af = AJAXFactory::get("POSTNewClient");
+        	$af = \AJAXFactory::get("POSTNewClient");
         	$af->loadCall("POSTNewClient"); // using the original since it will be encoded
 		    $af->execute();
 		    if ( !$af->result() ) {
@@ -33,12 +35,12 @@ class GETVisits extends AJAX {
         
         $this->result = array();
 
-        $db = new PHPWS_DB($this->_table);
-		$client = new Client($banner);
+        $db = new \PHPWS_DB($this->_table);
+		$client = new \slc\Client($banner);
 		$results = $db->loadObject($client);
         
-        if(PHPWS_Error::logIfError($results)){
-            throw new DatabaseException();
+        if(\PHPWS_Error::logIfError($results)){
+            throw new \slc\exceptions\DatabaseException();
         }
 
         $this->addResult("client", $client);

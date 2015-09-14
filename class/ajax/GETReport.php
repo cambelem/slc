@@ -1,4 +1,6 @@
 <?php
+namespace slc\ajax;
+
 class GETReport extends AJAX {
 	
 	public function execute() {
@@ -12,8 +14,8 @@ class GETReport extends AJAX {
 		
 		$func = 'REPORT'.$_REQUEST['report_type'];
 
-		if ( method_exists("GETReport", $func) )
-			$reportHTML .= call_user_func(array("GETReport", $func));
+		if ( method_exists("\\slc\\ajax\\GETReport", $func) )
+			$reportHTML .= call_user_func(array("\\slc\\ajax\\GETReport", $func));
 		else 
 			$reportHTML .= "The selected report type (".$_REQUEST['report_type'].") is not yet implemented in this version";
 			
@@ -27,12 +29,12 @@ class GETReport extends AJAX {
 		$query .= "(SELECT COUNT(DISTINCT id) FROM slc_issue) AS issues, ";
 		$query .= "(SELECT SUM(counter) FROM slc_visit_issue_index) AS followups ";
 		
-		$db = new PHPWS_DB();
+		$db = new \PHPWS_DB();
         //$db->setTestMode();
         $results = $db->select(null, $query);
         
-        if(PHPWS_Error::logIfError($results)){
-            throw new DatabaseException();
+        if(\PHPWS_Error::logIfError($results)){
+            throw new \slc\exceptions\DatabaseException();
         }
         
         $results = $results[0]; // since it's a count, should always return a number
@@ -67,26 +69,26 @@ class GETReport extends AJAX {
         $end_date = strtotime($_REQUEST['end_date']) + 86400;   // +1 day to make date range inclusive
 
         // Get the list of all Landlord-Tenant type problems
-        $db = new PHPWS_DB('slc_problem');
+        $db = new \PHPWS_DB('slc_problem');
         $db->addColumn('description');
         $db->addWhere('type', 'Landlord-Tenant', 'LIKE');
         $landlord = $db->select();
 
-        if(PHPWS_Error::logIfError($landlord)){
-            throw new DatabaseException();
+        if(\PHPWS_Error::logIfError($landlord)){
+            throw new \slc\exceptions\DatabaseException();
         }
 
         // Get the list of all Conditions type problems
-        $db = new PHPWS_DB('slc_problem');
+        $db = new \PHPWS_DB('slc_problem');
         $db->addColumn('description');
         $db->addWhere('type', 'Conditions', 'LIKE');
         $conditions = $db->select();
 
-        if(PHPWS_Error::logIfError($conditions)){
-            throw new DatabaseException();
+        if(\PHPWS_Error::logIfError($conditions)){
+            throw new \slc\exceptions\DatabaseException();
         }
 
-		$db = new PHPWS_DB();
+		$db = new \PHPWS_DB();
         $db->addTable('slc_issue');
         $db->addTable('slc_problem');
         $db->addTable('slc_visit');
@@ -101,8 +103,8 @@ class GETReport extends AJAX {
         $db->addGroupBy('slc_issue.problem_id');
         $results = $db->select();
         
-        if(PHPWS_Error::logIfError($results)){
-            throw new DatabaseException();
+        if(\PHPWS_Error::logIfError($results)){
+            throw new \slc\exceptions\DatabaseException();
         }
      
         /*
@@ -222,14 +224,14 @@ class GETReport extends AJAX {
         $end_date = strtotime($_REQUEST['end_date']) + 86400;   // +1 day to make date range inclusive
 
         $landlords = "SELECT * FROM slc_landlord";
-        $db = new PHPWS_DB();
+        $db = new \PHPWS_DB();
         $landlords = $db->select(null, $landlords);
         $landlordnames = array();
         foreach( $landlords as $landlord )
         	$landlordnames[] = $landlord['name'];
             
         $issues = "SELECT * FROM slc_problem WHERE tree LIKE '%Landlord-Tenant%' OR description LIKE 'Conditions' OR description LIKE 'Landlord-Tenant' "; // Covers generic landlord-tenant, too
-        $db = new PHPWS_DB();
+        $db = new \PHPWS_DB();
         $issues = $db->select(null, $issues);
         $issuenames = array();
         foreach( $issues as $issue )
@@ -237,7 +239,7 @@ class GETReport extends AJAX {
     	
         
 		// Get the issues listed ( all others 0 )
-		$db = new PHPWS_DB();
+		$db = new \PHPWS_DB();
         $db->addTable('slc_issue');
         $db->addTable('slc_problem');
         $db->addTable('slc_landlord');
@@ -258,8 +260,8 @@ class GETReport extends AJAX {
         $db->addWhere('slc_visit.initial_date', $end_date, '<', 'AND');
         $results = $db->select();
         
-        if(PHPWS_Error::logIfError($results)){
-            throw new DatabaseException();
+        if(\PHPWS_Error::logIfError($results)){
+            throw new \slc\exceptions\DatabaseException();
         }
         
         $theMatrix = $landlordnames;
@@ -345,14 +347,14 @@ class GETReport extends AJAX {
         $end_date = strtotime($_REQUEST['end_date']) + 86400;   // +1 day to make date range inclusive
 
 		$landlords = "SELECT * FROM slc_landlord";
-        $db = new PHPWS_DB();
+        $db = new \PHPWS_DB();
         $landlords = $db->select(null, $landlords);
         $landlordnames = array();
         foreach( $landlords as $landlord )
         	$landlordnames[] = $landlord['name'];
             
         $issues = "SELECT * FROM slc_problem WHERE type LIKE 'Conditions' "; // Covers generic landlord-tenant, too
-        $db = new PHPWS_DB();
+        $db = new \PHPWS_DB();
         $issues = $db->select(null, $issues);
         $issuenames = array();
         foreach( $issues as $issue )
@@ -360,7 +362,7 @@ class GETReport extends AJAX {
         $issuenames[] = "Conditions";
 
         // Get the issues listed ( all others 0 )
-		$db = new PHPWS_DB();
+		$db = new \PHPWS_DB();
         $db->addTable('slc_issue');
         $db->addTable('slc_problem');
         $db->addTable('slc_landlord');
@@ -383,10 +385,11 @@ class GETReport extends AJAX {
         $db->addWhere('slc_problem.description', 'Conditions', 'LIKE', 'OR', 'conditions');
         $db->addWhere('slc_visit.initial_date', $start_date, '>=', 'AND');
         $db->addWhere('slc_visit.initial_date', $end_date, '<', 'AND');
+        //$db->setTestMode();
         $results = $db->select();
         
-        if(PHPWS_Error::logIfError($results)){
-            throw new DatabaseException();
+        if(\PHPWS_Error::logIfError($results)){
+            throw new \slc\exceptions\DatabaseException();
         }
         $html = "";
                 
@@ -469,7 +472,7 @@ class GETReport extends AJAX {
         $start_date = strtotime($_REQUEST['start_date']);
         $end_date = strtotime($_REQUEST['end_date']) + 86400;   // +1 day to make date range inclusive
 
-		$db = new PHPWS_DB();
+		$db = new \PHPWS_DB();
         $db->addTable('slc_visit_issue_index');
         $db->addTable('slc_visit');
         $db->addTable('slc_client');
@@ -486,8 +489,8 @@ class GETReport extends AJAX {
         $db->addWhere('slc_visit.initial_date', $end_date, '<', 'AND');
         $results = $db->select();
         
-        if(PHPWS_Error::logIfError($results)){
-            throw new DatabaseException();
+        if(\PHPWS_Error::logIfError($results)){
+            throw new \slc\exceptions\DatabaseException();
         }
         
         // return an "empty" message if $results is empty
@@ -629,7 +632,7 @@ class GETReport extends AJAX {
 
         // Get the array of all visits whose initial visit happened in the time period. Equivalent to this query:
         // SELECT DISTINCT(id) FROM slc_visit WHERE initial_date >= $start_date AND initial_date < $end_date;
-        $db = new PHPWS_DB('slc_visit');
+        $db = new \PHPWS_DB('slc_visit');
         $db->addColumn('id', null, null, null, true);
         $db->addWhere('initial_date', $start_date, '>=');
         $db->addwhere('initial_date', $end_date, '<', 'AND');
@@ -638,7 +641,7 @@ class GETReport extends AJAX {
         // Get # of initial visits. Equivalent to this query: 
         // SELECT COUNT(DISTINCT(v_id)) FROM slc_visit_issue_index
         // WHERE v_id IN $visitIds;
-        $db = new PHPWS_DB('slc_visit_issue_index');
+        $db = new \PHPWS_DB('slc_visit_issue_index');
         $db->addColumn('v_id', null, null, true, true);
         $db->addWhere('v_id', $visitIds, 'IN', 'AND');
         $initialVisits = $db->select('one');
@@ -657,7 +660,7 @@ class GETReport extends AJAX {
 
         // Calculate the number of followup visits.
         $visits = array();
-        $db = new PHPWS_DB('slc_visit_issue_index');
+        $db = new \PHPWS_DB('slc_visit_issue_index');
         $db->addColumn('v_id', null, null, null, true);
         foreach ($counters as $count) {
             $db->addWhere('v_id', $visitIds, 'IN');
@@ -677,7 +680,7 @@ class GETReport extends AJAX {
         // Get # of clients. Equivalent to this query:
         // SELECT COUNT(DISTINCT(id)) FROM slc_client
         // WHERE first_visit >= $start_date AND first_visit < $end_date;
-        $db = new PHPWS_DB('slc_client');
+        $db = new \PHPWS_DB('slc_client');
         $db->addColumn('id', null, null, true, true);
         $db->addWhere('first_visit', $start_date, '>=');
         $db->addWhere('first_visit', $end_date, '<', 'AND');
@@ -687,7 +690,7 @@ class GETReport extends AJAX {
         // SELECT COUNT(DISTINCT(id)) FROM slc_issue
         // JOIN slc_visit_issue_index ON slc_issue.id = slc_visit_issue_index.i_id
         // WHERE slc_visit_issue_index.v_id IN $visitIds;
-        $db = new PHPWS_DB('slc_issue');
+        $db = new \PHPWS_DB('slc_issue');
         $db->addColumn('id', null, null, true, true);
         $db->addTable('slc_visit_issue_index', 'svii');
         $db->addWhere('slc_issue.id', 'svii.i_id');
@@ -727,7 +730,7 @@ class GETReport extends AJAX {
         $start_date = strtotime($_REQUEST['start_date']);
         $end_date = strtotime($_REQUEST['end_date']) + 86400;   // +1 day to make date range inclusive
 
-		$db = new PHPWS_DB('slc_problem');
+		$db = new \PHPWS_DB('slc_problem');
         $db->addColumn('slc_problem.description', NULL, 'descript');
         $db->addJoin('inner', 'slc_problem', 'slc_issue', 'id', 'problem_id');
         $db->addJoin('inner', 'slc_issue', 'slc_visit_issue_index', 'id', 'i_id');
@@ -737,8 +740,10 @@ class GETReport extends AJAX {
         $db->addWhere('slc_visit.initial_date', $end_date, '<', 'AND');
         $results = $db->select();
         
-        if(PHPWS_Error::logIfError($results)){
-            throw new DatabaseException();
+       
+        
+        if(\PHPWS_Error::logIfError($results)){
+            throw new \slc\exceptions\DatabaseException();
         }
         
         // return an "empty" message if $results is empty
@@ -776,15 +781,15 @@ class GETReport extends AJAX {
         $start_date = strtotime($_REQUEST['start_date']);
         $end_date = strtotime($_REQUEST['end_date']) + 86400;   // +1 day to make date range inclusive
 
-		$db = new PHPWS_DB('slc_referral_type');
+		$db = new \PHPWS_DB('slc_referral_type');
         $db->addColumn('name');
         $db->addWhere('id', 'slc_client.referral');
         $db->addWhere('slc_client.first_visit', $start_date, '>=', 'AND');
         $db->addWhere('slc_client.first_visit', $end_date, '<', 'AND');
         $results = $db->select();
         
-        if(PHPWS_Error::logIfError($results)){
-            throw new DatabaseException();
+        if(\PHPWS_Error::logIfError($results)){
+            throw new \slc\exceptions\DatabaseException();
         }
         
         // return an "empty" message if $results is empty
@@ -823,7 +828,7 @@ class GETReport extends AJAX {
         $start_date = strtotime($_REQUEST['start_date']);
         $end_date = strtotime($_REQUEST['end_date']) + 86400;   // +1 day to make date range inclusive
 
-		$db = new PHPWS_DB('slc_problem');
+		$db = new \PHPWS_DB('slc_problem');
         $db->addColumn('slc_problem.description', NULL, 'agency');
         $db->addJoin('inner', 'slc_problem', 'slc_issue', 'id', 'problem_id');
         $db->addJoin('inner', 'slc_issue', 'slc_visit_issue_index', 'id', 'i_id');
@@ -833,8 +838,8 @@ class GETReport extends AJAX {
         $db->addWhere('slc_visit.initial_date', $end_date, '<', 'AND');
         $results = $db->select();
         
-        if(PHPWS_Error::logIfError($results)){
-            throw new DatabaseException();
+        if(\PHPWS_Error::logIfError($results)){
+            throw new \slc\exceptions\DatabaseException();
         }
         
         // return an "empty" message if $results is empty

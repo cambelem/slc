@@ -1,101 +1,58 @@
 <?php
+namespace slc\ajax;
+
 class GETClientData extends AJAX {
 	private $_table = "slc_client";
 	
 	public function execute() {
-		$tClient = new Client();
 		
 		if ( !isset($_REQUEST['banner_id']) ) {
 			$this->addResult("msg", "No ID Supplied");
-//			throw new IDNotSuppliedException();
 			return;
 		}
 
-		$client = new Client();
-		
 		// check if it's already encoded
+		// Will run every time the user types in a banner ID.
 		if ( !startsWith($_REQUEST['banner_id'], "$") ) {			
-			 
-	        unset($_SESSION['cname']);
-			
-			// Grab extra information from ASU Database
-	        $db = new PHPWS_DB('slc_student_data');
-			$db->addWhere("id", $_REQUEST['banner_id']);
-	        $results = $db->loadObject($tClient);
-	        
-	        if(PHPWS_Error::logIfError($results)){
-	            throw new DatabaseException();
-	        	$this->addResult("msg", "Database Exception");
-		        return;
-	        }
-	
-	        if ( !$results ) {
-	        	$this->addResult("msg", "Client not in ASU Database");
-	        	return;
-	        }
-	        
-	        //store id in session because about to be encoded
-	        $_SESSION['actID'] = $tClient->id;
-	       
-	        
-	        // Store the name in session, as after the banner is encrypted, there's no way to get it
-	        $_SESSION['cname'] = $tClient->fname . ' ' . $tClient->lname;
-	        
-	        // encode banner
-	        $_REQUEST['banner_id'] = encode($_REQUEST['banner_id']);
+			$tClient = $this->encryptClient();	        
+			var_dump("Made it");
 		}
 			
-		$banner = $_REQUEST['banner_id'];
-        
-		//$client = new Client($banner);
-        $client->id = $banner;
-		
-        
-		// check that client exists in database
-		$db = new PHPWS_DB($this->_table);
-        $results = $db->loadObject($client);
-        
-        if(PHPWS_Error::logIfError($results)){
-            throw new DatabaseException();
-        	$this->addResult("msg", "Database Exception");
-	        return;
-        }
+		$encrypedBanner = $_REQUEST['banner_id'];
 
-        if ( !$results ) {
+		// Returns whether there is a client object in the database.
+		$client = ClientFactory::getClientByEncryBanner($encrypedBanner,  $tClient->getFirstName(), 
+                                               $tClient->getLastName(), $tClient ->getFirstName() . ' ' . $tClient->getLastName());
+		
+		// Checks to see if there is a client.
+        if ( $client == null ) 
+        {
+        	// create a whole new client and set each individual field.
         	$this->addResult("msg", "Client does not exist");
        	
-        	// create new client
-        	$ajax = AjaxFactory::get("newClient");
-			$ajax->loadCall("POSTNewClient");
-			$ajax->setData(array("classification"=>$tClient->classification, "major"=>$tClient->major, "living_location"=>$tClient->living_location));
-			$ajax->execute();
-			$client = $ajax->result();
-		
-			$client = $client['client'];
+			$client = ClientFactory::newClient($encrypedBanner, $tClient->getClassification(), 
+											   $tClient->getMajor(), $tClient->getLivingLocation());
+			ClientFactory::saveClient($client);
+
 			$this->addResult('newFlag', true);
-        } else
+        } 
+        else
+        {
+        	// Gathers the existing client.
         	$this->addResult('newFlag', false);
-        $client->fname = $tClient->fname;
-        $client->lname = $tClient->lname;
-        $client->name = $client->fname . ' ' . $client->lname;
-       
+	    }  
+
+
         // Check if existing client has referral set
-        if ( isset($client->referral) ) {
+        $cRefferal = $client->getReferral();
+
+        if ($cRefferal > 0) {						
         	// Add actual text of referral into client
-        	$query = 'SELECT * '.
-        			' FROM slc_referral_type '.
-        			' WHERE id=' . $client->referral;
-	        
-	        $db = new PHPWS_DB();
-	        //$db->setTestMode();
-	        $results = $db->select(null, $query);
-	        
-	        if(PHPWS_Error::logIfError($results)){
-	            throw new DatabaseException();
-	        }
+        	$results = ClientFactory::getRefferalType($cRefferal);
         	//test($results);
-        	$client->referralString = $results[0]["name"]; 
+        	$client->setReferralString($results[0]["name"]); 
         	$this->addResult('referralSet', true);
+            
         } else
         	$this->addResult('referralSet', false);
         
@@ -103,4 +60,31 @@ class GETClientData extends AJAX {
         $this->addResult("client", $client);
         
 	}
+
+	public function encryptClient()
+	{
+		unset($_SESSION['cname']);
+			
+		// Grab extra information from ASU Database
+        $tClient = ClientFactory::getClientByBannerId($_REQUEST['banner_id']); 
+
+
+        if ( !$tClient ) {
+        	$this->addResult("msg", "Client not in ASU Database");
+        	return;
+        }
+        
+        //store id in session because about to be encoded
+        $_SESSION['actID'] = $tClient->getId();
+       
+        
+        // Store the name in session, as after the banner is encrypted, there's no way to get it
+        $_SESSION['cname'] = $tClient->getName();
+        
+        // encode banner
+        $_REQUEST['banner_id'] = encode($_REQUEST['banner_id']);
+
+        return $tClient;
+	}
+
 }
