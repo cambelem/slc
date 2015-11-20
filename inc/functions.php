@@ -1,4 +1,5 @@
 <?php
+namespace slc;
 
 define('TERM_SPRING',   10);
 define('TERM_SUMMER1',  20);
@@ -20,11 +21,11 @@ function encode($banner = null) {
 	//return $banner;
 	
 	if (!isset($banner)) 
-		throw new BannerNotDefinedException('Missing Banner ID');
+		throw new \BannerNotDefinedException('Missing Banner ID');
 		
 	$hashString  = $banner;
 	
-	$encode_salt = PHPWS_Settings::get('slc', 'encode_salt');
+	$encode_salt = \PHPWS_Settings::get('slc', 'encode_salt');
 	
     $blowfish_salt = "$2a$07$".$encode_salt."$";
     return crypt($hashString, $blowfish_salt);

@@ -2,6 +2,10 @@
 namespace slc\views;
 
 class ViewNewIssue extends View {
+
+	private $theTree = array();
+	private $landlords = array();
+	
 	public function display(\slc\CommandContext $context) {
 		$content = array();
 		    	
@@ -15,6 +19,7 @@ class ViewNewIssue extends View {
 		
 		$this->setupTree();
 		
+		/*
 		$tree = new \PHPWS_Template('slc');
 		$tree->setFile('IssueTree.tpl');
 
@@ -39,6 +44,7 @@ class ViewNewIssue extends View {
 			    	$tree->parseCurrentBlock();
 				}
 			} 
+			*/
             // This displays the 'Criminal' sub-types. We don't use those anymore, so this is commented out to hide them.
             /*else if ( $pType["DBNAME"] == "problemcriminal") {
 				foreach( $this->theTree["Law Enforcement Agency"] as $data ) {
@@ -53,27 +59,30 @@ class ViewNewIssue extends View {
 			    	$tree->parseCurrentBlock();
 				}
             }*/
-			
-	  
+				
+	 	/*
 	    	$tree->setCurrentBlock($pType["DBNAME"]);
 	    	$tree->setData($pType);
 	    	$tree->parseCurrentBlock();
 		}		
-		
+		*/
 		$content['VISITID'] = $_REQUEST['visitid'];
 
 		// extract client from visitid
 		$query = "SELECT client_id FROM slc_visit WHERE id='".$_REQUEST['visitid']."'";	
 		$db = new \PHPWS_DB("slc_visit");
 		$results = $db->select(NULL, $query);
+		
 		$content['CLIENTID'] = $results[0]['client_id'];
 		$content['TITLE'] = "Create New Issue for ".$_REQUEST['cname'];
 
-		$content['SELECTED_ISSUES'] = "<span style='width:100%;' id='selectedIssue' title='-1'>[ none ]</span>";
-		$content['PROBLEMS'] = $tree->get();
+		//$content['SELECTED_ISSUES'] = "<span style='width:100%;' id='selectedIssue' title='-1'>[ none ]</span>";
+		$content['PROBLEMS'] = $this->theTree;
 		$content['LANDLORD_PICKER'] = \PHPWS_Template::process(array("landlords"=>$this->landlords), 'slc', 'LandlordPicker.tpl');
-    	$content = \PHPWS_Template::process($content, 'slc', 'NewIssue.tpl');
     	
+
+    	//\javascriptMod('slc', 'viewClient');
+    	$content = \PHPWS_Template::process($content, 'slc', 'NewIssue.tpl');
     	return parent::useTemplate($content);
 	}
 	
@@ -118,11 +127,10 @@ class ViewNewIssue extends View {
         	$this->landlords[] = array("LANDLORD_ID" => $r['id'], "NAME"=>$r['name']);
         }
 
-		\javascriptMod('slc', 'newIssue');
+		//\javascriptMod('slc', 'newIssue');
 	}
 	
-	private $theTree = array();
-	private $landlords = array();
+
 	
 }
 

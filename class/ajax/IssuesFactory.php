@@ -3,6 +3,27 @@ namespace slc\ajax;
 
 class IssuesFactory
 {
+	public static function saveIssue($issue)
+	{
+		/*
+		$db = \Database::newDB();
+		$pdo = $db->getPDO();
+
+        $values = array('id'=>$issue->getId(),
+						'problem_id'=>$issue->getProblemId(),
+						'landlord_id'=>$issue->getLandlordId());
+
+        $query = 'INSERT INTO slc_issue (id, problem_id, landlord_id)
+        		  VALUES (:id, :problem_id, :landlord_id)';
+
+	  	$sth = $pdo->prepare($query);
+		$sth->execute($values);
+		*/
+		$db = new \PHPWS_DB("slc_issue");
+		$results = $db->saveObject($issue);
+		return $results;
+	}
+
 	public static function getIssueByVisitId($vid)
 	{
 		$db = \Database::newDB();

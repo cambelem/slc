@@ -29,6 +29,9 @@ if ($context->has('action'))
     $af = AJAXFactory::get();
     $af->loadCall($action);
     $af->execute();
+
+    \NQ::close();
+
     echo json_encode($af->result()); // To be left on the page for consumption
     exit(); // Kill it
 }
@@ -48,8 +51,11 @@ else
     $view = 'Main';
 }
 
-// Get content from view
+$nv = new \slc\NotificationView();
+$notifications = $nv->display();
+\Layout::add($notifications);
 
+// Get content from view
 $view = ViewFactory::getView($view);
 $content = $view->display($context);
 

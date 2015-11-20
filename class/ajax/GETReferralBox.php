@@ -16,13 +16,13 @@ class GETReferralBox extends AJAX {
         $sth->execute();
         $results = $sth->fetchAll(\PDO::FETCH_ASSOC);
         
-		$rTypes = array();
+	$rTypes = array();
         foreach( $results as $r ) { // types
-        	$rTypes[] = array("REFERRAL_ID" => $r['id'], "NAME"=>$r['name']);
+        	$rTypes[] = array("referral_id" => $r['id'], "name"=>$r['name']);
         }
 		
-        $referralPicker = \PHPWS_Template::process(array("referrals"=>$rTypes), 'slc', 'ReferralPicker.tpl');
+        //$referralPicker = \PHPWS_Template::process(array("referrals"=>$rTypes), 'slc', 'ReferralPicker.tpl');
         
-	    $this->addResult("referral_picker", $referralPicker);    
+	$this->addResult("referral_picker", $rTypes);    
 	}
 }

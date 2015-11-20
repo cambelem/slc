@@ -16,6 +16,13 @@ abstract class View {
     		
     	return \PHPWS_Template::process($tpl, 'slc', 'Default.tpl');
     }
+
+    protected $notifications;
+    
+    public function addNotifications($n)
+    {
+        $this->notifications = $n;
+    }
 }
 
 ?>

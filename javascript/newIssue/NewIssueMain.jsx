@@ -11,7 +11,7 @@ var NewIssueMain = React.createClass({
     },
     getData: function(){
         $.ajax({
-            url: //'index.php?module=slc&action=GetStudentClientData&banner_id=' + banner_id,
+            url: "index.php?module=slc&view=NewIssue&visitid="+data.visitID+"&cname="+ this.state.clientData.client.name;
             type: 'GET',
             dataType: 'json',
             success: function(data) { 

@@ -17,8 +17,18 @@ class Issue {
 	public $landlord_name;
 	
 
-	public function __construct($issueID = null) {
-		$this->id = $issueID;
+	public function __construct($problemID = null, $landlordID = null) {
+		$this->problem_id = $problemID;
+
+		if ($landlordID == null)
+		{
+			// Sets the landlord id to 999 for Other/Unspecified
+			$this->landlord_id = 999;
+		}
+		else
+		{
+			$this->landlord_id = $landlordID;
+		}
 
 	}
 

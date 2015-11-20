@@ -4,22 +4,7 @@ namespace slc\ajax;
 
 class ClientFactory 
 {
-	public static function newClient($eBannerId, $class = "unknown", $major = "unknown", $livingLocation = "unknown")
-	{
-
-		$client = new \slc\Client($eBannerId);
-
-		$client->setClassification($class);
-		$client->setMajor($major);
-		$client->setLivingLocation($livingLocation);
-
-		$time = timestamp();
-        $client->setFirstVisit($time);
-
-		return $client;
-
-	}
-
+	
 	public static function saveClient($client)
 	{
 		$db = \Database::newDB();
@@ -54,11 +39,6 @@ class ClientFactory
 
 		return $result;
 
-
-		// START HERE AND REDO THIS!!
-		
-
-	    return $client;
 	}
 
 	public static function getClientByEncryBanner($eBannerId, $fname, $lname, $fullName)

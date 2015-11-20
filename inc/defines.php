@@ -1,4 +1,5 @@
 <?php
+namespace slc;
 /*
  * Some constants used throughout the application.
  *

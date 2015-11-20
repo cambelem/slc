@@ -1,4 +1,5 @@
 <?php
+namespace slc;
 /**
     * skeleton - phpwebsite module
     *
@@ -23,7 +24,7 @@
 */
 
 $link[] = array(
-        'label'         => 'Student Legal Clinic Tracker 2.0',
+        'label'         => 'Student Legal Clinic Tracker 3.0',
         'restricted'    => true,
         'url'           => 'index.php?module=slc',
         'description'   => 'Track statistics about visits',

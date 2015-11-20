@@ -27,14 +27,7 @@ class POSTReferralType extends AJAX {
 		
 		$sth = $pdo->prepare($query);
 		$sth->execute(array('rType'=>$_REQUEST['referral_type'], 'bId'=>$_REQUEST['banner_id']));
-		$results = $sth->fetchAll(\PDO::FETCH_ASSOC);
-        
-		if(\PHPWS_Error::logIfError($results)){
-            $this->addResult("error", "Database Exception");
-			//throw new DatabaseException();
-			return;
-        }
-        
-        $this->addResult("msg", $results);
+		
+
 	}
 }

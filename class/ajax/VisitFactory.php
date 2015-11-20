@@ -38,16 +38,27 @@ class VisitFactory
 		return $result;
 	}
 
-		public static function saveVisit($visit)
+	public static function saveVisit(&$pdo, $visit)
 	{
+		/*
 		$db = new \PHPWS_DB("slc_visit");
 		$results = $db->saveObject($visit);
-        
+        */
+ 
+        $values = array('initial_date'=>$visit->getInitialDate(),
+						'client_id'=>$visit->getClientId());
+
+        $query = 'INSERT INTO slc_visit (initial_date, client_id)
+        		  VALUES (:initial_date, :client_id)';
+
+	  	$sth = $pdo->prepare($query);
+		$sth->execute($values);
+/*
 		if(\PHPWS_Error::logIfError($results)){
             throw new \slc\exceptions\DatabaseException();
         }
-
-        return $results;
+*/
+        return $pdo->lastInsertId();
 	}
 }
 
