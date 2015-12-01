@@ -1,5 +1,4 @@
 <?php
-namespace slc;
 /**
     * skeleton - phpwebsite module
     *

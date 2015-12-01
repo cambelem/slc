@@ -8,19 +8,11 @@ class VisitIssue {
 	public $resolve_date;
 	public $last_access;
 
-/*
-        $vi->setVId($_REQUEST['visit_id']);
-        $vi->setIId($results);
-        $vi->setCounter(1);
-        $time = timestamp();
-        $vi->setLastAccess($time);
-*/
-
 	public function __construct($visitId = null, $issueId = null) {
 		$this->v_id = $visitId;
 		$this->i_id = $issueId;
 
-		$this->counter = 1;
+		$this->counter = 0;
 		$this->last_access = timestamp();
 
 	}

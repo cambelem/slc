@@ -40,10 +40,10 @@ class POSTIncrementVisit extends AJAX {
         $visitIssue->setCounter($count + 1); // increment counter
 
         $time = timestamp();
-        $visitIssue->setLastAccess($time); // TODO: Current Timestamp
+        $visitIssue->setLastAccess($time); 
 
 
-        $results = $db->saveObject($visitIssue); // save
+        $results = $db->saveObject($visitIssue);
 		
         if(\PHPWS_Error::logIfError($results)){
             //throw new DatabaseException();

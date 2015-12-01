@@ -1,5 +1,4 @@
 <?php
-namespace slc;
 
 $proper_name  = 'Student Legal Clinic Tracker';
 $version      = '3.0.0';

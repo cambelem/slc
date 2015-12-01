@@ -27,6 +27,7 @@ class GETAppointmentStats extends AJAX {
         $sth->execute(array('start'=>$start_date, 'end'=>$end_date));
         $visitIds = $sth->fetchAll(\PDO::FETCH_COLUMN, 0);
 
+
         // The next query relies on an array of strings, if the array is empty, add one.
         if (empty($visitIds))
         {
@@ -41,13 +42,26 @@ class GETAppointmentStats extends AJAX {
         $db->addWhere('v_id', $visitIds, 'IN', 'AND');
         $initialVisits = $db->select('one');
 
+        // Get # of issues w/o follow ups
+        $db = new \PHPWS_DB('slc_visit_issue_index');
+        $db->addColumn('i_id', null, null, true, true);
+        $db->addWhere('v_id', $visitIds, 'IN', 'AND');
+        $db->addWhere('counter', 0, '=');
+        $issuesWO = $db->select('one');
+
+        // Get # of issues with follow ups.
+        $db = new \PHPWS_DB('slc_visit_issue_index');
+        $db->addColumn('i_id', null, null, true, true);
+        $db->addWhere('v_id', $visitIds, 'IN', 'AND');
+        $db->addWhere('counter', 0, '>');
+        $issuesWith = $db->select('one');        
 
         // Get the array of different 'counts' greater than 1. Equivalent to this query:
         // SELECT DISTINCT(counter) FROM slc_visit_issue_index WHERE counter>'1' ORDER BY counter DESC;
         $db = \Database::newDB();
         $pdo = $db->getPDO();
         $query = 'SELECT distinct(slc_visit_issue_index.counter) FROM slc_visit_issue_index 
-                  WHERE (slc_visit_issue_index.counter > "1") 
+                  WHERE (slc_visit_issue_index.counter > 0) 
                   GROUP BY slc_visit_issue_index.counter 
                   ORDER BY slc_visit_issue_index.counter desc';
         $sth = $pdo->prepare($query);
@@ -63,6 +77,7 @@ class GETAppointmentStats extends AJAX {
         $visits = array();
         $db = new \PHPWS_DB('slc_visit_issue_index');
         $db->addColumn('v_id', null, null, null, true);
+//var_dump($counters);
         foreach ($counters as $count) {
             $db->addWhere('v_id', $visitIds, 'IN');
             
@@ -72,9 +87,19 @@ class GETAppointmentStats extends AJAX {
             }
             
             $db->addWhere('counter', $count, '=', 'AND');
+            /*
+                SELECT distinct(slc_visit_issue_index.v_id) 
+                FROM slc_visit_issue_index 
+                WHERE (slc_visit_issue_index.v_id IN ('2') 
+                AND slc_visit_issue_index.counter = '2') 
+                GROUP BY slc_visit_issue_index.v_id
+            */
             $result = $db->select('col');
             $visits = $visits + $result;
-            $followups += ($count-1) * count($result);
+
+            //Before change of default value in DB (1)
+            //$followups += ($count - 1) * count($result);
+            $followups += ($count) * count($result);
             $db->resetWhere();
         }
 
@@ -102,29 +127,32 @@ class GETAppointmentStats extends AJAX {
         $issues = $db->select('one');
      
 
-
+//var_dump($followups);
+//exit;
         $content = array();
 
         $content['CLIENTS'] = $clients;
-        $content['ISSUES'] = $issues;
         $content['INITIAL_VISITS'] = $initialVisits;
+        $content['ISSUES'] = $issues;
         $content['FOLLOWUPS'] = $followups;
 
         if ($clients == 0)
         {
-            $content['IVP'] = 0;
-            $content['VISITS_WO'] = 0;
-            $content['VISITS_WITH'] = 0;
+            $content['IPV_WO'] = 0;
+            $content['IPV_WITH'] = 0;
             $content['FPI'] = 0;
             $content['FPV'] = 0;
         }
         else
         {
-            $content['IVP'] = round($issues / $initialVisits, 2);
-            $content['VISITS_WO'] = round($initialVisits / $clients, 2);
-            $content['VISITS_WITH'] = round(($initialVisits + $followups) / $clients, 2);
-            $content['FPI'] = round($followups / $issues, 2);
-            $content['FPV'] = round($followups / $initialVisits, 2);
+            /*
+            $content['IPV_WO'] = round($issues / $initialVisits, 2);
+            $content['IPV_WITH'] = round(($issues + $followups) / $initialVisits, 2);
+            */
+            // Is this correct?
+            $content['I_WO'] = $issuesWO;
+            $content['I_WITH'] = $issuesWith;
+            $content['IPV'] = round($issues / $initialVisits, 2);
         }
 
 

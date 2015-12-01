@@ -1,10 +1,9 @@
 <?php
-
 namespace slc\ajax;
 
 class ClientFactory 
 {
-	
+	// Saves the client to the database
 	public static function saveClient($client)
 	{
 		$db = \Database::newDB();
@@ -24,23 +23,7 @@ class ClientFactory
 		$sth->execute($values);
 	}
 
-	public static function getClientByEncryptedId($eBannerId) //$client, 
-	{
-		$db = \Database::newDB();
-		$pdo = $db->getPDO();
-
-		$query = "SELECT *
-				  FROM slc_client
-				  WHERE id = :bannerId";
-
-		$sth = $pdo->prepare($query);
-		$sth->execute(array('bannerId'=>$bannerId));
-		$result = $sth->fetchObject('\slc\ClientDB');
-
-		return $result;
-
-	}
-
+	// Grabs the client from the database by their encrypted banner id.
 	public static function getClientByEncryBanner($eBannerId, $fname, $lname, $fullName)
 	{
 		$db = \Database::newDB();
@@ -53,14 +36,15 @@ class ClientFactory
 		$sth = $pdo->prepare($query);
 		$sth->execute(array('eBannerId'=>$eBannerId));
 		$client = $sth->fetchObject('\slc\ClientDB');
-		//var_dump($result);
-		//exit;
+
+		// If the client is not in the database, return false.
 		if ($client === false)
 		{
 			return null;
 		}
 		else
 		{
+			// Associate the client with their name here.
 			$client->setFirstName($fname);
 	   	 	$client->setLastName($lname);
 	   	 	$client->setName($fullName);
@@ -70,21 +54,8 @@ class ClientFactory
 		
 	}
 
-	public static function getVisitsByClientId($clientId)
-	{
-
-        $db = \Database::newDB();
-		$pdo = $db->getPDO();
-
-		$query = 'SELECT id, initial_date 
-				  FROM slc_visit 
-				  WHERE client_id = :clientId';
-
-		$sth = $pdo->prepare($query);
-		$sth->execute(array('clientId'=>$clientId));
-		$result = $sth->fetchAll(\PDO::FETCH_ASSOC);
-	}
-
+	// Grabs the student data from the database 
+	// (Don't confuse a student with a client)
 	public static function getClientByBannerId($bannerId)
 	{
 		$db = \Database::newDB();
@@ -101,6 +72,7 @@ class ClientFactory
 		return $result;
 	}
 
+	// Grabs the referral type that the client has set up.
 	public static function getReferralType($cReferral)
 	{
 		$db = \Database::newDB();

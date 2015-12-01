@@ -3,6 +3,9 @@ namespace slc\ajax;
 
 class POSTNewVisit extends AJAX {
 	
+
+//BREAK METHOD INTO HELPERS ***************************
+
 	
 	public function execute() {
 		if ( !isset($_REQUEST['banner_id']) ) {
@@ -25,7 +28,7 @@ class POSTNewVisit extends AJAX {
 	        //$visitID = null;
 	        if ($visitID == null)
 	        {
-	        	$warning = "Error with visitID";
+	        	$warning = "Error with the visitID";
 	        	$this->addResult("error", $warning);
 	        	$pdo->rollBack();
 	        	return;
@@ -49,7 +52,7 @@ class POSTNewVisit extends AJAX {
 
 				if($pid == null)
 				{
-					$warning = "Error with issue problem id being null.";
+					$warning = "Error with the issue problem id being null.";
 		        	$pdo->rollBack();
 		        	$this->addResult("error", $warning);
 		        	return;
@@ -80,7 +83,7 @@ class POSTNewVisit extends AJAX {
 			}
 			
 			$pdo->commit();
-			$msg = "Successfully added: ";
+			$msg = "Successfully Added: ";
 			$this->addResult("success", $msg);
 		} catch(PDOException $e){
 			$db->rollBack();

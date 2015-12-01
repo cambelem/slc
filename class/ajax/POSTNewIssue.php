@@ -1,4 +1,7 @@
 <?php 
+
+// !! FILE NOT BEING USED AS OF 3.0 !!
+
 namespace slc\ajax;
 
 class POSTNewIssue extends AJAX {

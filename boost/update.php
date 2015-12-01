@@ -1,5 +1,5 @@
 <?php
-namespace slc;
+
 /**
  * Updates the module
  *
@@ -7,15 +7,16 @@ namespace slc;
  */
 
 function slc_update(&$content, $current_version) {
+
     switch(1) {
         case version_compare($current_version, '2.0.3', '<'):
             $content[] = '<pre>';
             
-            $db = new \PHPWS_DB('slc_problem');
+            $db = new PHPWS_DB('slc_problem');
             $db->addWhere('id', 16);
             $db->addValue('description', 'Tenancy / Eviction');
 
-            if (\PHPWS_Error::logIfError($db->update())) {
+            if (PHPWS_Error::logIfError($db->update())) {
                 $content[] = 'Unable to change "Tenancy/Eviction" to "Tenancy / Eviction" in table slc_problem.';
                 return false;
             } else {
@@ -38,10 +39,10 @@ function slc_update(&$content, $current_version) {
         case version_compare($current_version, '2.0.4', '<'):
             $content[] = '<pre>';
             
-            $db = new \PHPWS_DB('slc_landlord');
+            $db = new PHPWS_DB('slc_landlord');
             $db->addWhere('id', 94);
             $db->addValue('name', 'Other / Unspecified');
-            if (\PHPWS_Error::logIfError($db->update())) {
+            if (PHPWS_Error::logIfError($db->update())) {
                 $content[] = 'Unable to change "Other / Not Provided" to "Other / Unspecified" in table slc_landlord.';
                 return false;
             }
@@ -49,24 +50,24 @@ function slc_update(&$content, $current_version) {
             $db->reset();
             $db->addWhere('id', 70);
             $db->addValue('name', 'Roger Pope');
-            if (\PHPWS_Error::logIfError($db->update())) {
+            if (PHPWS_Error::logIfError($db->update())) {
                 $content[] = 'Unable to move "Roger Pope" from id=95 to id=70';
                 return false;
             }
 
             $db->reset();
             $db->addWhere('id', 95);
-            if (\PHPWS_Error::logIfError($db->delete())) {
+            if (PHPWS_Error::logIfError($db->delete())) {
                 $content[] = 'Unable to delete Roger Pope\'s old id (95) from slc_landlord.';
                 return false;
             }
 
             $content[] = 'Successfully merged "Unknown" and "Other / Not Provided" into "Other / Unspecified" in table slc_landlord.';
 
-            $db = new \PHPWS_DB('slc_issue');
+            $db = new PHPWS_DB('slc_issue');
             $db->addWhere('landlord_id', 70);
             $db->addValue('landlord_id', 94);
-            if (\PHPWS_Error::logIfError($db->update())) {
+            if (PHPWS_Error::logIfError($db->update())) {
                 $content[] = 'Unable to move issues assigned to landlord "Unknown" to landlord "Other / Unspecified".';
                 return false;
             } else {
@@ -76,7 +77,7 @@ function slc_update(&$content, $current_version) {
             $db->reset();
             $db->addWhere('landlord_id', 95);
             $db->addValue('landlord_id', 70);
-            if (\PHPWS_Error::logIfError($db->update())) {
+            if (PHPWS_Error::logIfError($db->update())) {
                 $content[] = 'Unable to move issues assigned to landlord "Roger Pope" from his old id (95) to his new id (70).';
                 return false;
             } else {
@@ -110,31 +111,32 @@ function slc_update(&$content, $current_version) {
 <pre>';
         
         case version_compare($current_version, '2.0.6', '<'):
-           $db = new \PHPWS_DB;
+           $db = new PHPWS_DB;
             $result = $db->importFile(PHPWS_SOURCE_DIR .
                             'mod/slc/boost/updates/update_2_0_6.sql');
-            if(\PHPWS_Error::logIfError($result)){
+            if(PHPWS_Error::logIfError($result)){
                 return $result;
              }
 
         case version_compare($current_version, '2.0.7', '<'):
-         	$db = new \PHPWS_DB();
+         	$db = new PHPWS_DB();
          	$result = $db->importFile(PHPWS_SOURCE_DIR . 'mod/slc/boost/updates/update_2_0_7.sql');
-         	if (\PEAR::isError($result)) {
+         	if (PEAR::isError($result)) {
  	        	return $result;
          	}  
         case version_compare($current_version, '3.0.0', '<'):
-            $db = new \PHPWS_DB();
+            $db = new PHPWS_DB();
             $result = $db->importFile(PHPWS_SOURCE_DIR . 'mod/slc/boost/updates/update_3_0_0.sql');
-            if (\PEAR::isError($result)) {
+            if (PEAR::isError($result)) {
                 return $result;
             }     
     }
+
     return true;
 }
 
 function slcUpdateFiles($files, &$content) {
-    if (\PHPWS_Boost::updateFiles($files, 'checkin')) {
+    if (PHPWS_Boost::updateFiles($files, 'checkin')) {
         $content[] = '--- Updated the following files:';
     } else {
         $content[] = '--- Unable to update the following files:';

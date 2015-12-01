@@ -3,21 +3,21 @@ namespace slc\ajax;
 
 class GETStudentClientData extends AJAX {
     public function execute() {
-       
     	$HTMLcontent = "";
 		$referral = "";
 
-		// Need to check for banner id's that aren't real.
-
+		// Grabs a student object.
 		$student = ClientFactory::getClientByBannerId($_REQUEST['banner_id']);
 		
-		// encode banner
+		// Encode the banner id.
         $encrypedBanner = encode($_REQUEST['banner_id']);
 
+        // Grabs a client object based on the student.
 		$client = ClientFactory::getClientByEncryBanner($encrypedBanner,  $student->getFirstName(), 
                                                $student->getLastName(), 
                                                $student ->getFirstName() . ' ' . $student->getLastName());
 
+		// Determines if the client is new
 		if ($client == null)
 		{
 			$client = new \slc\Client($encrypedBanner, $student->getClassification(), 
@@ -28,22 +28,13 @@ class GETStudentClientData extends AJAX {
 		// Turns the epoch value to a better date and time.
 		$client->setFirstVisit(prettyTime($client->getFirstVisit()));
 
-		 // Check if existing client has referral set
+
         $cReferral = $client->getReferral();
-
-
-		if ($cReferral > 0) {						
-        	// Add actual text of referral into client
-
-    
+		 // Check if existing client has referral set        
+		if ($cReferral > 0) 
+		{						
         	$results = ClientFactory::getReferralType($cReferral);
-        	
-        	$client->setReferralString($results[0]["name"]); 
-   
-
-        	//$client->setReferralString($results[0]["name"]); 
-        	//$this->addResult('referralSet', true);
-            
+        	$client->setReferralString($results[0]["name"]);            
         } 
 
 
@@ -56,12 +47,12 @@ class GETStudentClientData extends AJAX {
 			{
 				// Turns the epoch value to a better date and time.
 				$visit->setInitialDate(prettyTime($visit->getInitialDate()));
+				// Adds each issue object to each given visit
 				$visit->issues = IssuesFactory::getIssueByVisitId($visit->getId());
 			}
 		}
 
-//      $issueTpl['LASTACCESS'] = prettyTime($issue->last_access)." (".prettyAccess($issue->last_access).")";
-
+		// Sends the data out to be jason encoded
 		$this->addResult("client", $client);
 		$this->addResult("visit", $visits);     
 	}

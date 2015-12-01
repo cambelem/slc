@@ -1,6 +1,10 @@
 <?php
 namespace slc\ajax;
 
+
+// NO LONGER USED
+
+
 class GETClientData extends AJAX {
 	private $_table = "slc_client";
 	

@@ -1,5 +1,4 @@
 <?php
-namespace slc;
 
 define('TERM_SPRING',   10);
 define('TERM_SUMMER1',  20);

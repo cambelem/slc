@@ -5,9 +5,10 @@ class ViewClient extends View {
 	public function display(\slc\CommandContext $context) {
 		$banner_id = $_REQUEST['banner_id'];
 		$result = $this->checkBannerID($banner_id);
-		
+
 		if ($result)
 		{
+
 			$HTMLcontent = "";
 			$referral = "";
 		

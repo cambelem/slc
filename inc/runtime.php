@@ -1,5 +1,4 @@
 <?php
-namespace slc;
 
 if (\PHPWS_Core::atHome() && \Current_User::isLogged()) {
     $path = $_SERVER['SCRIPT_NAME'].'?module=slc';

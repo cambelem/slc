@@ -1,6 +1,7 @@
 <?php
-
 namespace slc\ajax;
+
+// CLASS IS NOT USED!
 
 
 class GETClientVisits extends AJAX {

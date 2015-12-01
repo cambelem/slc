@@ -22,7 +22,7 @@ class Issue {
 
 		if ($landlordID == null)
 		{
-			// Sets the landlord id to 999 for Other/Unspecified
+			// Sets the landlord id to 999 for Other / Unspecified
 			$this->landlord_id = 999;
 		}
 		else

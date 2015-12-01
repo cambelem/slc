@@ -3,6 +3,8 @@ namespace slc\ajax;
 
 class IssuesFactory
 {
+	// Saves the issue into the database
+	// returns the issue id
 	public static function saveIssue($issue)
 	{
 		/*
@@ -24,6 +26,7 @@ class IssuesFactory
 		return $results;
 	}
 
+	// Grabs the issues based off of the visit for a given person
 	public static function getIssueByVisitId($vid)
 	{
 		$db = \Database::newDB();
@@ -49,8 +52,8 @@ class IssuesFactory
 		$iresults = $sth->fetchAll(\PDO::FETCH_ASSOC);
 
 		$issues = array();
-		foreach( $iresults as $ir ) { // visits
-        		// set up issue
+		foreach( $iresults as $ir ) 
+		{ 
         	$issue = new \slc\Issue($ir['ISSUEID']);
         	$issue->setName($ir['ISSUENAME']);
         	$issue->setLastAccess(prettyTime($ir['LASTACCESS'])." (".prettyAccess($ir['LASTACCESS']).")");	
@@ -64,8 +67,7 @@ class IssuesFactory
     		$issues[] = $issue;
 
     	}
-    	
-
+    
     	return $issues;
 	}
 

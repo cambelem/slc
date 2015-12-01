@@ -30,12 +30,12 @@ var ViewClientMain = React.createClass({
             url: 'index.php?module=slc&action=GETStudentClientData&banner_id=' + banner_id,
             type: 'GET',
             dataType: 'json',
-            success: function(data) { 
-                console.log(data);   
+            success: function(data) {   
                 this.setState({clientData: data});             
             }.bind(this),
             error: function(xhr, status, err) {
                 //var error = "Banner ID doesn't exist."
+                alert("Failed to grab client data."+err.toString());
                 window.location = "index.php?module=slc";
                 console.error(this.props.url, status, err.toString());
             }.bind(this)                
@@ -59,7 +59,6 @@ var ViewClientMain = React.createClass({
 
                 landlords.unshift({id:-1, name:"Select a Landlord"});
 
-                console.log(data);
                 this.setState({issueTreeData: data});
             }.bind(this),
             error: function(xhr, status, err) {
@@ -85,7 +84,6 @@ var ViewClientMain = React.createClass({
         });    
     },
     newVisit: function(issueData){
-        console.log(issueData);
         var visitIssueData = JSON.stringify(issueData);
         $.ajax({
             url: 'index.php?module=slc&action=POSTNewVisit&banner_id=' + this.state.clientData.client.id,
@@ -115,10 +113,15 @@ var ViewClientMain = React.createClass({
             dataType: 'json',
             success: function(data) { 
                 this.getClientData();
+
+                this.setState({msgNotification: "Successfully changed the referral type.",
+                                msgType: "success",
+                                addedData: null});
             }.bind(this),
             error: function(xhr, status, err) {
-                alert("Failed to grab referral data.")
-                console.error(this.props.url, status, err.toString());
+                this.setState({msgNotification: "Failed to change the referral type. " + err.toString(),
+                               msgType: "error",
+                               addedData: null});
             }.bind(this)                
         });          
     },
@@ -149,8 +152,6 @@ var ViewClientMain = React.createClass({
                     client = {client} />
                 );
             });
-
-            console.log(this.state.referralData);
         }
 
         if (this.state.referralData == null)
@@ -209,7 +210,6 @@ var ViewClientMain = React.createClass({
 
 var Notifications = React.createClass({
     render: function(){
-console.log(this.props.addedData);
         var notification;
         if (this.props.msg != '')
         {
@@ -217,11 +217,10 @@ console.log(this.props.addedData);
             {
                 if (this.props.addedData != null)
                 {
-                    notification = <div className="alert alert-success alert-dismissible" role="alert">
-                                    <button type="button" className="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                    <strong>Successfully Added: </strong> 
+                    notification = <div className="alert alert-success" role="alert">
+                                    <strong>{this.props.msg} </strong> 
                                     <br />
-                                    {this.props.msg}
+                                    
                                     <ul>
                                         {this.props.addedData.map(function (key) {          
                                             return (
@@ -236,19 +235,15 @@ console.log(this.props.addedData);
                 }
                 else
                 {
-                    notification = <div className="alert alert-success alert-dismissible" role="alert">
-                                    <button type="button" className="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                    <strong>Success!</strong> 
-                                    <br />
-                                    {this.props.msg}
+                    notification = <div className="alert alert-success" role="alert">
+                                    <strong>{this.props.msg}</strong> 
+                                    <br />  
                                 </div>
                 }
             }
             else if (this.props.msgType == 'error')
             {
-                console.log(this.props.msg);
-                notification = <div className="alert alert-danger alert-dismissible" role="alert">
-                                    <button type="button" className="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                notification = <div className="alert alert-danger" role="alert">
                                     <strong>Error: </strong> 
                                     <br />
                                     {this.props.msg}
@@ -271,7 +266,6 @@ var ListIssues = React.createClass({
 
         if (this.props.llID != null)
         {
-            console.log(this.props.llID)
             conditions = <span>{this.props.name} <em> with </em> {this.props.llName}</span>;
         }
         else
@@ -288,19 +282,33 @@ var ListIssues = React.createClass({
 var ReferralStatus = React.createClass({
     handleReferral: function(e){
         var r_id = e.target.value;
-        if (r_id != -1)
-        {
-            this.props.postReferral(r_id);
-        }
+
+        this.props.postReferral(r_id);
+
     },
     render: function(){
         var referralData = this.props.referralData;
         var referralString = this.props.referralString;
+        var referralNotice;
+
+        if (referralString == null)
+        {
+            referralNotice = <abbr title="Please select a referral">
+                                <span className="pull-right">
+                                    <i className="fa fa-exclamation-triangle" style={{color: "gold"}}></i>
+                                </span>
+                            </abbr>
+        }
+        else
+        {
+            referralNotice = <div></div>
+        }
         return (
             <div className="row">
                 <div className="col-md-3">
                     <form className="form-horizontal" role="form">
-                        Referral:
+                        Referral: {referralNotice}
+
                         <select className="form-control" onChange={this.handleReferral}>
                             {referralData.map(function (key) {          
                                 return (
@@ -311,6 +319,7 @@ var ReferralStatus = React.createClass({
                                 );
                             })}
                         </select>
+
                     </form>
                 </div>
             </div>
@@ -320,8 +329,6 @@ var ReferralStatus = React.createClass({
 
 var ViewVisits = React.createClass({
     render: function() {
-        var link = 'index.php?module=slc&view=NewIssue&visitid='+this.props.id+"&cname="+this.props.client.name;
-
         var getClient = this.props.getClient;
         var issues = this.props.issues.map(function (data) {             
             return (
@@ -350,11 +357,6 @@ var ViewVisits = React.createClass({
 
 
 var ViewIssues = React.createClass({
-    getInitialState: function() {
-        return {
-            errorWarning: ''
-        };
-    },
     handleFollowUp: function() {
         var v_id = this.props.visit_issue_id;
         $.ajax({
@@ -371,7 +373,6 @@ var ViewIssues = React.createClass({
         });
     },
     render: function() {
-
         return (
             <div className="row" style={{marginBottom: "1.5em"}}>
                 <div className="col-md-7" >
@@ -384,7 +385,7 @@ var ViewIssues = React.createClass({
                 </div> 
 
                 <div className="col-md-1">
-                    <span className="pull-left">{this.props.counter} visit(s)</span>
+                    <span className="pull-left">{this.props.counter} follow up(s)</span>
                 </div>
 
                 <div className="col-md-2 col-md-offset-2">
@@ -407,11 +408,9 @@ var ModalForm = React.createClass({
         // Used so that the new visit modal doesn't close if nothings selected.
         if (this.state.issueData.length !== 0)
         {
-            console.log(this.state.issueData)
             this.props.newVisit(this.state.issueData);
             this.props.onRequestHide();
         }
-        
     },
     removeItem: function(id){
         var newIssueData = this.state.issueData.filter(function (el){
@@ -520,8 +519,7 @@ var ModalForm = React.createClass({
                                           searchIndexOf = {this.searchIndexOf}
                                           findProblemName = {this.findProblemName} />;
             }   
-        }
-        
+        }  
         return (
           <Modal {...this.props} bsSize="large" backdrop='static' title='New Visit' animation={true}>
             <div className="col-md-12">
@@ -645,13 +643,11 @@ var ProblemTypeDrop = React.createClass({
             {
                 items.push({id:type,
                             name:this.props.findProblemName(type)});
-                console.log(items);
                 this.props.displaySelectedIssues(items);
             }
         }
     },
     render: function() {
-
         return (
             <div>
                 <div className="col-md-3">
@@ -703,7 +699,6 @@ var LandlordDrop = React.createClass({
                             llID:landlord,
                             llName:this.props.findLandlordName(landlord)});
                 this.props.displaySelectedIssues(items);
-                console.log(items);
             }
         }
     },

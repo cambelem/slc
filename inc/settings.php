@@ -1,6 +1,5 @@
 <?php
-namespace slc;
 
-$settings = array('encode_salt' => 'ValueSetting');
+$settings = array('encode_salt' => 'defaultSettings');
 
 ?>
