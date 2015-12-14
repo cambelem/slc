@@ -1,22 +1,32 @@
 <?php
-namespace slc\ajax;
+namespace slc\reports;
 
-class GETAppointmentStats extends AJAX {
-	/**
-     * This method builds the Appointment Statistics report.
-     */
-	public function execute() {
+class ReportApptStats extends Report {
+
+    public $content;
+    public $startDate;
+    public $endDate;
+
+
+    public function __construct($startDate, $endDate)
+    {
+        $this->startDate = $startDate;
+        $this->endDate = $endDate;
+
+        $this->execute();
+    }
+
+    public function execute()
+    {    
+
         $initialVisits  = 0;
         $clients        = 0;
         $issues         = 0;
         $followups      = 0;
         
-        // Get date range from user
-        $start_date = strtotime($_REQUEST['startDate']);
-        $end_date = strtotime($_REQUEST['endDate']) + 86400;   // +1 day to make date range inclusive
 
         // Get the array of all visits whose initial visit happened in the time period. Equivalent to this query:
-        // SELECT DISTINCT(id) FROM slc_visit WHERE initial_date >= $start_date AND initial_date < $end_date;
+        // SELECT DISTINCT(id) FROM slc_visit WHERE initial_date >= $startDate AND initial_date < $endDate;
 
         $db = \Database::newDB();
         $pdo = $db->getPDO();
@@ -24,7 +34,7 @@ class GETAppointmentStats extends AJAX {
                   WHERE (slc_visit.initial_date >= :start AND slc_visit.initial_date < :end) 
                   GROUP BY slc_visit.id';
         $sth = $pdo->prepare($query);
-        $sth->execute(array('start'=>$start_date, 'end'=>$end_date));
+        $sth->execute(array('start'=>$this->startDate, 'end'=>$this->endDate));
         $visitIds = $sth->fetchAll(\PDO::FETCH_COLUMN, 0);
 
 
@@ -105,13 +115,13 @@ class GETAppointmentStats extends AJAX {
 
         // Get # of clients. Equivalent to this query:
         // SELECT COUNT(DISTINCT(id)) FROM slc_client
-        // WHERE first_visit >= $start_date AND first_visit < $end_date;
+        // WHERE first_visit >= $startDate AND first_visit < $endDate;
         $db = \Database::newDB();
         $pdo = $db->getPDO();
         $query = 'SELECT count(distinct(slc_client.id)) FROM slc_client 
                   WHERE (slc_client.first_visit >= :startDate AND slc_client.first_visit < :endDate)';
         $sth = $pdo->prepare($query);
-        $sth->execute(array('startDate'=>$start_date, 'endDate'=>$end_date));
+        $sth->execute(array('startDate'=>$this->startDate, 'endDate'=>$this->endDate));
         $clients = $sth->fetchColumn();
 
 
@@ -129,6 +139,8 @@ class GETAppointmentStats extends AJAX {
 
 //var_dump($followups);
 //exit;
+
+      
         $content = array();
 
         $content['CLIENTS'] = $clients;
@@ -138,30 +150,48 @@ class GETAppointmentStats extends AJAX {
 
         if ($clients == 0)
         {
-            $content['IPV_WO'] = 0;
-            $content['IPV_WITH'] = 0;
-            $content['FPI'] = 0;
-            $content['FPV'] = 0;
+            $content['I_WO'] = 0;
+            $content['I_WITH'] = 0;
+            $content['IPV'] = 0;
         }
         else
         {
-            /*
-            $content['IPV_WO'] = round($issues / $initialVisits, 2);
-            $content['IPV_WITH'] = round(($issues + $followups) / $initialVisits, 2);
-            */
-            // Is this correct?
+
             $content['I_WO'] = $issuesWO;
             $content['I_WITH'] = $issuesWith;
             $content['IPV'] = round($issues / $initialVisits, 2);
         }
 
-
-
-        $tpl = \PHPWS_Template::process($content, 'slc','AppointmentStatistics.tpl');
-        
-        //__html needed for React dangerouslySetInnerHTML to work.
-        $this->addResult("__html", $tpl);  
+        $this->content = $content;   
 	}
+
+    public function getHtmlView()
+    {
+        return \PHPWS_Template::process($this->content, 'slc','AppointmentStatistics.tpl');
+    }
+
+    public function getCsvView()
+    {
+        $csvReport = new CsvReport();
+
+        $cols = array(  'Total Clients',
+                        'Total Initial Visits',
+                        'Total Issues',
+                        'Total Followups',
+                        'Total Issues (w/o Followups)',
+                        'Total Issues (with Followups)',
+                        'Issue per Visit');
+        $rows = array(  $this->content['CLIENTS'],
+                        $this->content['INITIAL_VISITS'],
+                        $this->content['ISSUES'],
+                        $this->content['FOLLOWUPS'],
+                        $this->content['I_WO'],
+                        $this->content['I_WITH'],
+                        $this->content['IPV']);
+        $data = $csvReport->sputcsv($cols);
+        $data .= $csvReport->sputcsv($rows);
+
+        return $data;  
+    }
 }
 
-?>

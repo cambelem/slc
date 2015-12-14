@@ -1,6 +1,8 @@
 <?php
 namespace slc\ajax;
 
+// CLASS NO LONGER BEING USED
+
 class GETReport extends AJAX {
 	
 	public function execute() {

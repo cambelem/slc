@@ -1,7 +1,7 @@
 // !!The banner_id variable is important!!
 
-// It's being used as a global variable from the head.js where this file is located
-// to determine which banner id is being used so it can grab the client data.
+// It's being used as a global variable from the head.js. 
+// It determine's which banner id is being used so it can grab the client data.
 
 var ModalTrigger = ReactBootstrap.ModalTrigger;
 var Button = ReactBootstrap.Button;
@@ -15,7 +15,7 @@ var ViewClientMain = React.createClass({
             referralData: null,
             msgNotification: '',
             msgType: '',
-            addedData: null //Used for storing the data when saving for notifications
+            notificationData: null
         };
     },
     componentWillMount: function(){
@@ -34,9 +34,8 @@ var ViewClientMain = React.createClass({
                 this.setState({clientData: data});             
             }.bind(this),
             error: function(xhr, status, err) {
-                //var error = "Banner ID doesn't exist."
                 alert("Failed to grab client data."+err.toString());
-                window.location = "index.php?module=slc";
+
                 console.error(this.props.url, status, err.toString());
             }.bind(this)                
         });
@@ -98,7 +97,7 @@ var ViewClientMain = React.createClass({
 
                 this.setState({msgNotification: msg[key],
                                msgType: key,
-                               addedData: issueData});
+                               notificationData: issueData});
             }.bind(this),
             error: function(xhr, status, err) {
                 alert("Failed to go to new visit.")
@@ -116,12 +115,12 @@ var ViewClientMain = React.createClass({
 
                 this.setState({msgNotification: "Successfully changed the referral type.",
                                 msgType: "success",
-                                addedData: null});
+                                notificationData: null});
             }.bind(this),
             error: function(xhr, status, err) {
                 this.setState({msgNotification: "Failed to change the referral type. " + err.toString(),
                                msgType: "error",
-                               addedData: null});
+                               notificationData: null});
             }.bind(this)                
         });          
     },
@@ -143,13 +142,13 @@ var ViewClientMain = React.createClass({
 
             var visits = visit.map(function (data) {            
                 return (
-                    <ViewVisits key = {data.id}
-                    id = {data.id}
-                    init_date = {data.initial_date}
-                    issues = {data.issues} 
-                    getClient = {getClient}
-                    newIssue = {newIssue}
-                    client = {client} />
+                    <ViewVisits key         = {data.id}
+                                id          = {data.id}
+                                init_date   = {data.initial_date}
+                                issues      = {data.issues} 
+                                getClient   = {getClient}
+                                newIssue    = {newIssue}
+                                client      = {client} />
                 );
             });
         }
@@ -171,7 +170,7 @@ var ViewClientMain = React.createClass({
 
                 <Notifications msg = {this.state.msgNotification}
                                msgType = {this.state.msgType}
-                               addedData = {this.state.addedData} />
+                               notificationData = {this.state.notificationData} />
 
                 <div className="row">
                     <div className="col-md-6">
@@ -215,19 +214,20 @@ var Notifications = React.createClass({
         {
             if (this.props.msgType == 'success')
             {
-                if (this.props.addedData != null)
+                if (this.props.notificationData != null)
                 {
                     notification = <div className="alert alert-success" role="alert">
                                     <strong>{this.props.msg} </strong> 
                                     <br />
                                     
                                     <ul>
-                                        {this.props.addedData.map(function (key) {          
+                                        {this.props.notificationData.map(function (key) {          
                                             return (
-                                                <ListIssues name   = {key.name}
-                                                             llID   = {key.llID} 
-                                                             id     = {key.id}
-                                                             llName = {key.llName} />
+                                                <ListIssues key    = {key.name}
+                                                            name   = {key.name}
+                                                            llID   = {key.llID} 
+                                                            id     = {key.id}
+                                                            llName = {key.llName} />
                                             );
                                         })}
                                     </ul>
@@ -312,10 +312,10 @@ var ReferralStatus = React.createClass({
                         <select className="form-control" onChange={this.handleReferral}>
                             {referralData.map(function (key) {          
                                 return (
-                                    <ProblemList key={key.referral_id}
-                                        name={key.name}
-                                        id={key.referral_id}
-                                        referralString={referralString} />
+                                    <ProblemList key            = {key.name}
+                                                 name           = {key.name}
+                                                 id             = {key.referral_id}
+                                                 referralString = {referralString} />
                                 );
                             })}
                         </select>
@@ -332,14 +332,14 @@ var ViewVisits = React.createClass({
         var getClient = this.props.getClient;
         var issues = this.props.issues.map(function (data) {             
             return (
-                <ViewIssues 
-               id = {data.id}
-               last_access = {data.last_access}
-               counter = {data.counter}
-               landlord_name = {data.landlord_name}
-               visit_issue_id = {data.visit_issue_id}
-               getClient = {getClient}
-               name = {data.name}/>
+                <ViewIssues key             = {data.name}
+                            id              = {data.id}
+                            last_access     = {data.last_access}
+                            counter         = {data.counter}
+                            landlord_name   = {data.landlord_name}
+                            visit_issue_id  = {data.visit_issue_id}
+                            getClient       = {getClient}
+                            name            = {data.name}/>
             );
         });
         return (
@@ -402,6 +402,8 @@ var ModalForm = React.createClass({
         return {
             issueData: [],
             type: '',
+            selectedVal: -1,
+            selectedLL: -1
         };
     },
     handleSave: function(){
@@ -420,15 +422,21 @@ var ModalForm = React.createClass({
         this.setState({issueData: newIssueData});   
     },
     handleTenant: function(){
-        this.setState({type: 'LandlordTenant'});
+        this.setState({type: 'LandlordTenant',
+                       selectedVal: -1,
+                       selectedLL: -1});
     },
     handleCriminal: function(){
-        this.setState({type: 'Criminal'});
+        this.setState({type: 'Criminal',
+                       selectedVal: -1,
+                       selectedLL: -1});
     },
     handleOther: function(){
-        this.setState({type: 'Other'});
+        this.setState({type: 'Other',
+                       selectedVal: -1,
+                       selectedLL: -1});
     },
-    displaySelectedIssues: function(issues){
+    displaySelectedIssues: function(issues){ //May not be used later?
         this.setState({issueData: issues});
     },
     searchIndexOf: function(searchTerm){
@@ -484,6 +492,45 @@ var ModalForm = React.createClass({
             }
         }
     },
+    handleAdd: function() { //ProblemTypeDrop
+        var type = this.state.selectedVal;
+        var landlord = this.state.selectedLL;
+        var items = this.state.issueData;
+
+        if (type != -1 && landlord == -1)
+        {
+            if (this.searchIndexOf(type) == -1)
+            {
+                items.push({id:type,
+                            name:this.findProblemName(type)});
+                this.setState({issueData: items});
+            }
+        }
+
+    },
+    handleLandlordAdd: function() {
+        var type = this.state.selectedVal;
+        var landlord = this.state.selectedLL;
+        var items = this.state.issueData;
+
+        if (type != -1 && landlord != -1)
+        {
+            if (this.searchObjectIndexOf(type, landlord) == -1)
+            {    
+                items.push({id:type, 
+                            name:this.findProblemName(type),
+                            llID:landlord,
+                            llName:this.findLandlordName(landlord)});
+                this.setState({issueData: items});
+            }
+        }
+    },
+    selectedVal: function(val, ll) {
+        this.setState({selectedVal: val});
+    },
+    selectedLL: function(ll) {
+        this.setState({selectedLL: ll});
+    },
     render: function() {
         var types = this.props.issueTreeData.tree;
         var landlords = this.props.issueTreeData.landlords;
@@ -498,34 +545,33 @@ var ModalForm = React.createClass({
                                        landlords      = {landlords} 
                                        conditions     = {types.Conditions} 
                                        issueData      = {this.state.issueData}
-                                       displaySelectedIssues = {this.displaySelectedIssues}
-                                       searchObjectIndexOf = {this.searchObjectIndexOf} 
-                                       findProblemName = {this.findProblemName}
-                                       findLandlordName = {this.findLandlordName} />;
+                                       selectedVal    = {this.selectedVal}
+                                       selectedLL     = {this.selectedLL} />;
+                add = <button className="btn btn-default" type="submit" onClick={this.handleLandlordAdd}>Add</button>
             }
             else if (this.state.type == 'Other')
             {
                 dData = <ProblemTypeDrop  type      = {types.Other}
                                           issueData = {this.state.issueData} 
-                                          displaySelectedIssues = {this.displaySelectedIssues}
-                                          searchIndexOf = {this.searchIndexOf}
-                                          findProblemName = {this.findProblemName} />;
+                                          selectedVal = {this.selectedVal} />;
+                add = <button className="btn btn-default" type="submit" onClick={this.handleAdd}>Add</button>
             }
             else
             {
                 dData = <ProblemTypeDrop  type      = {types.Criminal}  
                                           issueData = {this.state.issueData}
-                                          displaySelectedIssues = {this.displaySelectedIssues}
-                                          searchIndexOf = {this.searchIndexOf}
-                                          findProblemName = {this.findProblemName} />;
-            }   
+                                          selectedVal = {this.selectedVal} />;
+                add = <button className="btn btn-default" type="submit" onClick={this.handleAdd}>Add</button>
+            }          
         }  
+        else
+        {
+            add = <div></div>
+        }
         return (
           <Modal {...this.props} bsSize="large" backdrop='static' title='New Visit' animation={true}>
             <div className="col-md-12">
                 <div className='modal-body'>
-                
-
                     <div id="CLIENT_ID" style={{display:"none"}}></div>
                 
                         <div style={{display:"block"}} id="committedIssues">
@@ -560,6 +606,10 @@ var ModalForm = React.createClass({
                     <br /><br /><br />
                     <div className="form-group">
                         {dData}
+
+                        <div className="col-md-3">
+                            {add}
+                        </div>
                     </div>
                     <br /><br /><br /><br />
                 </div>
@@ -583,10 +633,11 @@ var ShowSelectedIssues = React.createClass({
                     <ul className="list-group">
                         {this.props.issueData.map(function (key) {          
                             return (
-                                <PrintIssues name   = {key.name}
-                                             llID   = {key.llID} 
-                                             id     = {key.id}
-                                             llName = {key.llName}
+                                <PrintIssues key        = {key.id}
+                                             name       = {key.name}
+                                             llID       = {key.llID} 
+                                             id         = {key.id}
+                                             llName     = {key.llName}
                                              removeItem = {removeItem} />
                             );
                         })}
@@ -625,27 +676,8 @@ var PrintIssues = React.createClass({
 });
 
 var ProblemTypeDrop = React.createClass({
-    getInitialState: function() {
-        return {
-            selectedVal: null
-        };
-    },  
     handleTypes: function(e) {
-        this.setState({selectedVal: e.target.value});
-    },
-    handleAdd: function() {
-        var type = this.state.selectedVal;
-
-        if (type != -1 && type != null)
-        {
-            var items = this.props.issueData;
-            if (this.props.searchIndexOf(type) == -1)
-            {
-                items.push({id:type,
-                            name:this.props.findProblemName(type)});
-                this.props.displaySelectedIssues(items);
-            }
-        }
+        this.props.selectedVal(e.target.value, -1);
     },
     render: function() {
         return (
@@ -654,53 +686,24 @@ var ProblemTypeDrop = React.createClass({
                     <select className="form-control" onChange={this.handleTypes}>
                         {this.props.type.map(function (key) {          
                             return (
-                                <ProblemList key={key.problem_id}
-                                    name={key.name}
-                                    id={key.problem_id} />
+                                <ProblemList key    = {key.problem_id}
+                                             name   = {key.name}
+                                             id     = {key.problem_id} />
                             );
                         })}
                     </select>
                 </div>
-
-                <div className="col-md-3">
-                    <button className="btn btn-default" type="submit" onClick={this.handleAdd}>Add</button>
-                </div>
-
             </div>
         );
     }
 });
 
 var LandlordDrop = React.createClass({
-    getInitialState: function() {
-        return {
-            selectedType: -1,
-            selectedLl: -1
-        };
-    },  
     handleTypes: function(e) {
-        this.setState({selectedType: e.target.value});
+        this.props.selectedVal(e.target.value);
     },
     handleLandlords: function(e) {
-        this.setState({selectedLl: e.target.value});
-    },
-    handleAdd: function() {
-        //grab value and place in array.
-        var landlord = this.state.selectedLl;
-        var type = this.state.selectedType;
-
-        if (type != -1 && landlord != -1)
-        {
-            var items = this.props.issueData;
-            if (this.props.searchObjectIndexOf(type, landlord) == -1)
-            {    
-                items.push({id:type, 
-                            name:this.props.findProblemName(type),
-                            llID:landlord,
-                            llName:this.props.findLandlordName(landlord)});
-                this.props.displaySelectedIssues(items);
-            }
-        }
+        this.props.selectedLL(e.target.value);
     },
     render: function() {
         var landlordsTypes = this.props.landlordsTypes;   
@@ -725,16 +728,12 @@ var LandlordDrop = React.createClass({
                     <select className="form-control" onChange={this.handleLandlords}>
                         {landlords.map(function (key) {          
                             return (
-                                <ProblemList key={key.id}
-                                    name={key.name}
-                                    id={key.id} />
+                                <ProblemList key    = {key.id}
+                                             name   = {key.name}
+                                             id     = {key.id} />
                             );
                         })}
                     </select>
-                </div>
-
-                <div className="col-md-3">
-                    <button className="btn btn-default" type="submit" onClick={this.handleAdd} >Add</button>
                 </div>
             </div>
         );
@@ -747,9 +746,9 @@ var ProblemOptGroup = React.createClass({
         <optgroup value={this.props.name} label={this.props.name}>
             {this.props.types.map(function (type) {          
                 return (
-                    <ProblemList key={type.problem_id}
-                        name={type.name}
-                        id={type.problem_id} />
+                    <ProblemList key    ={type.problem_id}
+                                 name   ={type.name}
+                                 id     ={type.problem_id} />
                 );
             })}
         </optgroup>

@@ -10,7 +10,8 @@ var ReportPickerList = React.createClass({
     },
     getHtmlData: function(dropValue){
         $.ajax({
-            url: 'index.php?module=slc&action='+dropValue+'&startDate='+this.state.startDate+'&endDate='+this.state.endDate,
+            url: 'index.php?module=slc&action=GETReportHTML&report_type='+dropValue
+                +'&startDate='+this.state.startDate+'&endDate='+this.state.endDate,
             type: 'GET',
             dataType: 'json',
             success: function(data) {    
@@ -21,6 +22,12 @@ var ReportPickerList = React.createClass({
                 console.error(this.props.url, status, err.toString());
             }.bind(this)                
         });
+    },
+    getCSVData: function(name)
+    {  
+        window.location = 'index.php?module=slc&action=GETReportCSV&startDate=' + this.state.startDate
+                + '&endDate=' + this.state.endDate + '&report_type=' + name;
+
     },
     handleDates: function(time, date) {
         //time being start/end
@@ -55,10 +62,12 @@ var ReportPickerList = React.createClass({
         if ( reportValue != -1)
         {
             this.getHtmlData(reportValue);
+            this.setState({dropDownValue: reportValue});
         }
         else
         {
-            this.setState({htmlData: null});
+            this.setState({htmlData: null,
+                           dropDownValue: -1});
         }
     },
     render: function() {
@@ -74,14 +83,14 @@ var ReportPickerList = React.createClass({
                                  <div className="col-md-10">
                                     <select className="form-control" onChange={this.handleDrop} ref="reportPicker">
                                         <option value="-1">[ choose report type ]</option>
-                                        <option value="GETAppointmentStats">Appointment Statistics</option>
-                                        <option value="GETIntakeProblemType">Intake by Problem Type</option>
-                                        <option value="GETLandlordTenant">Landlord Tenant</option>
-                                        <option value="GETConditionByLandlord">Condition by Landlord</option>
-                                        <option value="GETProblemByYear">Problem by Year in School</option>
-                                        <option value="GETTypeOfCondition">Type of Condition</option>
-                                        <option value="GETTypeOfReferral">Type of Referral</option>
-                                        <option value="GETLawByAgency">Problems With Law Enforcement by Agency</option>
+                                        <option value="AppointmentStats">Appointment Statistics</option>
+                                        <option value="IntakeProblemType">Intake by Problem Type</option>
+                                        <option value="LandlordTenant">Landlord Tenant</option>
+                                        <option value="ConditionByLandlord">Condition by Landlord</option>
+                                        <option value="ProblemByYear">Problem by Year in School</option>
+                                        <option value="TypeOfCondition">Type of Condition</option>
+                                        <option value="TypeOfReferral">Type of Referral</option>
+                                        <option value="LawByAgency">Problems With Law Enforcement by Agency</option>
                                     </select>
                                 </div>
                             </div>
@@ -104,15 +113,27 @@ var ReportPickerList = React.createClass({
 
                 <hr />
 
-                <InsertHtml html = {this.state.htmlData} />
+                <InsertHtml html = {this.state.htmlData}
+                            dropDownValue = {this.state.dropDownValue}
+                            getCSVData = {this.getCSVData} />
                 
             </div>
         );
     }
 });
 
-var InsertHtml = React.createClass({
+var InsertHtml = React.createClass({   
+    handleApptStats: function() {
+        this.props.getCSVData('AppointmentStats');
+    },
+    handleLandlordTenant: function() {
+        this.props.getCSVData('LandlordTenant');
+    },
+    handleConditionsByLand: function() {
+        this.props.getCSVData('ConditionByLandlord');
+    },
     render: function() {
+        var val = this.props.dropDownValue;
         if (this.props.html == null)
         {
             var HTML =  <div id="report-area" style={{margin: "15px"}}>
@@ -122,9 +143,26 @@ var InsertHtml = React.createClass({
         else
         {
             var HTML =  <div id="report-area" style={{margin: "15px"}} dangerouslySetInnerHTML={this.props.html} />
+        } 
+
+        var button = <div></div>;
+        switch (val)
+        {
+            case 'AppointmentStats':
+                button = <button className="btn btn-default pull-right" type="submit" onClick={this.handleApptStats}>CSV Export</button>
+                break;
+            case 'LandlordTenant':
+                button = <button className="btn btn-default pull-right" type="submit" onClick={this.handleLandlordTenant}>CSV Export</button>
+                break;
+            case 'ConditionByLandlord':
+                button = <button className="btn btn-default pull-right" type="submit" onClick={this.handleConditionsByLand}>CSV Export</button>
+                break;
         }
         return (
-            HTML
+            <div>
+                {button}
+                {HTML}
+            </div>
         );
     }
 });
@@ -148,8 +186,12 @@ var DatePickerBox = React.createClass({
     componentDidMount: function() {
         this._initDatePicker();
     },
+    componentWillUnmount: function() {
+        var element = this.getDOMNode();
+        $(element).datepicker("destroy");
+    },
     handleDate: function(){      
-        var dPicker = React.findDOMNode(this.refs.date_picker).value.trim();
+        var dPicker = this.getDOMNode().value.trim();
         this.props.handleDates(this.props.date, dPicker);
     },
     render: function() {

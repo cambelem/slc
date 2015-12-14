@@ -1,13 +1,21 @@
 <?php
-namespace slc\ajax;
+namespace slc\reports;
 
-class GETIntakeProblemType extends AJAX {
+class ReportIntakePrbType extends Report {
 
-    public function execute() {
-        // Get date range from user
-        $start_date = strtotime($_REQUEST['startDate']);
-        $end_date = strtotime($_REQUEST['endDate']) + 86400;   // +1 day to make date range inclusive
+    public $content;
+    public $startDate;
+    public $endDate;
 
+    public function __construct($startDate, $endDate)
+    {
+        $this->startDate = $startDate;
+        $this->endDate = $endDate;
+        $this->execute();
+    }
+
+    public function execute()
+    {   
         // Get the list of all Landlord-Tenant type problems
         $db = new \PHPWS_DB('slc_problem');
         $db->addColumn('description');
@@ -28,7 +36,7 @@ class GETIntakeProblemType extends AJAX {
             throw new \slc\exceptions\DatabaseException();
         }
 
-		$db = new \PHPWS_DB();
+        $db = new \PHPWS_DB();
         $db->addTable('slc_issue');
         $db->addTable('slc_problem');
         $db->addTable('slc_visit');
@@ -38,8 +46,8 @@ class GETIntakeProblemType extends AJAX {
         $db->addJoin('inner', 'slc_issue', 'slc_problem', 'problem_id', 'id');
         $db->addJoin('inner', 'slc_issue', 'slc_visit_issue_index', 'id', 'i_id');
         $db->addJoin('inner', 'slc_visit', 'slc_visit_issue_index', 'id', 'v_id');
-        $db->addWhere('slc_visit.initial_date', $start_date, '>=');
-        $db->addWhere('slc_visit.initial_date', $end_date, '<', 'AND');
+        $db->addWhere('slc_visit.initial_date', $this->startDate, '>=');
+        $db->addWhere('slc_visit.initial_date', $this->endDate, '<', 'AND');
         $db->addGroupBy('slc_issue.problem_id');
         $results = $db->select();
         
@@ -133,25 +141,29 @@ class GETIntakeProblemType extends AJAX {
             $total = 0;
 
             foreach( $results as $r ) {
-        	    $count = $r['count'];
+                $count = $r['count'];
                 
                 // Don't include counts for sub-categories in the total count, we have already counted those.
                 if (strpos($r['description'], '->') === FALSE) {
                     $total += $count;
                 }
-        	    
+                
                 $type = $r['description'];
-        	
-	            $content['intake_problem_repeat'][] = array('PROBLEM' => $type, 'COUNT' => $count);
+            
+                $content['intake_problem_repeat'][] = array('PROBLEM' => $type, 'COUNT' => $count);
             }
 
             // Add a final row with the total # of problems
             $content['TOTAL'] = $total;
         }
 
-        $tpl = \PHPWS_Template::process($content, 'slc','IntakeProblemType.tpl');
+        $this->content = $content;    
+    }
 
-		$this->addResult("__html", $tpl);  
-	}
+    public function getHtmlView()
+    {
+        return \PHPWS_Template::process($this->content, 'slc','IntakeProblemType.tpl');
+    }
 }
+
 ?>

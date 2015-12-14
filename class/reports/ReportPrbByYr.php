@@ -1,18 +1,26 @@
 <?php
-namespace slc\ajax;
+namespace slc\reports;
 
-class GETProblemByYear extends AJAX {
+class ReportPrbByYr extends Report {
+
+    public $content;
+    public $startDate;
+    public $endDate;
 
     private $theMatrix;
     private $totals;
     private $classes;
 
-    public function execute() {
-        // Get date range from user
-        $start_date = strtotime($_REQUEST['startDate']);
-        $end_date = strtotime($_REQUEST['endDate']) + 86400;   // +1 day to make date range inclusive
+    public function __construct($startDate, $endDate)
+    {
+        $this->startDate = $startDate;
+        $this->endDate = $endDate;
+        $this->execute();
+    }
 
-		$db = new \PHPWS_DB();
+    public function execute()
+    {    
+      $db = new \PHPWS_DB();
         $db->addTable('slc_visit_issue_index');
         $db->addTable('slc_visit');
         $db->addTable('slc_client');
@@ -25,8 +33,8 @@ class GETProblemByYear extends AJAX {
         $db->addJoin('inner', 'slc_visit', 'slc_client', 'client_id', 'id');
         $db->addJoin('inner', 'slc_visit_issue_index', 'slc_issue', 'i_id', 'id');
         $db->addJoin('inner', 'slc_issue', 'slc_problem', 'problem_id', 'id');
-        $db->addWhere('slc_visit.initial_date', $start_date, '>=');
-        $db->addWhere('slc_visit.initial_date', $end_date, '<', 'AND');
+        $db->addWhere('slc_visit.initial_date', $this->startDate, '>=');
+        $db->addWhere('slc_visit.initial_date', $this->endDate, '<', 'AND');
 
         $results = $db->select();
 
@@ -95,23 +103,23 @@ class GETProblemByYear extends AJAX {
 
         foreach( $results as $r ) {
 
-        	$description = isset($r['description']) && isset($r['tree']) ? $r['tree'].' '.$r['description'] : "Not Specified";
-        	$year = $r['classification'];
+            $description = isset($r['description']) && isset($r['tree']) ? $r['tree'].' '.$r['description'] : "Not Specified";
+            $year = $r['classification'];
 
-        	if ( !in_array($description, $problems) )
-        		$problems[] = $description;	
+            if ( !in_array($description, $problems) )
+                $problems[] = $description; 
 
-        	if ( isset($this->theMatrix[$description]) ) { 
-        		$this->theMatrix[$description][$year]++;
-        	} else {
-        		$this->theMatrix[$description] = array();
-        		         
+            if ( isset($this->theMatrix[$description]) ) { 
+                $this->theMatrix[$description][$year]++;
+            } else {
+                $this->theMatrix[$description] = array();
+                         
                 foreach ($this->classes as $tempyear) {
-        			$this->theMatrix[$description][$tempyear] = 0;
-        		}
-        		
-        		$this->theMatrix[$description][$year] = 1;
-        	} 
+                    $this->theMatrix[$description][$tempyear] = 0;
+                }
+                
+                $this->theMatrix[$description][$year] = 1;
+            } 
         }
 
         
@@ -135,11 +143,8 @@ class GETProblemByYear extends AJAX {
 
             $content[strtoupper($year."_TOTAL")] = $this->totals[$year];
         }
-            
-
-        $tpl = \PHPWS_Template::process($content, 'slc','ProblemByYear.tpl');
-        $this->addResult("__html", $tpl); 
-	}
+        $this->content = $content;
+    }
 
     public function problemTypeRow($description)
     {
@@ -174,6 +179,11 @@ class GETProblemByYear extends AJAX {
             }
         }
         return $row;
+    }
+
+    public function getHtmlView()
+    {
+        return \PHPWS_Template::process($this->content, 'slc','ProblemByYear.tpl');
     }
 }
 

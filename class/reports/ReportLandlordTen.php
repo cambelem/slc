@@ -1,15 +1,19 @@
 <?php
-namespace slc\ajax;
+namespace slc\reports;
 
-class GETLandlordTenant extends AJAX {
+class ReportLandlordTen extends Report {
 
-    private $overallCount = 0;
-    private $issuenames;
-    private $issueCount;
-    private $pdo;
-    private $emptyLandlord = true;
-    private $start_date;
-    private $end_date;
+    public $content;
+    public $total;
+    public $startDate;
+    public $endDate;
+
+    public function __construct($startDate, $endDate)
+    {
+        $this->startDate = $startDate;
+        $this->endDate = $endDate;
+        $this->execute();
+    }
 
     public function execute() {
         // Get date range from user
@@ -30,7 +34,7 @@ class GETLandlordTenant extends AJAX {
         $issues = $db->select(null, $issues);
         $this->issuenames = array();
         foreach( $issues as $issue )
-        	$this->issuenames[] = $issue['description'];
+            $this->issuenames[] = $issue['description'];
 
         $db = \Database::newDB();
         $this->pdo = $db->getPDO();
@@ -43,6 +47,7 @@ class GETLandlordTenant extends AJAX {
         }
         
         $content = array();
+        $total = array();
         foreach ($this->issuenames as $issue) {          
             $content['landlord_issue_repeat'][] = array('ISSUE_NAME' => $issue);
         }
@@ -62,15 +67,14 @@ class GETLandlordTenant extends AJAX {
             $word = str_replace(" ", "_", $issue);
             $word = str_replace("/", "OR", $word);
 
-            $content[strtoupper($word)."_TOTAL"] = $this->issueCount[$key];
+            $total[strtoupper($word)."_TOTAL"] = $this->issueCount[$key];
 
         }
         
-        $content["OVERALL_TOTAL"] = $this->overallCount;
-        
-        $tpl = \PHPWS_Template::process($content, 'slc','LandlordTenant.tpl');
-        $this->addResult("__html", $tpl);
-	}
+        $total["OVERALL_TOTAL"] = $this->overallCount;
+        $this->total = $total;
+        $this->content = $content;
+    }
 
     private function landlordRow($landlord)
     {
@@ -140,5 +144,53 @@ class GETLandlordTenant extends AJAX {
             return $row;
         }
     }
+
+
+    public function getHtmlView()
+    {
+        $content = $this->content;
+
+        $content = array_merge($content, $this->total);
+        return \PHPWS_Template::process($content, 'slc','LandlordTenant.tpl');
+    }
+
+    public function getCsvView()
+    {
+        $csvReport = new CsvReport();
+
+
+        $issues = $this->content['landlord_issue_repeat'];
+        $newIssues = array();
+
+        // Grab each value from the arrays under the issues_repeat and merge into one array.
+        foreach ($issues as $i)
+        {
+            $newIssues = array_merge($newIssues, array_values($i));
+        }
+
+        // Add a null to the front of the array for proper formatting in csv.
+        array_unshift($newIssues, "");
+        // Add Landlord Total to the column headings
+        array_push($newIssues, "Landlord Total");
+        $data = $csvReport->sputcsv($newIssues);
+
+
+        // Grab each landlord row for parsing
+        $landlords = $this->content['landlord_tentant_repeat'];
+        foreach ($landlords as $l)
+        {
+            $data .= $csvReport->sputcsv($l);
+        }
+
+
+        $totals = $this->total;
+        // Add a null to the front of the array for proper formatting in csv.
+        array_unshift($totals, "Condition Total:");
+
+        $data .= $csvReport->sputcsv($totals);
+        
+        return $data;  
+    }
 }
+
 ?>
