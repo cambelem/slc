@@ -38,17 +38,6 @@ class ReportPrbByYr extends Report {
 
         $results = $db->select();
 
-
-        /*
-        SELECT slc_client.classification, slc_problem.description, slc_problem.tree, count(*) as myCount 
-        FROM slc_visit_issue_index 
-        INNER JOIN slc_visit ON slc_visit_issue_index.v_id = slc_visit.id 
-        INNER JOIN slc_client ON slc_visit.client_id = slc_client.id 
-        INNER JOIN slc_issue ON slc_visit_issue_index.i_id = slc_issue.id 
-        INNER JOIN slc_problem ON slc_issue.problem_id = slc_problem.id 
-        WHERE (slc_visit.initial_date >= '-2147540400' AND slc_visit.initial_date < '2147490000')
-        */
-
         $content = array();
         
         // return an "empty" message if $results is empty
@@ -103,7 +92,7 @@ class ReportPrbByYr extends Report {
 
         foreach( $results as $r ) {
 
-            $description = isset($r['description']) && isset($r['tree']) ? $r['tree'].' '.$r['description'] : "Not Specified";
+            $description = isset($r['description']) && isset($r['tree']) ? $r['tree'].' '.$r['description'] : "Criminal";
             $year = $r['classification'];
 
             if ( !in_array($description, $problems) )

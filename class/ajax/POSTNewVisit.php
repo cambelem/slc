@@ -24,7 +24,6 @@ class POSTNewVisit extends AJAX {
 			// Save the Visit
 	        $visitID = VisitFactory::saveVisit($pdo, $visit);
 
-	        //$visitID = null;
 	        if ($visitID == null)
 	        {
 	        	$warning = "Error with the visitID";
@@ -84,7 +83,7 @@ class POSTNewVisit extends AJAX {
 			$pdo->commit();
 			$msg = "Successfully Added: ";
 			$this->addResult("success", $msg);
-		} catch(PDOException $e){
+		} catch(\PDOException $e){
 			$db->rollBack();
 			$this->addResult("error", $e);
 		}

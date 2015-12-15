@@ -155,6 +155,7 @@ var ViewClientMain = React.createClass({
             var visit = this.state.clientData.visit;
             var newIssue = this.newIssue;
             var getClient = this.getClientData;
+            var postEmail = this.postEmail;
 
             // Displays all available visits for a given client.
             var visits = visit.map(function (data) {            
@@ -165,7 +166,8 @@ var ViewClientMain = React.createClass({
                                 issues      = {data.issues} 
                                 getClient   = {getClient}
                                 newIssue    = {newIssue}
-                                client      = {client} />
+                                client      = {client}
+                                postEmail   = {postEmail} />
                 );
             });
         }
@@ -365,6 +367,7 @@ var ReferralStatus = React.createClass({
 var ViewVisits = React.createClass({
     render: function() {
         var getClient = this.props.getClient;
+        var postEmail = this.props.postEmail;
         var issues = this.props.issues.map(function (data) {             
             return (
                 <ViewIssues key             = {data.name}
@@ -374,7 +377,8 @@ var ViewVisits = React.createClass({
                             landlord_name   = {data.landlord_name}
                             visit_issue_id  = {data.visit_issue_id}
                             getClient       = {getClient}
-                            name            = {data.name}/>
+                            name            = {data.name}
+                            postEmail       = {postEmail} />
             );
         });
         return (
@@ -410,6 +414,9 @@ var ViewIssues = React.createClass({
                 console.error(this.props.url, status, err.toString());
             }.bind(this)                
         });
+
+        // Send an email after a followup.
+        this.props.postEmail();
     },
     render: function() {
         return (

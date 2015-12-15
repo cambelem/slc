@@ -30,7 +30,7 @@ class POSTSendMail extends AJAX {
 		$transport = \Swift_SmtpTransport::newInstance('localhost');
 		$mailer = \Swift_Mailer::newInstance($transport);
 
-		$mailer->send($message);			
+		$mailer->send($message);		
 	}
 }
 
