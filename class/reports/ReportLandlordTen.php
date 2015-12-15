@@ -9,6 +9,7 @@ class ReportLandlordTen extends Report {
     public $endDate;
     public $issuenames;
     public $emptyLandlord;
+    public $overallCount;
 
     public function __construct($startDate, $endDate)
     {
@@ -52,7 +53,6 @@ class ReportLandlordTen extends Report {
             $content['landlord_issue_repeat'][] = array('ISSUE_NAME' => $issue);
         }
         
-        $overallCount = 0;
         foreach ($landlords as $landlord)
         {      
             $row = $this->landlordRow($landlord);
