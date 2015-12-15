@@ -5,9 +5,6 @@ class RunReport {
 
     public static function execute($startDate, $endDate,$reportName)
     {    
-        //$file = 'SLC' . $this->reportName . '.csv';//'' . $startdate . 'to' . $enddate . '.csv';   // output filename
-
-
         switch($reportName)
         {
             case 'AppointmentStats':

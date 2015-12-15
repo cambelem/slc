@@ -1,3 +1,6 @@
+/**
+    Component that helps with the reports for SLC
+**/
 var ReportPickerList = React.createClass({
     getInitialState: function() {
         return {
@@ -25,9 +28,9 @@ var ReportPickerList = React.createClass({
     },
     getCSVData: function(name)
     {  
+        // Opens a new window so that a csv file can be downloaded.
         window.location = 'index.php?module=slc&action=GETReportCSV&startDate=' + this.state.startDate
                 + '&endDate=' + this.state.endDate + '&report_type=' + name;
-
     },
     handleDates: function(time, date) {
         //time being start/end
@@ -35,6 +38,7 @@ var ReportPickerList = React.createClass({
         {
             if (date == '')
             {
+                // If the start field is empty, set it to default.
                 this.setState({startDate: "12/13/1901"});
             }
             else
@@ -46,6 +50,7 @@ var ReportPickerList = React.createClass({
         {
             if (date == '')
             {
+                // If the end field is empty, set it to default.
                 this.setState({endDate: "01/18/2038"});
             }
             else
@@ -59,6 +64,7 @@ var ReportPickerList = React.createClass({
     handleDrop: function() {
         var reportValue = React.findDOMNode(this.refs.reportPicker).value;
 
+        // Checks to see the value of the dropdown.
         if ( reportValue != -1)
         {
             this.getHtmlData(reportValue);
@@ -122,6 +128,11 @@ var ReportPickerList = React.createClass({
     }
 });
 
+
+/**
+    Component helps grab the raw html from the template.
+    It also enables csv and the buttons.
+**/
 var InsertHtml = React.createClass({   
     handleApptStats: function() {
         this.props.getCSVData('AppointmentStats');
@@ -134,6 +145,7 @@ var InsertHtml = React.createClass({
     },
     render: function() {
         var val = this.props.dropDownValue;
+        // Determines the html that goes into the report.
         if (this.props.html == null)
         {
             var HTML =  <div id="report-area" style={{margin: "15px"}}>
@@ -146,6 +158,8 @@ var InsertHtml = React.createClass({
         } 
 
         var button = <div></div>;
+
+        // Determines if the csv buttons should be enabled based on the report type.
         switch (val)
         {
             case 'AppointmentStats':
@@ -167,6 +181,11 @@ var InsertHtml = React.createClass({
     }
 });
 
+
+/**
+    This component is used for the date picker.
+    [This is using jquery]
+**/
 var DatePickerBox = React.createClass({
     _initDatePicker: function() {
         var element = this.getDOMNode();

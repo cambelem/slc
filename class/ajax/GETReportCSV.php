@@ -8,7 +8,7 @@ class GETReportCSV extends AJAX {
     	
     	$reportName = $_REQUEST['report_type'];
     	$startDate = strtotime($_REQUEST['startDate']);
-        $endDate = strtotime($_REQUEST['endDate']) + 86400;
+    	$endDate = strtotime($_REQUEST['endDate']) + 86400;
 
         $report = new \slc\reports\RunReport();
     	$content = $report->execute($startDate, $endDate, $reportName); 

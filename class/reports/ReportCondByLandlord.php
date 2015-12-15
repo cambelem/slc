@@ -188,25 +188,6 @@ class ReportCondByLandlord extends Report {
 
         $data .= $csvReport->sputcsv($totals);
 
-/*
-        // Wasn't an easy way of grabbing totals from content array.
-        $total = array( "Condition Total:",
-                        $this->content['MOLD_TOTAL'],
-                        $this->content['PLUMBING_OR_WATER_SUPPLY_TOTAL'],
-                        $this->content['INFESTATIONS_TOTAL'],
-                        $this->content['RUN-DOWN_TOTAL'],
-                        $this->content['FLOODING_OR_ROOF_LEAKS_TOTAL'],
-                        $this->content['SECURITY_TOTAL'],
-                        $this->content['EXTERIOR_TOTAL'],
-                        $this->content['CONSTRUCTION_TOTAL'],
-                        $this->content['HEATING_SYSTEM_TOTAL'],
-                        $this->content['CONTAMINATION_TOTAL'],
-                        $this->content['SMOKE_DETECTOR_TOTAL'],
-                        $this->content['OTHER_CONDITION_TOTAL'],
-                        $this->content['CONDITIONS_TOTAL'],
-                        $this->content['OVERALL_TOTAL']);
-        $data .= $csvReport->sputcsv($total);
-*/
         return $data;  
     }
 }

@@ -87,7 +87,7 @@ class ReportApptStats extends Report {
         $visits = array();
         $db = new \PHPWS_DB('slc_visit_issue_index');
         $db->addColumn('v_id', null, null, null, true);
-//var_dump($counters);
+
         foreach ($counters as $count) {
             $db->addWhere('v_id', $visitIds, 'IN');
             
@@ -135,12 +135,7 @@ class ReportApptStats extends Report {
         $db->addWhere('slc_issue.id', 'svii.i_id');
         $db->addWhere('svii.v_id', $visitIds, 'IN', 'AND');
         $issues = $db->select('one');
-     
-
-//var_dump($followups);
-//exit;
-
-      
+         
         $content = array();
 
         $content['CLIENTS'] = $clients;
