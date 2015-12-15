@@ -192,4 +192,3 @@ class ReportCondByLandlord extends Report {
     }
 }
 
-?>
