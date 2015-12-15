@@ -44,7 +44,8 @@ class ReportCondByLandlord extends Report {
 
         // Building issues count based on the number of conditions
         $this->issueCount = array();
-        for ($i = 0; $i < count($this->issuenames); $i++)
+        $countConditons = count($this->issuenames);
+        for ($i = 0; $i < $countConditons; $i++)
         {
             $this->issueCount[] = 0;
         }
@@ -64,6 +65,7 @@ class ReportCondByLandlord extends Report {
             }   
         }
 
+        $total = array();
         foreach ($this->issuenames as $key => $issue)
         {
             $word = str_replace(" ", "_", $issue);

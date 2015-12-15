@@ -119,4 +119,4 @@ function endsWith($haystack, $needle)
     return (substr($haystack, $start) === $needle);
 }
 
-?>
+ 

@@ -20,8 +20,6 @@ class GETReferralBox extends AJAX {
         foreach( $results as $r ) { // types
         	$rTypes[] = array("referral_id" => $r['id'], "name"=>$r['name']);
         }
-		
-        //$referralPicker = \PHPWS_Template::process(array("referrals"=>$rTypes), 'slc', 'ReferralPicker.tpl');
         
 	$this->addResult("referral_picker", $rTypes);    
 	}

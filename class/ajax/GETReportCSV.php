@@ -30,4 +30,4 @@ class GETReportCSV extends AJAX {
     }
 }
 
-?>
+ 

@@ -11,7 +11,7 @@ abstract class Report {
 	{
 		$this->startDate = $startDate;
 		$this->endDate = $endDate;
-		$this->excute();
+		$this->execute();
 	}
 
 	abstract function execute();
@@ -20,4 +20,4 @@ abstract class Report {
 
 }
 
-?>
+ 

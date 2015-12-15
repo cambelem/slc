@@ -7,6 +7,8 @@ class ReportLandlordTen extends Report {
     public $total;
     public $startDate;
     public $endDate;
+    public $issuenames;
+    public $emptyLandlord;
 
     public function __construct($startDate, $endDate)
     {
@@ -16,9 +18,6 @@ class ReportLandlordTen extends Report {
     }
 
     public function execute() {
-        // Get date range from user
-        $this->start_date = strtotime($_REQUEST['startDate']);
-        $this->end_date = strtotime($_REQUEST['endDate']) + 86400;   // +1 day to make date range inclusive
 
         $landlords = "SELECT * FROM slc_landlord";
         $db = new \PHPWS_DB();
@@ -41,7 +40,8 @@ class ReportLandlordTen extends Report {
 
         // Building issues count based on the number of conditions
         $this->issueCount = array();
-        for ($i = 0; $i < count($this->issuenames); $i++)
+        $countConditions = count($this->issuenames);
+        for ($i = 0; $i < $countConditions; $i++)
         {
             $this->issueCount[] = 0;
         }
@@ -52,6 +52,7 @@ class ReportLandlordTen extends Report {
             $content['landlord_issue_repeat'][] = array('ISSUE_NAME' => $issue);
         }
         
+        $overallCount = 0;
         foreach ($landlords as $landlord)
         {      
             $row = $this->landlordRow($landlord);
@@ -95,7 +96,7 @@ class ReportLandlordTen extends Report {
               GROUP BY slc_problem.description'; //change by landlord id
 
         $sth = $this->pdo->prepare($query);
-        $sth->execute(array("startDate"=>$this->start_date, "endDate"=>$this->end_date, "lId"=>$landlord['id']));
+        $sth->execute(array("startDate"=>$this->startDate, "endDate"=>$this->endDate, "lId"=>$landlord['id']));
         $result = $sth->fetchAll(\PDO::FETCH_ASSOC);
         
         $row["NAME"] = $landlord['name'];
@@ -193,4 +194,4 @@ class ReportLandlordTen extends Report {
     }
 }
 
-?>
+ 

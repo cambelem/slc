@@ -10,7 +10,6 @@ class POSTNewVisit extends AJAX {
 	public function execute() {
 		if ( !isset($_REQUEST['banner_id']) ) {
 			$this->addResult("warning", "No Banner ID Supplied");
-//			throw new IDNotSuppliedException();
 			return;
 		}
 		
@@ -60,7 +59,7 @@ class POSTNewVisit extends AJAX {
 
 				$i = new \slc\Issue($pid, $llid);
 				$result = IssuesFactory::saveIssue($i);
-				//$result = null;
+
 				if ($result == null)
 				{
 					$warning = "Error with issue " . $pid . " " . $llid;
@@ -94,4 +93,4 @@ class POSTNewVisit extends AJAX {
 	}
 }
 
-?>
+ 

@@ -8,4 +8,4 @@ if (\PHPWS_Core::atHome() && \Current_User::isLogged()) {
     exit();
 }
 
-?>
+ 

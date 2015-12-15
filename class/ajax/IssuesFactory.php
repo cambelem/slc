@@ -7,20 +7,6 @@ class IssuesFactory
 	// returns the issue id
 	public static function saveIssue($issue)
 	{
-		/*
-		$db = \Database::newDB();
-		$pdo = $db->getPDO();
-
-        $values = array('id'=>$issue->getId(),
-						'problem_id'=>$issue->getProblemId(),
-						'landlord_id'=>$issue->getLandlordId());
-
-        $query = 'INSERT INTO slc_issue (id, problem_id, landlord_id)
-        		  VALUES (:id, :problem_id, :landlord_id)';
-
-	  	$sth = $pdo->prepare($query);
-		$sth->execute($values);
-		*/
 		$db = new \PHPWS_DB("slc_issue");
 		$results = $db->saveObject($issue);
 		return $results;
@@ -32,14 +18,14 @@ class IssuesFactory
 		$db = \Database::newDB();
 		$pdo = $db->getPDO();
 
-		$query = 'SELECT vii.id AS "VIIID", 
-						p.description AS "ISSUENAME", 
-						l.name as "LANDLORDNAME", 
-						i.landlord_id as "LANDLORDID", 
-						i.problem_id as "PROBLEMID", 
-						vii.i_id AS "ISSUEID", 
-						vii.counter AS "COUNTER", 
-						vii.resolve_date AS "RESOLVEDATE", 
+		$query = 'SELECT vii.id AS "VIIID",
+						p.description AS "ISSUENAME",
+						l.name as "LANDLORDNAME",
+						i.landlord_id as "LANDLORDID",
+						i.problem_id as "PROBLEMID",
+						vii.i_id AS "ISSUEID",
+						vii.counter AS "COUNTER",
+						vii.resolve_date AS "RESOLVEDATE",
 						vii.last_access AS "LASTACCESS"
 				 FROM slc_visit_issue_index as vii
 				 INNER JOIN slc_issue i ON vii.i_id=i.id
@@ -56,7 +42,7 @@ class IssuesFactory
 		{ 
         	$issue = new \slc\Issue($ir['ISSUEID']);
         	$issue->setName($ir['ISSUENAME']);
-        	$issue->setLastAccess(prettyTime($ir['LASTACCESS'])." (".prettyAccess($ir['LASTACCESS']).")");	
+        	$issue->setLastAccess(prettyTime($ir['LASTACCESS'])." (".prettyAccess($ir['LASTACCESS']).")");
 			$issue->setCounter($ir['COUNTER']);
 			$issue->setResolutionDate($ir['RESOLVEDATE']);
 			$issue->setVisitIssueId($ir['VIIID']);
@@ -74,4 +60,4 @@ class IssuesFactory
 
 }
 
-?>
+ 

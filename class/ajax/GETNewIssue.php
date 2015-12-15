@@ -3,9 +3,6 @@ namespace slc\ajax;
 
 class GETNewIssue extends AJAX {
 
-	private $theTree = array();
-	private $landlords = array();
-
     public function execute() {
 
 		// Grabs the data associated with each problem type as well as their
@@ -49,6 +46,7 @@ class GETNewIssue extends AJAX {
 		else if($type == 'Landlord-Tenant')
 			$type = 'LandlordTenant';
 
+		$typeArray = array();
 		foreach ($result as $r) {
 			$typeArray[$type][] = array("problem_id" => $r['id'], "name"=>$r['description'], "type"=>$r['type']);      	
         }
@@ -72,4 +70,4 @@ class GETNewIssue extends AJAX {
 	}
 }
 
-?>
+ 

@@ -144,4 +144,4 @@ function slcUpdateFiles($files, &$content) {
     $content[] = "    " . implode("\n    ", $files);
 }
 
-?>
+ 

@@ -21,4 +21,4 @@ class ViewMain extends View
 	 }
 }
 
-?>
+ 

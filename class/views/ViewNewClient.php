@@ -30,4 +30,4 @@ namespace slc\views;
 		
 		private $theTree = array();
 	}
-?>
+ 

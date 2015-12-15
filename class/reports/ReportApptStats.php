@@ -18,10 +18,6 @@ class ReportApptStats extends Report {
 
     public function execute()
     {    
-
-        $initialVisits  = 0;
-        $clients        = 0;
-        $issues         = 0;
         $followups      = 0;
         
 
@@ -97,18 +93,11 @@ class ReportApptStats extends Report {
             }
             
             $db->addWhere('counter', $count, '=', 'AND');
-            /*
-                SELECT distinct(slc_visit_issue_index.v_id) 
-                FROM slc_visit_issue_index 
-                WHERE (slc_visit_issue_index.v_id IN ('2') 
-                AND slc_visit_issue_index.counter = '2') 
-                GROUP BY slc_visit_issue_index.v_id
-            */
+
             $result = $db->select('col');
             $visits = $visits + $result;
 
-            //Before change of default value in DB (1)
-            //$followups += ($count - 1) * count($result);
+
             $followups += ($count) * count($result);
             $db->resetWhere();
         }

@@ -48,7 +48,7 @@ class ReportLawByAgency extends Report {
             }
 
             $content["TITLE"] = "Agency";
-            $contant["STATS"] = "Statistics";
+            $content["STATS"] = "Statistics";
 
             $row = array();
             foreach($agencies as $key => $condition)
@@ -70,4 +70,4 @@ class ReportLawByAgency extends Report {
 
 }
 
-?>
+ 

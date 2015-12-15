@@ -66,4 +66,4 @@ class ReportTypeOfCond extends Report {
     }
 }
 
-?>
+ 

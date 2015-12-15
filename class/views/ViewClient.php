@@ -42,4 +42,4 @@ class ViewClient extends View {
 		return $result;
 	}
 }
-?>
+ 

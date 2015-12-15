@@ -3,8 +3,6 @@ namespace slc\ajax;
 
 class GETStudentClientData extends AJAX {
     public function execute() {
-    	$HTMLcontent = "";
-		$referral = "";
 
 		// Grabs a student object.
 		$student = ClientFactory::getClientByBannerId($_REQUEST['banner_id']);
@@ -57,4 +55,4 @@ class GETStudentClientData extends AJAX {
 		$this->addResult("visit", $visits);     
 	}
 }
-?>
+ 

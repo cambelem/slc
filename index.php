@@ -66,4 +66,4 @@ $content = $view->display($context);
 $navLinks = new \slc\views\NavLinks();
 \Layout::plug($navLinks->display(), 'NAV_LINKS');
 
-?>
+ 
