@@ -6,34 +6,36 @@ class GETStudentClientData extends AJAX {
 
 		// Grabs a student object.
 		$student = ClientFactory::getClientByBannerId($_REQUEST['banner_id']);
-		
+
 		// Encode the banner id.
-        $encrypedBanner = encode($_REQUEST['banner_id']);
+        $encryptedBanner = encode($_REQUEST['banner_id']);
 
         // Grabs a client object based on the student.
-		$client = ClientFactory::getClientByEncryBanner($encrypedBanner,  $student->getFirstName(), 
-                                               $student->getLastName(), 
-                                               $student ->getFirstName() . ' ' . $student->getLastName());
+		$client = ClientFactory::getClientByEncryBanner($encryptedBanner,  $student->getFirstName(),
+                                               $student->getLastName(),
+                                               $student->getFirstName() . ' ' . $student->getLastName());
 
 		// Determines if the client is new
 		if ($client == null)
 		{
-			$client = new \slc\Client($encrypedBanner, $student->getClassification(), 
+			$client = new \slc\Client($encryptedBanner, $student->getClassification(),
 											   $student->getMajor(), $student->getLivingLocation());
+            $client->setName($student->getFirstName() . ' ' . $student->getLastName());
+            $client->setFirstName($student->getFirstName());
+            $client->setLastName($student->getLastName());
 			ClientFactory::saveClient($client);
 		}
-
 		// Turns the epoch value to a better date and time.
 		$client->setFirstVisit(prettyTime($client->getFirstVisit()));
 
 
         $cReferral = $client->getReferral();
-		 // Check if existing client has referral set        
-		if ($cReferral > 0) 
-		{						
+		 // Check if existing client has referral set
+		if ($cReferral > 0)
+		{
         	$results = ClientFactory::getReferralType($cReferral);
-        	$client->setReferralString($results[0]["name"]);            
-        } 
+        	$client->setReferralString($results[0]["name"]);
+        }
 
 
 		//Get Visits
@@ -52,7 +54,6 @@ class GETStudentClientData extends AJAX {
 
 		// Sends the data out to be jason encoded
 		$this->addResult("client", $client);
-		$this->addResult("visit", $visits);     
+		$this->addResult("visit", $visits);
 	}
 }
- 

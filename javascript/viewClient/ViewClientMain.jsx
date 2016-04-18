@@ -1,13 +1,10 @@
 // !!The banner_id variable is important!!
 
-// It's being used as a global variable from the head.js. 
+// It's being used as a global variable from the head.js.
 // It determine's which banner id is being used so it can grab the client data.
 
 
-// ReactBootstrap
-var ModalTrigger = ReactBootstrap.ModalTrigger;
-var Button = ReactBootstrap.Button;
-var Modal = ReactBootstrap.Modal;
+
 
 var ViewClientMain = React.createClass({
     getInitialState: function() {
@@ -17,7 +14,8 @@ var ViewClientMain = React.createClass({
             referralData: null,
             msgNotification: '',
             msgType: '',
-            notificationData: null
+            notificationData: null,
+            showModal: false
         };
     },
     componentWillMount: function(){
@@ -27,18 +25,24 @@ var ViewClientMain = React.createClass({
     componentDidMount: function(){
         this.getIssueData();
     },
+    closeModal: function() {
+        this.setState({ showModal: false });
+    },
+    openModal: function() {
+        this.setState({ showModal: true });
+    },
     getClientData: function(){
         $.ajax({
             url: 'index.php?module=slc&action=GETStudentClientData&banner_id=' + banner_id,
             type: 'GET',
             dataType: 'json',
-            success: function(data) {   
-                this.setState({clientData: data});           
+            success: function(data) {
+                this.setState({clientData: data});
             }.bind(this),
             error: function(xhr, status, err) {
                 alert("Failed to grab client data."+err.toString());
                 console.error(this.props.url, status, err.toString());
-            }.bind(this)                
+            }.bind(this)
         });
     },
     getIssueData: function() {
@@ -46,11 +50,11 @@ var ViewClientMain = React.createClass({
             url: 'index.php?module=slc&action=GETNewIssue',
             type: 'GET',
             dataType: 'json',
-            success: function(data) { 
+            success: function(data) {
                 var landlordTypes = data.tree;
                 var landlords = data.landlords;
 
-                // Adds a -1 value to be used later in the  
+                // Adds a -1 value to be used later in the
                 // dropdowns in the Modal form.
                 for (var type in landlordTypes)
                 {
@@ -64,15 +68,15 @@ var ViewClientMain = React.createClass({
             error: function(xhr, status, err) {
                 alert("Failed to grab client data.")
                 console.error(this.props.url, status, err.toString());
-            }.bind(this)                
-        });    
+            }.bind(this)
+        });
     },
     getReferralData: function() {
         $.ajax({
             url: 'index.php?module=slc&action=GETReferralBox',
             type: 'GET',
             dataType: 'json',
-            success: function(data) { 
+            success: function(data) {
                 var referral = data.referral_picker;
                 // Adds a -1 value to be used in the referral dropdown.
                 referral.unshift({referral_id:-1, name:"Select a Referral"});
@@ -81,8 +85,8 @@ var ViewClientMain = React.createClass({
             error: function(xhr, status, err) {
                 alert("Failed to grab referral data.")
                 console.error(this.props.url, status, err.toString());
-            }.bind(this)                
-        });    
+            }.bind(this)
+        });
     },
     newVisit: function(issueData){
         var visitIssueData = JSON.stringify(issueData);
@@ -91,7 +95,7 @@ var ViewClientMain = React.createClass({
             type: 'POST',
             data: visitIssueData,
             dataType: 'json',
-            success: function(msg) { 
+            success: function(msg) {
                 // Grabs the client data for re-render of new visit.
                 this.getClientData();
                 // Determines the notification message.
@@ -103,15 +107,15 @@ var ViewClientMain = React.createClass({
             error: function(xhr, status, err) {
                 alert("Failed to go to new visit.")
                 console.error(this.props.url, status, err.toString());
-            }.bind(this)                
-        });  
+            }.bind(this)
+        });
     },
     postReferral: function(r_id) {
         $.ajax({
             url: 'index.php?module=slc&action=POSTReferralType&banner_id=' + this.state.clientData.client.id + '&referral_type=' + r_id,
             type: 'POST',
             dataType: 'json',
-            success: function(data) { 
+            success: function(data) {
                 // Grabs the client data for re-render of the new Referral.
                 this.getClientData();
                 // Sets notification message for successful referral change.
@@ -124,20 +128,20 @@ var ViewClientMain = React.createClass({
                 this.setState({msgNotification: "Failed to change the referral type. " + err.toString(),
                                msgType: "error",
                                notificationData: null});
-            }.bind(this)                
-        });          
+            }.bind(this)
+        });
     },
     postEmail: function() {
         $.ajax({
             url: 'index.php?module=slc&action=POSTSendMail&banner_id=' + banner_id + '&name=' + this.state.clientData.client.name,
             type: 'POST',
             dataType: 'json',
-            success: function() { 
+            success: function() {
             }.bind(this),
             error: function(xhr, status, err) {
                 console.error(this.props.url, status, err.toString());
-            }.bind(this)                
-        });          
+            }.bind(this)
+        });
     },
     render: function() {
         if (this.state.clientData == null)
@@ -158,12 +162,12 @@ var ViewClientMain = React.createClass({
             var postEmail = this.postEmail;
 
             // Displays all available visits for a given client.
-            var visits = visit.map(function (data) {            
+            var visits = visit.map(function (data) {
                 return (
                     <ViewVisits key         = {data.id}
                                 id          = {data.id}
                                 init_date   = {data.initial_date}
-                                issues      = {data.issues} 
+                                issues      = {data.issues}
                                 getClient   = {getClient}
                                 newIssue    = {newIssue}
                                 client      = {client}
@@ -184,6 +188,20 @@ var ViewClientMain = React.createClass({
                                 referralString = {client.referralString}
                                 postReferral = {this.postReferral} />
         }
+
+        var modalForm;
+        if(this.state.issueTreeData != null)
+        {
+            modalForm = (<ModalForm show             = {this.state.showModal}
+                                    close            = {this.closeModal}
+                                    issueTreeData    = {this.state.issueTreeData}
+                                    newVisit         = {this.newVisit}
+                                    sendEmail        = {this.postEmail} />);
+        }
+        else
+        {
+            modalForm = (<div></div>);
+        }
         return (
             <div>
                 <div id="CLIENT_ID" style={{display:"none"}}>{client.id}</div>
@@ -200,7 +218,7 @@ var ViewClientMain = React.createClass({
                     <div className="col-md-6">
                         <span id="first_visit" className="pull-right">First Visit: {client.first_visit}</span>
                     </div>
-                </div>        
+                </div>
 
 
                 {referral}
@@ -211,12 +229,9 @@ var ViewClientMain = React.createClass({
                     </div>
 
                     <div className="col-md-6" style={{marginTop: "1em"}}>
-                        <ModalTrigger modal={<ModalForm issueTreeData = {this.state.issueTreeData} 
-                                                        newVisit      = {this.newVisit} 
-                                                        sendEmail     = {this.postEmail} />}>
-                            <Button bsStyle='primary' className="pull-right"><i className="fa fa-plus"></i> New Visit</Button>
-                        </ModalTrigger>
-                    </div>               
+                        {modalForm}
+                        <a href="javascript:;" onClick={this.openModal} className="btn btn-primary pull-right"><i className="fa fa-plus"></i> New Visit</a>
+                    </div>
                 </div>
 
                 <div className="row">
@@ -246,15 +261,15 @@ var Notifications = React.createClass({
                 if (this.props.notificationData != null)
                 {
                     notification = <div className="alert alert-success" role="alert">
-                                    <strong>{this.props.msg} </strong> 
+                                    <strong>{this.props.msg} </strong>
                                     <br />
-                                    
+
                                     <ul>
-                                        {this.props.notificationData.map(function (key) {          
+                                        {this.props.notificationData.map(function (key) {
                                             return (
                                                 <ListIssues key    = {key.name}
                                                             name   = {key.name}
-                                                            llID   = {key.llID} 
+                                                            llID   = {key.llID}
                                                             id     = {key.id}
                                                             llName = {key.llName} />
                                             );
@@ -265,15 +280,15 @@ var Notifications = React.createClass({
                 else // Used for referrals.
                 {
                     notification = <div className="alert alert-success" role="alert">
-                                    <strong>{this.props.msg}</strong> 
-                                    <br />  
+                                    <strong>{this.props.msg}</strong>
+                                    <br />
                                 </div>
                 }
             }
             else if (this.props.msgType == 'error')
             {
                 notification = <div className="alert alert-danger" role="alert">
-                                    <strong>Error: </strong> 
+                                    <strong>Error: </strong>
                                     <br />
                                     {this.props.msg}
                                 </div>
@@ -344,7 +359,7 @@ var ReferralStatus = React.createClass({
                         Referral: {referralNotice}
 
                         <select className="form-control" onChange={this.handleReferral}>
-                            {referralData.map(function (key) {          
+                            {referralData.map(function (key) {
                                 return (
                                     <ProblemList key            = {key.name}
                                                  name           = {key.name}
@@ -368,7 +383,7 @@ var ViewVisits = React.createClass({
     render: function() {
         var getClient = this.props.getClient;
         var postEmail = this.props.postEmail;
-        var issues = this.props.issues.map(function (data) {             
+        var issues = this.props.issues.map(function (data) {
             return (
                 <ViewIssues key             = {data.name}
                             id              = {data.id}
@@ -386,10 +401,10 @@ var ViewVisits = React.createClass({
                 <div className="row" style={{marginBottom: "1em"}}>
                     <div className="col-md-12" style={{borderBottom: "1px solid #CCC", marginBottom: "1em"}}>
                         <span style={{"fontSize": 18, "fontWeight":'bold'}}>{this.props.init_date}</span>
-                    </div>  
+                    </div>
                 </div>
-                {issues}  
-            </div> 
+                {issues}
+            </div>
         );
     }
 });
@@ -405,14 +420,14 @@ var ViewIssues = React.createClass({
             url: 'index.php?module=slc&action=POSTIncrementVisit&visit_issue_id='+v_id,
             type: 'POST',
             dataType: 'json',
-            success: function() { 
+            success: function() {
                 // Rerender the screen for added changes to the follow-up.
                 this.props.getClient();
             }.bind(this),
             error: function(xhr, status, err) {
                 alert("Failed to increment.")
                 console.error(this.props.url, status, err.toString());
-            }.bind(this)                
+            }.bind(this)
         });
 
         // Send an email after a followup.
@@ -422,13 +437,13 @@ var ViewIssues = React.createClass({
         return (
             <div className="row" style={{marginBottom: "1.5em"}}>
                 <div className="col-md-7" >
-                    {this.props.name}<span style={{'fontStyle':'italic'}}> with </span>{this.props.landlord_name}    
+                    {this.props.name}<span style={{'fontStyle':'italic'}}> with </span>{this.props.landlord_name}
 
                     <br />
 
                     <div style={{borderBottom: "1px solid #CCC"}} />
-                    <span style={{fontStyle:"italic", fontSize:"10px"}}>Last Accessed {this.props.last_access}</span> 
-                </div> 
+                    <span style={{fontStyle:"italic", fontSize:"10px"}}>Last Accessed {this.props.last_access}</span>
+                </div>
 
                 <div className="col-md-2">
                     <span className="pull-left">{this.props.counter} follow up(s)</span>
@@ -436,7 +451,7 @@ var ViewIssues = React.createClass({
 
                 <div className="col-md-1 col-md-offset-2">
                     <button type="button" className="btn btn-default btn-sm pull-right" onClick={this.handleFollowUp}><i className="fa fa-plus"></i> Follow Up</button>
-                </div>  
+                </div>
             </div>
         );
     }
@@ -447,7 +462,7 @@ var ViewIssues = React.createClass({
     Helps create option tags.
 **/
 var ProblemList = React.createClass({
-  render: function() {  
+  render: function() {
     var list = '';
 
     if (this.props.referralString != null)
@@ -455,20 +470,20 @@ var ProblemList = React.createClass({
         if (this.props.name == this.props.referralString)
         {
             // Selects a pre-chosen value already given by the database.
-            list = <option value={this.props.id} selected>{this.props.name}</option> 
+            list = <option value={this.props.id} selected>{this.props.name}</option>
         }
         else
         {
-            list = <option value={this.props.id}>{this.props.name}</option> 
+            list = <option value={this.props.id}>{this.props.name}</option>
         }
-          
+
     }
     else
     {
         // Used by the notification/issue dropdowns
-        list = <option value={this.props.id}>{this.props.name}</option> 
+        list = <option value={this.props.id}>{this.props.name}</option>
     }
-    return (    
+    return (
         list
     )
   }
