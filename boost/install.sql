@@ -1,20 +1,22 @@
 -- slc - phpwebsite module
 -- @version $Id: $
--- @author Adam Dixon
+-- @author Adam Dixon & Eric Cambel
 BEGIN;
 CREATE TABLE IF NOT EXISTS slc_visit (
-    id              int not null,
+    id              int(8) not null auto_increment,
     initial_date    int not null,
-    c_id       varchar(85) not null,
+    client_id       varchar(85) not null,
     PRIMARY KEY (id)
-);
+)
+ENGINE = InnoDB;
 
 CREATE TABLE IF NOT EXISTS slc_issue (
     id              int not null,
     problem_id      int not null,
     landlord_id     int,
     PRIMARY KEY   (id)
-);
+)
+ENGINE = InnoDB;
 
 CREATE TABLE IF NOT EXISTS slc_visit_issue_index (
     id              int not null,
@@ -24,14 +26,8 @@ CREATE TABLE IF NOT EXISTS slc_visit_issue_index (
     resolve_date    int,
     last_access	    int,
     PRIMARY KEY   (id)
-);
-
-CREATE TABLE IF NOT EXISTS slc_visit_issue_date_index (
-    id              int not null,
-    v_i_id          int not null,
-    visit_date      int not null,
-    PRIMARY KEY   (id)
-);
+)
+ENGINE = InnoDB;
 
 CREATE TABLE IF NOT EXISTS slc_client (
     id              varchar(85) not null,
@@ -42,37 +38,6 @@ CREATE TABLE IF NOT EXISTS slc_client (
     referral	    int,
     PRIMARY KEY   (id)
 );
-
-CREATE TABLE IF NOT EXISTS slc_issue_detail_index (
-    id              int not null,
-    i_id            int not null,
-    d_id            int not null,
-    PRIMARY KEY   (id),
-    UNIQUE idx_issue_detail_unq (i_id, d_id)
-);
-
-CREATE TABLE IF NOT EXISTS slc_visit_detail_index (
-    id              int not null,
-    v_id            int not null,
-    d_id            int not null,
-    PRIMARY KEY   (id),
-    UNIQUE idx_visit_detail_unq (v_id, d_id)
-);
-
-CREATE TABLE IF NOT EXISTS slc_client_detail_index (
-    id              int not null,
-    c_id            varchar(85) not null,
-    d_id            int not null,
-    PRIMARY KEY   (id),
-    UNIQUE idx_client_detail_unq (c_id, d_id)
-);
-
-CREATE TABLE IF NOT EXISTS slc_detail (
-    id              int not null,
-    detail          text,
-    PRIMARY KEY   (id)
-);
-
 
 CREATE TABLE IF NOT EXISTS slc_landlord (
     id		    int not null,
@@ -122,15 +87,16 @@ INSERT INTO slc_referral_type VALUES(12, "Sign on Door");
 INSERT INTO slc_referral_type VALUES(13, "Flyer in Residence Hall");
 INSERT INTO slc_referral_type VALUES(14, "Other Advertising");
 INSERT INTO slc_referral_type VALUES(15, "Other Referral");
-INSERT INTO slc_referral_type VALUES(16, "internet");
-INSERT INTO slc_referral_type VALUES(17, "off-campus presentation");
-INSERT INTO slc_referral_type VALUES(18, "orientation");
+INSERT INTO slc_referral_type VALUES(16, "Internet");
+INSERT INTO slc_referral_type VALUES(17, "Off-campus presentation");
+INSERT INTO slc_referral_type VALUES(18, "Orientation");
 INSERT INTO slc_referral_type VALUES(19, "Meet and Greet packet");
 
 
 -- Landlords
 INSERT INTO slc_landlord VALUES (1, "Acme Realty Co");
 INSERT INTO slc_landlord VALUES (2, "Alpha Realty Mgmt");
+INSERT INTO slc_landlord (id, name) VALUES (999, 'Other / Unspecified');
 
 -- Problems
 

@@ -1,6 +1,8 @@
 <?php
-	class ViewNewClient extends slc\View {
-		public function display(\CommandContext $context) {
+namespace slc\views;
+
+	class ViewNewClient extends View {
+		public function display(\slc\CommandContext $context) {
 			$this->setupTree();
 		}
 			
@@ -28,4 +30,4 @@
 		
 		private $theTree = array();
 	}
-?>
+ 

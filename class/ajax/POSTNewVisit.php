@@ -1,39 +1,95 @@
-<?php 
+<?php
+namespace slc\ajax; 
 
 class POSTNewVisit extends AJAX {
-	private $_table = "slc_visit";
+	
+
+//BREAK METHOD INTO HELPERS ***************************
+
 	
 	public function execute() {
 		if ( !isset($_REQUEST['banner_id']) ) {
-			$this->addResult("msg", "No Banner ID Supplied");
-//			throw new IDNotSuppliedException();
+			$this->addResult("warning", "No Banner ID Supplied");
 			return;
 		}
 		
-		$visit = new Visit();
-		$visit->initial_date = timestamp(); // TOOD: Use current timestamp as int
-		$visit->c_id = $_REQUEST['banner_id'];
-		
-		//test($visit);
-		
-		// Save the Visit
-        $db = new PHPWS_DB($this->_table);
-		$results = $db->saveObject($visit);
-        
-		if(PHPWS_Error::logIfError($results)){
-            throw new DatabaseException();
-        }
-        
-        $visitID = $results;
-        
-        $html = '<table style="width:100%;"><tr><td colspan="2"><span style="font-weight:bold;">'.prettyTime($visit->initial_date).'</span><span style="position:relative; font-size:10px;right:-5px;font-weight:100;padding-top:10px;"><span style="font-size:12px;font-weight:bold;">[</span> <a href="index.php?module=slc&view=NewIssue&visitid='.$visitID.'">NEW ISSUE</a> <span style="font-size:12px;font-weight:bold;">]</span></span></td></tr>';
-        
-        
-        $this->addResult("msg", $results);
-        $this->addResult("html", $html);
-        $this->addResult("visitID", $visitID);
-	}
+		$time = timestamp();
+		$visit = new \slc\Visit($_REQUEST['banner_id'], $time);
 
+		$db = \Database::newDB();
+		$pdo = $db->getPDO();
+		$pdo->beginTransaction();
+		try{
+
+			// Save the Visit
+	        $visitID = VisitFactory::saveVisit($pdo, $visit);
+
+	        if ($visitID == null)
+	        {
+	        	$warning = "Error with the visitID";
+	        	$this->addResult("error", $warning);
+	        	$pdo->rollBack();
+	        	return;
+	        }
+			$putBodyData = file_get_contents('php://input');
+			$issuesData = json_decode($putBodyData);
+
+			foreach ($issuesData as $issue)
+			{
+				$pid = null;
+				$llid = null;
+
+				if(array_key_exists('id', $issue))
+				{
+					$pid = $issue->id;
+				}
+				if(array_key_exists('llID', $issue))
+				{
+					$llid = $issue->llID;
+				}
+
+				if($pid == null)
+				{
+					$warning = "Error with the issue problem id being null.";
+		        	$pdo->rollBack();
+		        	$this->addResult("error", $warning);
+		        	return;
+				}
+
+				$i = new \slc\Issue($pid, $llid);
+				$result = IssuesFactory::saveIssue($i);
+
+				if ($result == null)
+				{
+					$warning = "Error with issue " . $pid . " " . $llid;
+		        	$this->addResult("error", $warning);
+		        	$pdo->rollBack();
+		        	return;
+				}
+
+				$db = new \PHPWS_DB("slc_visit_issue_index");
+	    		$vi = new \slc\indexes\VisitIssue($visitID, $result);
+	    		$results = $db->saveObject($vi);
+
+	    		if ($results == null)
+				{
+					$warning = "Error with visitIssue" . $pid . " " . $llid;
+		        	$this->addResult("error", $warning);
+		        	$pdo->rollBack();
+		        	return;
+				}	
+			}
+			
+			$pdo->commit();
+			$msg = "Successfully Added: ";
+			$this->addResult("success", $msg);
+		} catch(\PDOException $e){
+			$db->rollBack();
+			$this->addResult("error", $e);
+		}
+
+		
+	}
 }
 
-?>
+ 

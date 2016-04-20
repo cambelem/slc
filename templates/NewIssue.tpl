@@ -15,4 +15,3 @@
 {END_FORM}<hr />
 <h2>Problems<div style="float:right;"><button type="button" id="CREATEISSUE-{VISITID}" class="btn btn-primary"><i class="fa fa-plus"></i> Create Issue</button></div></h2>
 {PROBLEMS}
-

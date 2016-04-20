@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Updates the module
  *
@@ -6,6 +7,7 @@
  */
 
 function slc_update(&$content, $current_version) {
+
     switch(1) {
         case version_compare($current_version, '2.0.3', '<'):
             $content[] = '<pre>';
@@ -121,8 +123,15 @@ function slc_update(&$content, $current_version) {
          	$result = $db->importFile(PHPWS_SOURCE_DIR . 'mod/slc/boost/updates/update_2_0_7.sql');
          	if (PEAR::isError($result)) {
  	        	return $result;
-         	}    
+         	}  
+        case version_compare($current_version, '3.0.0', '<'):
+            $db = new PHPWS_DB();
+            $result = $db->importFile(PHPWS_SOURCE_DIR . 'mod/slc/boost/updates/update_3_0_0.sql');
+            if (PEAR::isError($result)) {
+                return $result;
+            }     
     }
+
     return true;
 }
 
@@ -135,4 +144,4 @@ function slcUpdateFiles($files, &$content) {
     $content[] = "    " . implode("\n    ", $files);
 }
 
-?>
+ 

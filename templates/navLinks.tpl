@@ -4,7 +4,7 @@
         <a class="navbar-brand" href="{BRAND_LINK}">{BRAND}</a>
     </div>
     <!-- END brand -->
-
+    
     <ul class='nav navbar-nav'>
         <!-- BEGIN repeat_nav_links -->
         <li><a class='faxmaster-nav-link' href='{LINK}' title='{LINK_TITLE}' style="padding:0 0 0 8px;"><button type="button" class='btn btn-default navbar-btn'>{TEXT}</button></a></li>
@@ -13,6 +13,7 @@
     </ul>
 
     <ul class='nav navbar-nav navbar-right'>
+      <li><a class="navbar-report" href="{REPORT_LINK}"><i class="fa fa-bar-chart"></i> {REPORT}</a></li>
         <!-- BEGIN admin_links -->
           {ADMIN_OPTIONS}
           <li class="dropdown">

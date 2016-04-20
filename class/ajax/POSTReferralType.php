@@ -1,4 +1,5 @@
 <?php 
+namespace slc\ajax;
 
 class POSTReferralType extends AJAX {
 	private $_table = "client";
@@ -8,26 +9,20 @@ class POSTReferralType extends AJAX {
 		
 		if ( !isset($_REQUEST['banner_id']) ) {
 			$this->addResult("msg", "No Banner ID Supplied");
-//			throw new IDNotSuppliedException();
 			return;
 		}
 		
 		if ( !isset($_REQUEST['referral_type']) ) {
 			$this->addResult("msg", "No Refferal ID Supplied");
-//			throw new ReferralIDNotSuppliedException();
 			return;
 		}
 
-		$qry = "UPDATE slc_client SET referral=".$_REQUEST['referral_type']." WHERE id='".$_REQUEST['banner_id']."'";
-		
-		$results = PHPWS_DB::query($qry);
-        
-		if(PHPWS_Error::logIfError($results)){
-            $this->addResult("error", "Database Exception");
-			//throw new DatabaseException();
-			return;
-        }
-        
-        $this->addResult("msg", $results);
+		// Update the client's referral type to the given 
+		// drop down option.
+		$db = \Database::newDB();
+		$pdo = $db->getPDO();
+		$query = "UPDATE slc_client SET referral=:rType WHERE id=:bId";	
+		$sth = $pdo->prepare($query);
+		$sth->execute(array('rType'=>$_REQUEST['referral_type'], 'bId'=>$_REQUEST['banner_id']));
 	}
 }

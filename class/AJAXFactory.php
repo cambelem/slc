@@ -1,4 +1,5 @@
 <?php
+namespace slc;
 
 class AJAXFactory {
 	static private $calls;
@@ -23,14 +24,14 @@ class AJAXFactory {
 		
 		$file = $action.'.php';
 		
-		if ( !PHPWS_Core::initModClass( 'slc', 'ajax/'.$file ) ) {
-            throw new AJAXNotFoundException( "Could not find AJAX file '$file'" );
+		if ( !file_exists( '\\mod\\slc\\class\\ajax\\'.$file ) ) {
+            throw new \slc\exceptions\AJAXNotFoundException( "Could not find AJAX file '$file'" );
         }
         
-		if ( !class_exists( $action ) ) {
-            throw new AJAXNotFoundException( "No AJAX class '$action' located" );
+		if ( !class_exists( "\\slc\\ajax\\".$action ) ) {
+            throw new \slc\exceptions\AJAXNotFoundException( "No AJAX class '$action' located" );
         }
-        
+        $action = "\\slc\\ajax\\".$action;
         $this->call = new $action();
 	}
 	
@@ -50,4 +51,4 @@ class AJAXFactory {
 	
 }
 
-?>
+ 

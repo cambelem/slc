@@ -1,4 +1,6 @@
 <?php
+
+namespace slc;
 /*
  * CommandContext
  *
@@ -26,11 +28,18 @@ class CommandContext {
     }
 
     function get( $key ) {
-        if(!isset($this->params[$key])){
-            throw new ParameterNotFoundException("Key: $key is not set");
-        }
-
         return $this->params[$key];
+    }
+
+    function has( $key ) {
+        if (!isset($this->params[$key]))
+        {
+            return false;
+        }
+        else
+        {
+            return true;
+        }
     }
 
     function setError( $error ) {
@@ -57,4 +66,4 @@ class CommandContext {
     }
 }
 
-?>
+ 

@@ -1,4 +1,5 @@
 <?php 
+namespace slc\ajax;
 
 class POSTIncrementVisit extends AJAX {
 	private $_table = "slc_visit_issue_index";
@@ -10,11 +11,11 @@ class POSTIncrementVisit extends AJAX {
 			return;
 		}
 		
-		$db = new PHPWS_DB($this->_table);
+		$db = new \PHPWS_DB($this->_table);
         $db->addWhere('id', $_REQUEST['visit_issue_id']);
 		$results = $db->count();
 		
-		if(PHPWS_Error::logIfError($results)){
+		if(\PHPWS_Error::logIfError($results)){
             //throw new DatabaseException();
             $this->addResult("msg", "No Visit_Issue ID Supplied");
 			return;
@@ -26,30 +27,34 @@ class POSTIncrementVisit extends AJAX {
         	return;
         }
         
-        $visitIssue = new VisitIssue();
+        $visitIssue = new \slc\indexes\VisitIssue();
 		$results = $db->loadObject($visitIssue); // load
 		
-        if(PHPWS_Error::logIfError($results)){
+        if(\PHPWS_Error::logIfError($results)){
             //throw new DatabaseException();
             $this->addResult("msg", "No Visit_Issue ID Supplied");
 			return;
         }
 		
-        $visitIssue->counter++; // increment counter
-        $visitIssue->last_access = timestamp(); // TODO: Current Timestamp
-        
-        $results = $db->saveObject($visitIssue); // save
+        $count = $visitIssue->getCounter();
+        $visitIssue->setCounter($count + 1); // increment counter
+
+        $time = timestamp();
+        $visitIssue->setLastAccess($time); 
+
+
+        $results = $db->saveObject($visitIssue);
 		
-        if(PHPWS_Error::logIfError($results)){
+        if(\PHPWS_Error::logIfError($results)){
             //throw new DatabaseException();
             $this->addResult("msg", "No Visit_Issue ID Supplied");
 			return;
         }
 		
         $this->addResult("msg", $results);
-        $this->addResult("count", $visitIssue->counter);
+        $this->addResult("count", $visitIssue->getCounter());
 	}
 
 }
 
-?>
+ 

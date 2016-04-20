@@ -1,100 +1,45 @@
 <?php 
+namespace slc\views;
 
-class ViewClient extends slc\View {
-	public function display(\CommandContext $context) {
-		$HTMLcontent = "";
-		$referral = "";
-		
-		$ajax = AjaxFactory::get("client");
-		$ajax->loadCall("GETClientData");
-		$ajax->execute();
-		
-		$result = $ajax->result(); 
-		
-		if (isset($result['msg']) && $result['msg'] == "Client not in ASU Database" ) {
-			$HTMLcontent .= "<span style='font-weight:bold;'>Client not in ASU Database<br /></span><span style='font-size:-1;margin-left:20px;'>This could be due to the client being a non-student or the database not being updated.</span>";
-			return parent::useTemplate($HTMLcontent); // Insert into the accessible div
-		}
-			
-		$client = $result['client'];
-		
-		// Test for new client creation
-		$newClient = $result['newFlag'] || !$result['referralSet'];
-		//test($result);
-		
-		if ( $newClient ) {
-			$ajax = AjaxFactory::get("referral");
-			$ajax->loadCall("GETReferralBox");
-			$ajax->execute();
-			
-			$result = $ajax->result(); 
-			$r = $result['referral_picker'];
-		
-			$referral = "<div id='referralDiv'>" . $r . "</div>";
-		} else {
-			$referral = "<div id='referralDiv'>" . $client->referralString."</div>";
-		}
-		
-		
-		$banner = $client->id;
+class ViewClient extends View {
+	public function display(\slc\CommandContext $context) {
+		$banner_id = $_REQUEST['banner_id'];
+		$result = $this->checkBannerID($banner_id);
 
-		$content = array();
-		$tpl = new PHPWS_Template('slc');
-		$tpl->setFile('ClientVisits.tpl');
-		$content['CLIENT_ID'] = $client->id;
-		$content['CLIENT_NAME'] = $_SESSION['cname'];
-		$content['CLIENT_INFO'] = $client->classification." - ".$client->major." Major";
-		$content['FIRST_VISIT'] = prettyTime($client->first_visit);
+		if ($result)
+		{
+
+			$HTMLcontent = "";
+			$referral = "";
 		
-		
-		
-		// Get visits
-		$ajax = AjaxFactory::get("visits");
-		$ajax->loadCall("GETClientVisits");
-		$ajax->execute();
-		$visits = $ajax->result(); 
-		$visits = $visits['visits'];
-		
-        if(!empty($visits)){
-            foreach ($visits as $visit) {
-                //print_r($visit);
-                $visitTpl['VISITID'] = $visit->id;
-                $visitTpl['VISIT_DATE'] = prettyTime($visit->initial_date);
-                $visitTpl['NEW_ISSUE'] = "<a href='index.php?module=slc&view=NewIssue&visitid=".$visit->id."'>NEW ISSUE</a>";
-        
-                
-                // foreach issue per visit, keep array with array pointer
-                foreach ($visit->issues as $issue) {
-                    //print_r($issue);
-                    $issueTpl['ISSUEID'] = $issue->id;
-                    $issueTpl['ISSUE'] = $issue->name;
-                    $issueTpl['VISITCOUNT'] = $issue->counter;
-                    $issueTpl['FOLLOWUP'] = "Follow Up";
-                    $issueTpl['LASTACCESS'] = prettyTime($issue->last_access)." (".prettyAccess($issue->last_access).")";
-                    $issueTpl['VISSITISSUEID'] = $issue->visit_issue_id;
-                    $issueTpl['LANDLORD'] = $issue->landlord_name;
-                    
-                    $tpl->setCurrentBlock("issues");
-                    $tpl->setData($issueTpl);
-                    $tpl->parseCurrentBlock();
-                }
-                
-                $tpl->setCurrentBlock("visits");
-                $tpl->setData($visitTpl);
-                $tpl->parseCurrentBlock();
-            
-            }
-        }
-			
-	 	$content['CLIENT_VISITS'] = $tpl->get();
-	 	$content['CLIENT_BANNER'] = $banner;
-	 	$content['REFERRAL'] = $referral; 
-	 		
-		javascriptMod('slc', 'viewClient');
-			 
-	 	$HTMLcontent .= PHPWS_Template::process($content, 'slc', 'Client.tpl');
-	 	
-	 	return parent::useTemplate($HTMLcontent); // Insert into the accessible div
+		 	$content = array();
+
+			\javascriptMod('slc', 'viewClient', array('BANNER_ID'=>$banner_id));
+				 
+		 	$HTMLcontent .= \PHPWS_Template::process($content, 'slc', 'Client.tpl');
+		 	
+		 	return parent::useTemplate($HTMLcontent); // Insert into the accessible div
+		}
+		else
+		{
+			\NQ::simple('slc', \slc\NotificationView::ERROR, 'Banner ID is invalid.');
+			header('Location: ./?module=slc');
+		}	
+	}
+
+	public function checkBannerID($banner_id)
+	{
+		$db = \Database::newDB();
+		$pdo = $db->getPDO();
+
+		$query = 'SELECT id 
+				  FROM slc_student_data 
+				  WHERE id = :bannerId';
+
+		$sth = $pdo->prepare($query);
+		$sth->execute(array('bannerId'=>$banner_id));
+		$result = $sth->rowCount();
+		return $result;
 	}
 }
-?>
+ 
