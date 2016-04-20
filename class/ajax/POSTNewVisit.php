@@ -1,18 +1,18 @@
 <?php
-namespace slc\ajax; 
+namespace slc\ajax;
 
 class POSTNewVisit extends AJAX {
-	
+
 
 //BREAK METHOD INTO HELPERS ***************************
 
-	
+
 	public function execute() {
 		if ( !isset($_REQUEST['banner_id']) ) {
 			$this->addResult("warning", "No Banner ID Supplied");
 			return;
 		}
-		
+
 		$time = timestamp();
 		$visit = new \slc\Visit($_REQUEST['banner_id'], $time);
 
@@ -57,6 +57,8 @@ class POSTNewVisit extends AJAX {
 				}
 
 				$i = new \slc\Issue($pid, $llid);
+				$i->setVisitId($visitID);
+				$i->setCounter(0);
 				$result = IssuesFactory::saveIssue($i);
 
 				if ($result == null)
@@ -66,20 +68,8 @@ class POSTNewVisit extends AJAX {
 		        	$pdo->rollBack();
 		        	return;
 				}
-
-				$db = new \PHPWS_DB("slc_visit_issue_index");
-	    		$vi = new \slc\indexes\VisitIssue($visitID, $result);
-	    		$results = $db->saveObject($vi);
-
-	    		if ($results == null)
-				{
-					$warning = "Error with visitIssue" . $pid . " " . $llid;
-		        	$this->addResult("error", $warning);
-		        	$pdo->rollBack();
-		        	return;
-				}	
 			}
-			
+
 			$pdo->commit();
 			$msg = "Successfully Added: ";
 			$this->addResult("success", $msg);
@@ -88,8 +78,6 @@ class POSTNewVisit extends AJAX {
 			$this->addResult("error", $e);
 		}
 
-		
+
 	}
 }
-
- 

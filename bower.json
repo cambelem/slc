@@ -1,0 +1,16 @@
+{
+  "name": "slc",
+  "version": "0.0.0",
+  "homepage": "https://github.com/AppStateESS/slc",
+  "authors": [
+    "Chris Detsch <cd62936@email.appstate.edu>"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}

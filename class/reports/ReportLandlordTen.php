@@ -10,6 +10,8 @@ class ReportLandlordTen extends Report {
     public $issuenames;
     public $emptyLandlord;
     public $overallCount;
+    public $pdo;
+    public $issueCount;
 
     public function __construct($startDate, $endDate)
     {
@@ -25,11 +27,12 @@ class ReportLandlordTen extends Report {
         $landlords = $db->select(null, $landlords);
 
 
-        $issues = 'SELECT * FROM slc_problem  
-                   WHERE (slc_problem.type IN ("Landlord-Tenant", "Conditions") 
-                   OR (slc_problem.type = "Generic" 
-                   AND slc_problem.description IN ("Conditions", "Landlord-Tenant")))';  // Covers generic landlord-tenant, too
-       
+        $issues = 'SELECT *
+                   FROM slc_problem
+                        WHERE (slc_problem.type IN ("Landlord-Tenant", "Conditions")
+                              OR (slc_problem.type = "Generic"
+                              AND slc_problem.description IN ("Conditions", "Landlord-Tenant")))';  // Covers generic landlord-tenant, too
+
         $db = new \PHPWS_DB();
         $issues = $db->select(null, $issues);
         $this->issuenames = array();
@@ -46,21 +49,21 @@ class ReportLandlordTen extends Report {
         {
             $this->issueCount[] = 0;
         }
-        
+
         $content = array();
         $total = array();
-        foreach ($this->issuenames as $issue) {          
+        foreach ($this->issuenames as $issue) {
             $content['landlord_issue_repeat'][] = array('ISSUE_NAME' => $issue);
         }
-        
+
         foreach ($landlords as $landlord)
-        {      
+        {
             $row = $this->landlordRow($landlord);
             if ($row != null)
             {
                 $content["landlord_tentant_repeat"][] = $row;
                 $this->overallCount += $row["TOTAL"];
-            }   
+            }
         }
 
         foreach ($this->issuenames as $key => $issue)
@@ -71,7 +74,7 @@ class ReportLandlordTen extends Report {
             $total[strtoupper($word)."_TOTAL"] = $this->issueCount[$key];
 
         }
-        
+
         $total["OVERALL_TOTAL"] = $this->overallCount;
         $this->total = $total;
         $this->content = $content;
@@ -80,32 +83,32 @@ class ReportLandlordTen extends Report {
     private function landlordRow($landlord)
     {
         $row = array();
-        $rowCount = 0; 
+        $rowCount = 0;
 
-        $query = 'SELECT slc_problem.description, count(*) as myCount FROM slc_issue 
-              join slc_visit_issue_index ON slc_issue.id = slc_visit_issue_index.i_id 
-              join slc_visit ON slc_visit.id = slc_visit_issue_index.v_id 
-              LEFT OUTER JOIN slc_landlord ON slc_issue.landlord_id = slc_landlord.id 
-              join slc_problem ON problem_id = slc_problem.id 
-              WHERE (slc_problem.type IN ("Landlord-Tenant", "Conditions") 
-              OR (slc_problem.type = "Generic" 
-              AND slc_problem.description IN ("Conditions", "Landlord-Tenant"))) 
-              AND initial_date >= :startDate
-              AND initial_date <= :endDate
-              AND slc_landlord.id = :lId 
-              GROUP BY slc_problem.description'; //change by landlord id
+        $query = 'SELECT slc_problem.description, count(*) as myCount
+                  FROM slc_issue
+                  JOIN slc_visit ON slc_visit.id = slc_issue.v_id
+                  LEFT OUTER JOIN slc_landlord ON slc_issue.landlord_id = slc_landlord.id
+                  JOIN slc_problem ON problem_id = slc_problem.id
+                      WHERE (slc_problem.type IN ("Landlord-Tenant", "Conditions")
+                            OR (slc_problem.type = "Generic"
+                            AND slc_problem.description IN ("Conditions", "Landlord-Tenant")))
+                            AND initial_date >= :startDate
+                            AND initial_date <= :endDate
+                            AND slc_landlord.id = :lId
+                            GROUP BY slc_problem.description'; //change by landlord id
 
         $sth = $this->pdo->prepare($query);
         $sth->execute(array("startDate"=>$this->startDate, "endDate"=>$this->endDate, "lId"=>$landlord['id']));
         $result = $sth->fetchAll(\PDO::FETCH_ASSOC);
-        
+
         $row["NAME"] = $landlord['name'];
-        
+
         foreach ($result as $r)
         {
             foreach ($this->issuenames as $key => $issue)
             {
-                
+
                 if ($r["description"] == $issue)
                 {
                     $word = str_replace(" ", "_", $r["description"]);
@@ -114,9 +117,9 @@ class ReportLandlordTen extends Report {
                     $row[strtoupper($word)] = $r["myCount"];
                     $rowCount += $r["myCount"];
 
-                    
+
                     $this->issueCount[$key] += $r["myCount"];
-                    $this->emptyLandlord = false;     
+                    $this->emptyLandlord = false;
                 }
                 else
                 {
@@ -129,7 +132,7 @@ class ReportLandlordTen extends Report {
                         $this->issueCount[$key] += 0;
                     }
                 }
-            }                     
+            }
         }
 
         $row["TOTAL"] = $rowCount;
@@ -189,9 +192,7 @@ class ReportLandlordTen extends Report {
         array_unshift($totals, "Condition Total:");
 
         $data .= $csvReport->sputcsv($totals);
-        
-        return $data;  
+
+        return $data;
     }
 }
-
- 

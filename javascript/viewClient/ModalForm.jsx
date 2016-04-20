@@ -4,7 +4,10 @@
    *  The following component   *
    *    uses ReactBootstrap     *
    ******************************
-**/                               
+**/
+var Modal = ReactBootstrap.Modal;
+var Button = ReactBootstrap.Button;
+
 var ModalForm = React.createClass({
     getInitialState: function() {
         return {
@@ -15,14 +18,15 @@ var ModalForm = React.createClass({
         };
     },
     handleSave: function(){
-        // prevents the modal from closing if the 
+        // prevents the modal from closing if the
         // user clicks the save button with nothing
         // selected.
         if (this.state.issueData.length !== 0)
         {
             this.props.newVisit(this.state.issueData);
             this.props.sendEmail();
-            this.props.onRequestHide();
+            this.setState({issueData: []});
+            this.props.close();
         }
     },
     removeItem: function(id){
@@ -31,7 +35,7 @@ var ModalForm = React.createClass({
             return el.id !== id;
             });
 
-        this.setState({issueData: newIssueData});   
+        this.setState({issueData: newIssueData});
     },
     handleTenant: function(){
         this.setState({type: 'LandlordTenant',
@@ -71,7 +75,7 @@ var ModalForm = React.createClass({
                 return i;
             }
 
-            if(this.state.issueData[i]['id'] === type && 
+            if(this.state.issueData[i]['id'] === type &&
                this.state.issueData[i]['llID'] === landlord &&
                !isTypeThere)
             {
@@ -92,7 +96,7 @@ var ModalForm = React.createClass({
                     return types[type][key].name;
                 }
             }
-        }       
+        }
     },
     findLandlordName: function(llid){
         // Determines the landlord name based off of the llid.
@@ -105,7 +109,7 @@ var ModalForm = React.createClass({
             }
         }
     },
-    handleAdd: function() { 
+    handleAdd: function() {
         // Used by Criminal/Other
         var type = this.state.selectedVal;
         var landlord = this.state.selectedLL;
@@ -134,9 +138,9 @@ var ModalForm = React.createClass({
         if (type != -1 && landlord != -1)
         {
             if (this.searchObjectIndexOf(type, landlord) == -1)
-            {    
+            {
                 // Adds the item to the array.
-                items.push({id:type, 
+                items.push({id:type,
                             name:this.findProblemName(type),
                             llID:landlord,
                             llName:this.findLandlordName(landlord)});
@@ -155,6 +159,7 @@ var ModalForm = React.createClass({
         var landlords = this.props.issueTreeData.landlords;
         var removeItem = this.removeItem;
         var dData = '';
+        console.log(this.state.issueData)
 
         // Creates a drop box/add box based on the button pressed
         if (this.state.type != '')
@@ -162,8 +167,8 @@ var ModalForm = React.createClass({
             if (this.state.type == 'LandlordTenant')
             {
                 dData = <LandlordDrop  landlordsTypes = {types.LandlordTenant}
-                                       landlords      = {landlords} 
-                                       conditions     = {types.Conditions} 
+                                       landlords      = {landlords}
+                                       conditions     = {types.Conditions}
                                        issueData      = {this.state.issueData}
                                        selectedVal    = {this.selectedVal}
                                        selectedLL     = {this.selectedLL} />;
@@ -172,73 +177,76 @@ var ModalForm = React.createClass({
             else if (this.state.type == 'Other')
             {
                 dData = <ProblemTypeDrop  type      = {types.Other}
-                                          issueData = {this.state.issueData} 
+                                          issueData = {this.state.issueData}
                                           selectedVal = {this.selectedVal} />;
                 add = <button className="btn btn-default" type="submit" onClick={this.handleAdd}>Add</button>
             }
             else
             {
-                dData = <ProblemTypeDrop  type      = {types.Criminal}  
+                dData = <ProblemTypeDrop  type      = {types.Criminal}
                                           issueData = {this.state.issueData}
                                           selectedVal = {this.selectedVal} />;
                 add = <button className="btn btn-default" type="submit" onClick={this.handleAdd}>Add</button>
-            }          
-        }  
+            }
+        }
         else
         {
             add = <div></div>
         }
         return (
-          <Modal {...this.props} bsSize="large" backdrop='static' title='New Visit' animation={true}>
             <div className="col-md-12">
-                <div className='modal-body'>
-                    <div id="CLIENT_ID" style={{display:"none"}}></div>
-                
-                        <div style={{display:"block"}} id="committedIssues">
-                            <h3 style={{borderBottom:"1px solid #272727"}}>Issues to be Added: </h3>
+                  <Modal show={this.props.show} onHide={this.props.close} container={this} bsSize="large">
+                    <Modal.Header closeButton>
+                      <Modal.Title>New Visit</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        <div id="CLIENT_ID" style={{display:"none"}}></div>
+
+                            <div style={{display:"block"}} id="committedIssues">
+                                <h3 style={{borderBottom:"1px solid #272727"}}>Issues to be Added: </h3>
+                            </div>
+                            <span style={{display:"block",marginTop:"8px",marginBottom:"8px"}}>
+                                <ShowSelectedIssues issueData  = {this.state.issueData}
+                                                    removeItem = {removeItem} />
+                            </span>
+
+                        <h2>Problems</h2>
+
+                        <hr />
+
+                        <br />
+
+                        <div className="btn-group" data-toggle="buttons" >
+                            <label className="btn btn-default" onClick={this.handleTenant} >
+                                <input type="radio" name="types" /> Landlord-Tenant / Condition
+                            </label>
+
+                            <label className="btn btn-default" onClick={this.handleCriminal} >
+                                <input type="radio" name="types" /> Criminal
+                            </label>
+
+                            <label className="btn btn-default" onClick={this.handleOther} >
+                                <input type="radio" name="types" /> Other
+                            </label>
                         </div>
-                        <span style={{display:"block",marginTop:"8px",marginBottom:"8px"}}>
-                            <ShowSelectedIssues issueData  = {this.state.issueData} 
-                                                removeItem = {removeItem} />        
-                        </span>
 
-                    <h2>Problems</h2>
-                    
-                    <hr />
-                    
-                    <br />
+                        <br /><br /><br />
+                        <div className="form-group">
+                            {dData}
 
-                    <div className="btn-group" data-toggle="buttons" >
-                        <label className="btn btn-default" onClick={this.handleTenant} >
-                            <input type="radio" name="types" /> Landlord-Tenant / Condition
-                        </label>      
-
-                        <label className="btn btn-default" onClick={this.handleCriminal} >
-                            <input type="radio" name="types" /> Criminal
-                        </label>    
-
-                        <label className="btn btn-default" onClick={this.handleOther} >
-                            <input type="radio" name="types" /> Other
-                        </label>    
-                    </div>
-
-                    <br /><br /><br />
-                    <div className="form-group">
-                        {dData}
-
-                        <div className="col-md-3">
-                            {add}
+                            <div className="col-md-3">
+                                {add}
+                            </div>
                         </div>
-                    </div>
-                    <br /><br /><br /><br />
-                </div>
-            </div>
+                        <br /><br /><br /><br />
+                    </Modal.Body>
 
-            <div className='modal-footer'>
-              <Button onClick={this.props.onRequestHide}>Close</Button>
-              <Button bsStyle='primary' onClick={this.handleSave}>Save Visit</Button>
+                    <Modal.Footer>
+                      <Button onClick={this.props.close}>Close</Button>
+                      <Button bsStyle='primary' onClick={this.handleSave}>Save Visit</Button>
+                    </Modal.Footer>
+                  </Modal>
             </div>
-          </Modal>
         );
     }
 });
@@ -253,11 +261,11 @@ var ShowSelectedIssues = React.createClass({
             <div className="row">
                 <div className="col-md-6">
                     <ul className="list-group">
-                        {this.props.issueData.map(function (key) {          
+                        {this.props.issueData.map(function (key) {
                             return (
                                 <PrintIssues key        = {key.id}
                                              name       = {key.name}
-                                             llID       = {key.llID} 
+                                             llID       = {key.llID}
                                              id         = {key.id}
                                              llName     = {key.llName}
                                              removeItem = {removeItem} />
@@ -279,18 +287,18 @@ var PrintIssues = React.createClass({
     handleRemove: function() {
         this.props.removeItem(this.props.id);
     },
-    render: function() {   
+    render: function() {
     var conditions;
-    
+
     if (this.props.llID != null)
     {
-        conditions = <span>{this.props.name} <em> with </em> {this.props.llName} 
+        conditions = <span>{this.props.name} <em> with </em> {this.props.llName}
                          <a onClick={this.handleRemove} > <i className="fa fa-trash-o pull-right close"></i></a>
                     </span>;
     }
     else
     {
-        conditions = <span>{this.props.name} 
+        conditions = <span>{this.props.name}
                          <a onClick={this.handleRemove} > <i className="fa fa-trash-o pull-right close"></i></a>
                      </span>;
     }
@@ -315,7 +323,7 @@ var ProblemTypeDrop = React.createClass({
             <div>
                 <div className="col-md-3">
                     <select className="form-control" onChange={this.handleTypes}>
-                        {this.props.type.map(function (key) {          
+                        {this.props.type.map(function (key) {
                             return (
                                 <ProblemList key    = {key.problem_id}
                                              name   = {key.name}
@@ -342,7 +350,7 @@ var LandlordDrop = React.createClass({
         this.props.selectedLL(e.target.value);
     },
     render: function() {
-        var landlordsTypes = this.props.landlordsTypes;   
+        var landlordsTypes = this.props.landlordsTypes;
         var landlords = this.props.landlords;
         var conditionTypes = this.props.conditions;
         return (
@@ -361,7 +369,7 @@ var LandlordDrop = React.createClass({
 
                 <div className="col-md-3">
                     <select className="form-control" onChange={this.handleLandlords}>
-                        {landlords.map(function (key) {          
+                        {landlords.map(function (key) {
                             return (
                                 <ProblemList key    = {key.id}
                                              name   = {key.name}
@@ -383,7 +391,7 @@ var ProblemOptGroup = React.createClass({
   render: function() {
     return(
         <optgroup value={this.props.name} label={this.props.name}>
-            {this.props.types.map(function (type) {          
+            {this.props.types.map(function (type) {
                 return (
                     <ProblemList key    ={type.problem_id}
                                  name   ={type.name}
