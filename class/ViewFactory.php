@@ -16,7 +16,7 @@ class ViewFactory {
         if ( preg_match( '/\W/', $view ) ) {
             throw new Exception("Illegal characters in view");
         }
-        $class = "View".$view;//UCFirst(strtolower($view));
+        $class = "View".$view;
 
         $class = "\\slc\\views\\".$class;
         $view = new $class();

@@ -7,17 +7,15 @@ abstract class Report {
 	public $startDate;
 	public $endDate;
 
-	public function __construct($startDate, $endDate) 
+	public function __construct($startDate, $endDate)
 	{
 		$this->startDate = $startDate;
 		$this->endDate = $endDate;
 		$this->execute();
 	}
 
-	abstract function execute();
+	public abstract function execute();
 
-	abstract function getHtmlView();
+	public abstract function getHtmlView();
 
 }
-
- 

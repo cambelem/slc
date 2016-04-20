@@ -10,6 +10,8 @@ class ReportLandlordTen extends Report {
     public $issuenames;
     public $emptyLandlord;
     public $overallCount;
+    public $pdo;
+    public $issueCount;
 
     public function __construct($startDate, $endDate)
     {
