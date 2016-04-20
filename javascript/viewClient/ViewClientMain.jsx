@@ -387,10 +387,8 @@ var ViewVisits = React.createClass({
             return (
                 <ViewIssues key             = {data.name}
                             id              = {data.id}
-                            last_access     = {data.last_access}
                             counter         = {data.counter}
                             landlord_name   = {data.landlord_name}
-                            visit_issue_id  = {data.visit_issue_id}
                             getClient       = {getClient}
                             name            = {data.name}
                             postEmail       = {postEmail} />
@@ -415,9 +413,9 @@ var ViewVisits = React.createClass({
 **/
 var ViewIssues = React.createClass({
     handleFollowUp: function() {
-        var v_id = this.props.visit_issue_id;
+        var issueId = this.props.id;
         $.ajax({
-            url: 'index.php?module=slc&action=POSTIncrementVisit&visit_issue_id='+v_id,
+            url: 'index.php?module=slc&action=POSTIncrementVisit&issue_id='+issueId,
             type: 'POST',
             dataType: 'json',
             success: function() {
@@ -442,7 +440,6 @@ var ViewIssues = React.createClass({
                     <br />
 
                     <div style={{borderBottom: "1px solid #CCC"}} />
-                    <span style={{fontStyle:"italic", fontSize:"10px"}}>Last Accessed {this.props.last_access}</span>
                 </div>
 
                 <div className="col-md-2">

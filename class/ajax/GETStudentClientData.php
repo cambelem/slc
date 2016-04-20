@@ -52,8 +52,38 @@ class GETStudentClientData extends AJAX {
 			}
 		}
 
+        $clientData = array('id'                => $client->getId(),
+                            'first_visit'       => $client->getFirstVisit(),
+                            'name'              => $client->getName(),
+                            'fname'             => $client->getFirstName(),
+                            'lname'             => $client->getLastName(),
+                            'major'             => $client->getMajor(),
+                            'living_location'   => $client->getLivingLocation(),
+                            'referral'          => $client->getReferral(),
+                            'referralString'    => $client->getReferralString());
+
+        // Replace the 'FR' with 'Freshman', 'SO' with 'Sophomore', and so on
+
+        switch ($client->getClassification()) {
+            case 'FR':
+                $clientData['classification'] = 'Freshman';
+                break;
+            case 'SO':
+                $clientData['classification'] = 'Sophomore';
+                break;
+            case 'JR':
+                $clientData['classification'] = 'Junior';
+                break;
+            case 'SR':
+                $clientData['classification'] = 'Senior';
+                break;
+            default:
+                $clientData['classification'] = 'Other';
+                break;
+        }
+
 		// Sends the data out to be jason encoded
-		$this->addResult("client", $client);
+		$this->addResult("client", $clientData);
 		$this->addResult("visit", $visits);
 	}
 }

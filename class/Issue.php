@@ -1,21 +1,19 @@
-<?php 
+<?php
 namespace slc;
 
 class Issue {
-	
+
 	// database variables
 	public $id;
 	public $problem_id;
 	public $landlord_id;
-	
+
 	// other variables
 	public $name; //legacy
-	public $last_access; // legacy
 	public $counter;
-	public $resolution_date;
-	public $visit_issue_id;
+	public $v_id;
 	public $landlord_name;
-	
+
 
 	public function __construct($problemID = null, $landlordID = null) {
 		$this->problem_id = $problemID;
@@ -52,24 +50,14 @@ class Issue {
 		return $this->name;
 	}
 
-	public function getLastAccess()
-	{
-		return $this->last_access;
-	}
-
 	public function getCounter()
 	{
 		return $this->counter;
 	}
 
-	public function getResolutionDate()
+	public function getVisitId()
 	{
-		return $this->resolution_date;
-	}
-
-	public function getVisitIssueId()
-	{
-		return $this->visit_issue_id;
+		return $this->v_id;
 	}
 
 	public function getLandlordName()
@@ -98,24 +86,14 @@ class Issue {
 		$this->name = $name;
 	}
 
-	public function setLastAccess($lAccess)
-	{
-		$this->last_access = $lAccess;
-	}
-
 	public function setCounter($counter)
 	{
 		$this->counter = $counter;
 	}
 
-	public function setResolutionDate($rDate)
+	public function setVisitId($vId)
 	{
-		$this->resolution_date = $rDate;
-	}
-
-	public function setVisitIssueId($vIssueId)
-	{
-		$this->visit_issue_id = $vIssueId;
+		$this->v_id = $vId;
 	}
 
 	public function setLandlordName($lName)
@@ -123,5 +101,3 @@ class Issue {
 		$this->landlord_name = $lName;
 	}
 }
-
- 

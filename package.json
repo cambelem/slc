@@ -1,0 +1,23 @@
+{
+  "name": "slc",
+  "version": "1.0.0",
+  "description": "Student Legal Clinic Issue Tracker ==================================",
+  "main": "index.js",
+  "dependencies": {
+    "composer": "^0.11.3"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AppStateESS/slc.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/AppStateESS/slc/issues"
+  },
+  "homepage": "https://github.com/AppStateESS/slc#readme"
+}

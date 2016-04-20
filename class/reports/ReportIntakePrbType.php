@@ -15,7 +15,7 @@ class ReportIntakePrbType extends Report {
     }
 
     public function execute()
-    {   
+    {
         // Get the list of all Landlord-Tenant type problems
         $db = new \PHPWS_DB('slc_problem');
         $db->addColumn('description');
@@ -40,24 +40,22 @@ class ReportIntakePrbType extends Report {
         $db->addTable('slc_issue');
         $db->addTable('slc_problem');
         $db->addTable('slc_visit');
-        $db->addTable('slc_visit_issue_index');
         $db->addColumn('slc_issue.id', NULL, 'count', TRUE, TRUE);
         $db->addColumn('slc_problem.description');
         $db->addJoin('inner', 'slc_issue', 'slc_problem', 'problem_id', 'id');
-        $db->addJoin('inner', 'slc_issue', 'slc_visit_issue_index', 'id', 'i_id');
-        $db->addJoin('inner', 'slc_visit', 'slc_visit_issue_index', 'id', 'v_id');
+        $db->addJoin('inner', 'slc_visit', 'slc_issue', 'id', 'v_id');
         $db->addWhere('slc_visit.initial_date', $this->startDate, '>=');
         $db->addWhere('slc_visit.initial_date', $this->endDate, '<', 'AND');
         $db->addGroupBy('slc_issue.problem_id');
         $results = $db->select();
-        
+
         if(\PHPWS_Error::logIfError($results)){
             throw new \slc\exceptions\DatabaseException();
         }
-     
+
         /*
          * Remove all Landlord-Tenant and Conditions type problems from the main
-         * results array, seperate them into individual arrays, and tally the 
+         * results array, seperate them into individual arrays, and tally the
          * number of problems recorded for each. Also grab the generic
          * Landlord-Tenant and Conditions types, tally their occurences, and put
          * them at the head of the proper set of results.
@@ -142,14 +140,14 @@ class ReportIntakePrbType extends Report {
 
             foreach( $results as $r ) {
                 $count = $r['count'];
-                
+
                 // Don't include counts for sub-categories in the total count, we have already counted those.
                 if (strpos($r['description'], '->') === FALSE) {
                     $total += $count;
                 }
-                
+
                 $type = $r['description'];
-            
+
                 $content['intake_problem_repeat'][] = array('PROBLEM' => $type, 'COUNT' => $count);
             }
 
@@ -157,7 +155,7 @@ class ReportIntakePrbType extends Report {
             $content['TOTAL'] = $total;
         }
 
-        $this->content = $content;    
+        $this->content = $content;
     }
 
     public function getHtmlView()
@@ -165,5 +163,3 @@ class ReportIntakePrbType extends Report {
         return \PHPWS_Template::process($this->content, 'slc','IntakeProblemType.tpl');
     }
 }
-
- 
