@@ -8,7 +8,7 @@ $import_sql   = true;
 $version_http = '';
 $about        = false; 
 $priority     = 50;
-$dependency   = true;
+$dependency   = false;
 $image_dir    = false;
 $file_dir     = false;
 
