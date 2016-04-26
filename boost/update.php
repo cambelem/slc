@@ -11,7 +11,7 @@ function slc_update(&$content, $current_version) {
     switch(1) {
         case version_compare($current_version, '2.0.3', '<'):
             $content[] = '<pre>';
-            
+
             $db = new PHPWS_DB('slc_problem');
             $db->addWhere('id', 16);
             $db->addValue('description', 'Tenancy / Eviction');
@@ -35,10 +35,10 @@ function slc_update(&$content, $current_version) {
 ---------------
 + Added date selectors to all reports to limit data to a specific timespan.
 + Fixed the Landlord-Tenant report display issue in Firefox.</pre>';
-        
+
         case version_compare($current_version, '2.0.4', '<'):
             $content[] = '<pre>';
-            
+
             $db = new PHPWS_DB('slc_landlord');
             $db->addWhere('id', 94);
             $db->addValue('name', 'Other / Unspecified');
@@ -89,12 +89,12 @@ function slc_update(&$content, $current_version) {
                                     'boost/boost.php',
                                     'class/ajax/GETReport.php',
                                     'class/ajax/POSTNewIssue.php'), $content);
-            
+
             $content[] = '2.0.4 changes
 ---------------
 + Merged "Unknown" and "Other / Not Provided" landlords into "Other / Unspecified".
 + Updated the reports and issue creation to reflect this merging.<pre>';
-    
+
         case version_compare($current_version, '2.0.5', '<'):
             $content[] = '<pre>';
             slcUpdateFiles(array(   'boost/boost.php',
@@ -109,7 +109,7 @@ function slc_update(&$content, $current_version) {
 + Fixed some math issues in "Landlord/Tenant" and "Condition by Landlord" reports.
 + Added CSV export for the "Landlord/Tenant", "Condition by Landlord", and "Appointment Statistics" reports.
 <pre>';
-        
+
         case version_compare($current_version, '2.0.6', '<'):
            $db = new PHPWS_DB;
             $result = $db->importFile(PHPWS_SOURCE_DIR .
@@ -123,13 +123,19 @@ function slc_update(&$content, $current_version) {
          	$result = $db->importFile(PHPWS_SOURCE_DIR . 'mod/slc/boost/updates/update_2_0_7.sql');
          	if (PEAR::isError($result)) {
  	        	return $result;
-         	}  
+         	}
         case version_compare($current_version, '3.0.0', '<'):
             $db = new PHPWS_DB();
             $result = $db->importFile(PHPWS_SOURCE_DIR . 'mod/slc/boost/updates/update_3_0_0.sql');
             if (PEAR::isError($result)) {
                 return $result;
-            }     
+            }
+        case version_compare($current_version, '3.0.1', '<'):
+            $db = new PHPWS_DB();
+            $result = $db->importFile(PHPWS_SOURCE_DIR . 'mod/slc/boost/updates/update_3_0_1.sql');
+            if (PEAR::isError($result)) {
+                return $result;
+            }
     }
 
     return true;
@@ -143,5 +149,3 @@ function slcUpdateFiles($files, &$content) {
     }
     $content[] = "    " . implode("\n    ", $files);
 }
-
- 

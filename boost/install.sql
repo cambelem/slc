@@ -13,18 +13,9 @@ ENGINE = InnoDB;
 CREATE TABLE IF NOT EXISTS slc_issue (
     id              int not null,
     problem_id      int not null,
-    landlord_id     int,
-    PRIMARY KEY   (id)
-)
-ENGINE = InnoDB;
-
-CREATE TABLE IF NOT EXISTS slc_visit_issue_index (
-    id              int not null,
     v_id            int not null,
-    i_id            int not null,
-    counter         int default 1,
-    resolve_date    int,
-    last_access	    int,
+    landlord_id     int,
+    counter         int,
     PRIMARY KEY   (id)
 )
 ENGINE = InnoDB;
@@ -113,7 +104,7 @@ INSERT INTO slc_problem VALUES("Conditions", 9, "Heating System", "Landlord-Tena
 INSERT INTO slc_problem VALUES("Conditions", 10, "Contamination", "Landlord-Tenant -> Condition -> ");
 INSERT INTO slc_problem VALUES("Conditions", 11, "Smoke Detector", "Landlord-Tenant -> Condition -> ");
 INSERT INTO slc_problem VALUES("Conditions", 12, "Other Condition", "Landlord-Tenant -> Condition -> ");
-		
+
 INSERT INTO slc_problem VALUES("Landlord-Tenant", 13, "Fees", "Landlord-Tenant -> ");
 INSERT INTO slc_problem VALUES("Landlord-Tenant", 14, "Rent Dispute", "Landlord-Tenant -> ");
 INSERT INTO slc_problem VALUES("Landlord-Tenant", 15, "Security Deposit", "Landlord-Tenant -> ");
@@ -127,7 +118,7 @@ INSERT INTO slc_problem VALUES("Landlord-Tenant", 22, "Rules / Regulations", "La
 INSERT INTO slc_problem VALUES("Landlord-Tenant", 23, "Appliances", "Landlord-Tenant -> ");
 INSERT INTO slc_problem VALUES("Landlord-Tenant", 47, "Zoning", "Landlord-Tenant -> ");
 INSERT INTO slc_problem VALUES("Landlord-Tenant", 24, "Other Landlord", "Landlord-Tenant -> ");
- 
+
 INSERT INTO slc_problem VALUES("Law Enforcement Agency", 25, "ASU", "Criminal -> Agency -> ");
 INSERT INTO slc_problem VALUES("Law Enforcement Agency", 26, "Boone Police Department", "Criminal -> Agency -> ");
 INSERT INTO slc_problem VALUES("Law Enforcement Agency", 27, "Sheriff", "Criminal -> Agency -> ");
@@ -139,7 +130,7 @@ INSERT INTO slc_problem VALUES("Type of Criminal Problem", 31, "Search / Seizure
 INSERT INTO slc_problem VALUES("Type of Criminal Problem", 32, "Misleading", "Criminal -> Type -> ");
 INSERT INTO slc_problem VALUES("Type of Criminal Problem", 33, "Private Contractor", "Criminal -> Type -> ");
 INSERT INTO slc_problem VALUES("Type of Criminal Problem", 34, "Incorrect Action / No Basis", "Criminal -> Type -> ");
-		
+
 INSERT INTO slc_problem VALUES("Problem", 35, "Traffic", "Other -> ");
 INSERT INTO slc_problem VALUES("Problem", 36, "Family", "Other -> ");
 INSERT INTO slc_problem VALUES("Problem", 37, "Civil Suits for Money", "Other -> ");
@@ -153,8 +144,6 @@ INSERT INTO slc_problem VALUES("Problem", 44, "Name Change", "Other -> ");
 INSERT INTO slc_problem VALUES("Problem", 45, "Copyright / Invention", "Other -> ");
 INSERT INTO slc_problem VALUES("Problem", 46, "Other Problem", "Other -> ");
 
-INSERT INTO slc_problem VALUES("Generic", 997, "Landlord-Tenant", "");
-INSERT INTO slc_problem VALUES("Generic", 996, "Conditions", "");
 INSERT INTO slc_problem VALUES("Generic", 995, "Law Enforcement Agency", "");
 INSERT INTO slc_problem VALUES("Generic", 998, "Criminal", "");
 INSERT INTO slc_problem VALUES("Generic", 999, "Other", "");
