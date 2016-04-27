@@ -31,7 +31,8 @@ class ReportLandlordTen extends Report {
                    FROM slc_problem
                         WHERE (slc_problem.type IN ("Landlord-Tenant", "Conditions")
                               OR (slc_problem.type = "Generic"
-                              AND slc_problem.description IN ("Conditions", "Landlord-Tenant")))';  // Covers generic landlord-tenant, too
+                              AND slc_problem.description IN ("Conditions", "Landlord-Tenant")))
+                   ORDER BY slc_problem.tree, slc_problem.id';  // Covers generic landlord-tenant, too
 
         $db = new \PHPWS_DB();
         $issues = $db->select(null, $issues);
@@ -61,7 +62,7 @@ class ReportLandlordTen extends Report {
             $row = $this->landlordRow($landlord);
             if ($row != null)
             {
-                $content["landlord_tentant_repeat"][] = $row;
+                $content["landlord_tenant_repeat"][] = $row;
                 $this->overallCount += $row["TOTAL"];
             }
         }
@@ -106,6 +107,7 @@ class ReportLandlordTen extends Report {
 
         foreach ($result as $r)
         {
+
             foreach ($this->issuenames as $key => $issue)
             {
 
@@ -115,6 +117,7 @@ class ReportLandlordTen extends Report {
                     $word = str_replace("/", "OR", $word);
 
                     $row[strtoupper($word)] = $r["myCount"];
+                    $row['ISSUES'][strtoupper($word)] = $r["myCount"];
                     $rowCount += $r["myCount"];
 
 
@@ -129,6 +132,7 @@ class ReportLandlordTen extends Report {
                     if (!isset($row[strtoupper($word)]) || $row[strtoupper($word)] < 1)
                     {
                         $row[strtoupper($word)] = 0;
+                        $row['ISSUES'][strtoupper($word)] = 0;
                         $this->issueCount[$key] += 0;
                     }
                 }
@@ -154,8 +158,39 @@ class ReportLandlordTen extends Report {
     {
         $content = $this->content;
 
-        $content = array_merge($content, $this->total);
-        return \PHPWS_Template::process($content, 'slc','LandlordTenant.tpl');
+        $tpl = new \PHPWS_Template('slc');
+
+        $result = $tpl->setFile('LandlordTenant.tpl');
+
+        foreach ($this->issuenames as $issueName)
+        {
+          $tpl->setCurrentBlock("landlord_issue_repeat");
+          $tpl->setData(array("ISSUE_NAME"=>$issueName));
+          $tpl->parseCurrentBlock();
+        }
+
+        foreach ($this->content['landlord_tenant_repeat'] as $landlord)
+        {
+            foreach ($landlord['ISSUES'] as $value)
+            {
+                 $tpl->setCurrentBlock("landlord_issues_repeat");
+                 $tpl->setData(array("LANDLORD_ISSUE"=>$value));
+                 $tpl->parseCurrentBlock();
+            }
+            $tpl->setCurrentBlock("landlord_tenant_repeat");
+            $tpl->setData(array("LANDLORD_NAME"=>$landlord['NAME']));
+            $tpl->setData(array("LANDLORD_TOTAL"=>$landlord['TOTAL']));
+            $tpl->parseCurrentBlock();
+        }
+
+        foreach($this->total as $issueTotal)
+        {
+            $tpl->setCurrentBlock("totals_repeat");
+            $tpl->setData(array("ISSUE_TOTAL"=>$issueTotal));
+            $tpl->parseCurrentBlock();
+        }
+
+        return $tpl->get();
     }
 
     public function getCsvView()
@@ -180,9 +215,10 @@ class ReportLandlordTen extends Report {
 
 
         // Grab each landlord row for parsing
-        $landlords = $this->content['landlord_tentant_repeat'];
+        $landlords = $this->content['landlord_tenant_repeat'];
         foreach ($landlords as $l)
         {
+            unset($l['ISSUES']);
             $data .= $csvReport->sputcsv($l);
         }
 
