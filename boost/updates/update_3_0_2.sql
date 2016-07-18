@@ -1,0 +1,1 @@
+DELETE FROM slc_problem WHERE id = 999 and description = "Other";
