@@ -132,7 +132,7 @@ INSERT INTO slc_problem VALUES("Type of Criminal Problem", 33, "Private Contract
 INSERT INTO slc_problem VALUES("Type of Criminal Problem", 34, "Incorrect Action / No Basis", "Criminal -> Type -> ");
 
 INSERT INTO slc_problem VALUES("Problem", 35, "Traffic", "Other -> ");
-INSERT INTO slc_problem VALUES("Problem", 36, "Family", "Other -> ");
+INSERT INTO slc_problem VALUES("Problem", 36, "Family / Relationship", "Other -> ");
 INSERT INTO slc_problem VALUES("Problem", 37, "Civil Suits for Money", "Other -> ");
 INSERT INTO slc_problem VALUES("Problem", 38, "Employment", "Other -> ");
 INSERT INTO slc_problem VALUES("Problem", 39, "Consumer", "Other -> ");
