@@ -136,6 +136,12 @@ function slc_update(&$content, $current_version) {
             if (PEAR::isError($result)) {
                 return $result;
             }
+        case version_compare($current_version, '3.0.2', '<'):
+            $db = new PHPWS_DB();
+            $result = $db->importFile(PHPWS_SOURCE_DIR . 'mod/slc/boost/updates/update_3_0_2.sql');
+            if (PEAR::isError($result)) {
+                return $result;
+            }
     }
 
     return true;
