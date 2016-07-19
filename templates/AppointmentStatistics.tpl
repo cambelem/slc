@@ -8,7 +8,7 @@
 		        </tr>
 		    </thead>
 		    <tbody>
-		    	<tr> <td>Total Students </td> 			  		  <td>{CLIENTS}</td> </tr>
+		    	<tr> <td>Total Clients </td> 			  		  <td>{CLIENTS}</td> </tr>
 		    	<tr> <td>Total Visits </td> 			  		  <td>{INITIAL_VISITS}</td> </tr>
 		    	<tr> <td>Total Issues </td> 					  <td>{ISSUES}</td> </tr>
 		    	<tr> <td>Total Followups </td> 				      <td>{FOLLOWUPS}</td> </tr>

@@ -159,7 +159,7 @@ class ReportApptStats extends Report {
     {
         $csvReport = new CsvReport();
 
-        $cols = array(  'Total Students',
+        $cols = array(  'Total Clients',
                         'Total Visits',
                         'Total Issues',
                         'Total Followups',
