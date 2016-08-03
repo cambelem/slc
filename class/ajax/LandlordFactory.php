@@ -21,6 +21,7 @@ class LandlordFactory{
 	public static function saveLandlords($llName)
 	{
 
+
 		$db = \Database::newDB();
 		$pdo = $db->getPDO();
 

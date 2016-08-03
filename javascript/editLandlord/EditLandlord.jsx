@@ -1,9 +1,12 @@
+var ReactCSSTransitionGroup = React.addons.CSSTransitionGroup;
 
 var ViewEditLandlords = React.createClass({
     getInitialState: function() {
         return {
             landlordData: null,
-            filteredData: null
+            filteredData: null,
+            errorMessage: null,
+            errorType: null
         };
     },
     componentWillMount: function(){
@@ -29,49 +32,99 @@ var ViewEditLandlords = React.createClass({
         });
     },
     addLandlord: function(llData){
-        var landlord = JSON.stringify(llData);
+        if(this.validate(llData))
+        {
+            var landlord = JSON.stringify(llData);
 
-        $.ajax({
-            url: 'index.php?module=slc&action=POSTLandlord',
-            type: 'POST',
-            data: landlord,
-            dataType: 'json',
-            success: function(data) {
-                this.getLandlordData();
-            }.bind(this),
-            error: function(xhr, status, err) {
-                alert("Failed to save landlord. "+err.toString());
-                console.error(this.props.url, status, err.toString());
-            }.bind(this)
-        });
+            $.ajax({
+                url: 'index.php?module=slc&action=POSTLandlord',
+                type: 'POST',
+                data: landlord,
+                dataType: 'json',
+                success: function(data) {
+                    this.getLandlordData();
+                    this.setState({errorType: data['errorType'],
+                                   errorMessage: data['msg']});
+                }.bind(this),
+                error: function(xhr, status, err) {
+                    var message = "Could not add landlord: " + llData;
+                    this.setState({errorType: "warning",
+                                   errorMessage: message});
+                    console.error(this.props.url, status, err.toString());
+                }.bind(this)
+            });
+        } else {
+            var message = "Could not add landlord. Please ensure the landlord is not a space or empty.";
+            this.setState({errorType: "warning",
+                           errorMessage: message});
+        }
     },
     editLandlord: function(llData){
-        var landlord = JSON.stringify(llData);
+        if(this.validate(llData))
+        {
+            var landlord = JSON.stringify(llData);
 
-        $.ajax({
-            url: 'index.php?module=slc&action=PUTLandlord',
-            type: 'PUT',
-            data: landlord,
-            dataType: 'json',
-            success: function(data) {
-                this.getLandlordData();
-            }.bind(this),
-            error: function(xhr, status, err) {
-                alert("Failed to edit landlord. "+err.toString());
-                console.error(this.props.url, status, err.toString());
-            }.bind(this)
-        });
+            $.ajax({
+                url: 'index.php?module=slc&action=PUTLandlord',
+                type: 'PUT',
+                data: landlord,
+                dataType: 'json',
+                success: function(data) {
+                    this.getLandlordData();
+                    this.setState({errorType: data['errorType'],
+                                   errorMessage: data['msg']});
+                }.bind(this),
+                error: function(xhr, status, err) {
+                    var message = "Did not successfully edit landlord: " + llData.name;
+                    this.setState({errorType: "warning",
+                                   errorMessage: message});
+                    console.error(this.props.url, status, err.toString());
+                }.bind(this)
+            });
+        } else {
+            var message = "Could not edit landlord. Please ensure the landlord is not empty.";
+            this.setState({errorType: "warning",
+                           errorMessage: message});
+        }
     },
     setDisplay: function(data) {
         this.setState({filteredData: data});
     },
+    validate: function(data) {
+        var name;
+        if(data.name != undefined){
+            name = data.name;
+        } else {
+            name = data;
+        }
+
+        
+        if(name.trim() == '' || name == undefined || name == null){
+            return false;
+        } else {
+            return true;
+        }
+    },
     render: function() {
+        var errors;
+        if(this.state.errorType == null){
+            errors = '';
+        } else {
+            errors = <ErrorMessagesBlock key="errorSet" message = {this.state.errorMessage} errorType = {this.state.errorType} />
+        }
+
         if(this.state.landlordData != null && this.state.filteredData != null){
             return (
                 <div>
                     <div className="row">
                         <div className="col-md-6">
                         <h1><i className="fa fa-pencil-square-o" aria-hidden="true"></i> Edit Landlords</h1><br/>
+                        </div>
+
+                        <div className="col-md-12">
+                            <ReactCSSTransitionGroup transitionName="example" transitionEnterTimeout={500} transitionLeaveTime={500}>
+                                {errors}
+                            </ReactCSSTransitionGroup>
                         </div>
                     </div>
 
@@ -80,6 +133,7 @@ var ViewEditLandlords = React.createClass({
                             <div className="row">
                                 <div className="col-md-6">
                                     <div className="form-group">
+                                        <label>Search:</label>
                                         <Search landlordData = {this.state.landlordData}
                                                 setDisplay   = {this.setDisplay}
                                                 ref          = "search" />
@@ -162,7 +216,6 @@ var Search = React.createClass({
 var Table = React.createClass({
     render: function(){
         var editLandlord = this.props.editLandlord;
-        console.log(this.props.landlordData);
         return(
             <table className="table table-condensed table-striped">
                 <thead>
@@ -250,6 +303,34 @@ var AddLandlords = React.createClass({
     }
     
 });
+
+var ErrorMessagesBlock = React.createClass({
+    render: function() {
+        if(this.props.errors === null){
+            return '';
+        }
+
+        var errorType;
+        if(this.props.errorType == "success"){
+            errorType = <div className="alert alert-success" role="alert">
+                            <p><i className="fa fa-exclamation-circle fa-2x"></i> {this.props.message}</p>
+                        </div>
+        } else if(this.props.errorType == "warning"){
+            errorType = <div className="alert alert-danger" role="alert">
+                            <p><i className="fa fa-exclamation-circle fa-2x"></i> {this.props.message} </p>
+                        </div>
+        }
+
+        return (
+            <div className="row">
+                <div className="col-md-4 col-md-offset-4">  
+                    {errorType}
+                </div>
+            </div>
+        );
+    }
+});
+
 
 ReactDOM.render(
     <ViewEditLandlords />,
