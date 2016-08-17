@@ -20,5 +20,5 @@ ALTER TABLE slc_visit MODIFY COLUMN id INT(11) auto_increment;
 -- Specified the counter column to start at 0
 ALTER TABLE slc_visit_issue_index MODIFY COLUMN counter int(11) default 0;
 
--- Needed to decrement the counter column by 1 to start the followups to 0
+-- Needed to decrement the counter column by 1 to start the followups at 0
 UPDATE slc_visit_issue_index SET counter = counter - 1;
