@@ -9,6 +9,8 @@ class NavLinks {
         $links['BRAND_LINK'] = 'index.php';
         $links['REPORT'] = 'Reports';
         $links['REPORT_LINK'] = 'index.php?module=slc&view=Reports&tab=report';
+        $links['LANDLORDS'] = 'Edit Landlords';
+        $links['LANDLORD_LINK'] = 'index.php?module=slc&view=EditLandlord';
 
         if (\Current_User::isDeity()) {
             $links['CONTROL_PANEL'] = \PHPWS_Text::secureLink('Control Panel', 'controlpanel');
