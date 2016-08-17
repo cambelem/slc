@@ -195,7 +195,7 @@ var ModalForm = React.createClass({
         }
         return (
             <div className="col-md-12">
-                  <Modal show={this.props.show} onHide={this.props.close} container={this} bsSize="large">
+                  <Modal show={this.props.show} onHide={this.props.close} container={this} bsSize="large" backdrop='static'>
                     <Modal.Header closeButton>
                       <Modal.Title>New Visit</Modal.Title>
                     </Modal.Header>
