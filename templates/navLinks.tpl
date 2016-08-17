@@ -14,6 +14,7 @@
 
     <ul class='nav navbar-nav navbar-right'>
       <li><a class="navbar-report" href="{REPORT_LINK}"><i class="fa fa-bar-chart"></i> {REPORT}</a></li>
+      <li><a class="navbar-report" href="{LANDLORD_LINK}"><i class="fa fa-pencil-square-o"></i> {LANDLORDS}</a></li>
         <!-- BEGIN admin_links -->
           {ADMIN_OPTIONS}
           <li class="dropdown">

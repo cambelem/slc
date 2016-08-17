@@ -14,7 +14,7 @@ class GETNewIssue extends AJAX {
 
 		$tree = array_merge($landlordTentant, $conditions,$other, $criminal);
 
-		$landlords = $this->getLandlords();
+		$landlords = LandlordFactory::getLandlords();
 
 		$this->addResult("tree", $tree);
 		$this->addResult("landlords", $landlords);
@@ -53,21 +53,7 @@ class GETNewIssue extends AJAX {
 	
 		return $typeArray;
 	}
-	
-	private function getLandlords()
-	{
 
-		$db = \Database::newDB();
-		$pdo = $db->getPDO();
-
-		$query = "SELECT * FROM slc_landlord";
-
-		$sth = $pdo->prepare($query);
-		$sth->execute();
-		$result = $sth->fetchAll(\PDO::FETCH_ASSOC);
-
-		return $result;
-	}
 }
 
  

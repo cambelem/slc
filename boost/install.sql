@@ -31,10 +31,12 @@ CREATE TABLE IF NOT EXISTS slc_client (
 );
 
 CREATE TABLE IF NOT EXISTS slc_landlord (
-    id		    int not null,
+    id		    int(11) auto_increment not null,
     name	    varchar(100) not null,
     PRIMARY KEY (id)
 );
+
+ALTER TABLE slc_landlord ADD UNIQUE (name);
 
 
 CREATE TABLE IF NOT EXISTS slc_problem (
