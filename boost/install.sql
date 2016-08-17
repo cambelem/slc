@@ -148,6 +148,5 @@ INSERT INTO slc_problem VALUES("Problem", 48, "Student Organization", "Other -> 
 
 INSERT INTO slc_problem VALUES("Generic", 995, "Law Enforcement Agency", "");
 INSERT INTO slc_problem VALUES("Generic", 998, "Criminal", "");
-INSERT INTO slc_problem VALUES("Generic", 999, "Other", "");
 
 COMMIT;
