@@ -132,16 +132,18 @@ var ViewClientMain = React.createClass({
         });
     },
     postEmail: function() {
-        $.ajax({
-            url: 'index.php?module=slc&action=POSTSendMail&banner_id=' + banner_id + '&name=' + this.state.clientData.client.name,
-            type: 'POST',
-            dataType: 'json',
-            success: function() {
-            }.bind(this),
-            error: function(xhr, status, err) {
-                console.error(this.props.url, status, err.toString());
-            }.bind(this)
-        });
+        if (this.refs.surveyBlock.isChecked()){
+            $.ajax({
+                url: 'index.php?module=slc&action=POSTSendMail&banner_id=' + banner_id + '&name=' + this.state.clientData.client.name,
+                type: 'POST',
+                dataType: 'json',
+                success: function() {
+                }.bind(this),
+                error: function(xhr, status, err) {
+                    console.error(this.props.url, status, err.toString());
+                }.bind(this)
+            });
+        }
     },
     render: function() {
         if (this.state.clientData == null)
@@ -220,8 +222,16 @@ var ViewClientMain = React.createClass({
                     </div>
                 </div>
 
+                <div className="row">
+                    <div className="col-md-3">
+                        {referral}
+                    </div>
 
-                {referral}
+                    <div className="col-md-3 pull-right">
+                        <EmailSurvey ref="surveyBlock" />
+                    </div>
+                </div>
+
 
                 <div className="row" style={{borderTop: "1px solid #CCC", marginTop: "1em"}}>
                     <div className="col-md-6" style={{marginTop: "1em"}}>
@@ -353,25 +363,21 @@ var ReferralStatus = React.createClass({
             referralNotice = <div></div>
         }
         return (
-            <div className="row">
-                <div className="col-md-3">
-                    <form className="form-horizontal" role="form">
-                        Referral: {referralNotice}
+            
+            <form className="form-horizontal" role="form">
+                Referral: {referralNotice}
 
-                        <select className="form-control" onChange={this.handleReferral}>
-                            {referralData.map(function (key) {
-                                return (
-                                    <ProblemList key            = {key.name}
-                                                 name           = {key.name}
-                                                 id             = {key.referral_id}
-                                                 referralString = {referralString} />
-                                );
-                            })}
-                        </select>
-
-                    </form>
-                </div>
-            </div>
+                <select className="form-control" onChange={this.handleReferral}>
+                    {referralData.map(function (key) {
+                        return (
+                            <ProblemList key            = {key.name}
+                                         name           = {key.name}
+                                         id             = {key.referral_id}
+                                         referralString = {referralString} />
+                        );
+                    })}
+                </select>
+            </form>
         );
     }
 });
@@ -484,6 +490,32 @@ var ProblemList = React.createClass({
         list
     )
   }
+});
+
+
+// Component is used to determine whether to send a follow-up survey.
+var EmailSurvey = React.createClass({
+    getInitialState: function(){
+        return {
+            isChecked: true
+        };
+    },
+    handleSurvey: function(e){
+        // Determine if the checkbox is checked.
+        this.setState({ isChecked: e.target.checked });
+    },
+    isChecked: function(){
+        return this.state.isChecked;
+    },
+    render: function() {
+        return(
+            <div className="checkbox pull-right">
+                <label>
+                    <input type="checkbox" value="" checked={this.state.isChecked} onChange={this.handleSurvey} /> Send Follow Up Survey
+                </label>
+            </div>
+        )
+    }
 });
 
 React.render(
