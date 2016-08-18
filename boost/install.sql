@@ -118,36 +118,36 @@ INSERT INTO slc_problem VALUES("Landlord-Tenant", 20, "Amenities", "Landlord-Ten
 INSERT INTO slc_problem VALUES("Landlord-Tenant", 21, "Lease Dispute", "Landlord-Tenant -> ");
 INSERT INTO slc_problem VALUES("Landlord-Tenant", 22, "Rules / Regulations", "Landlord-Tenant -> ");
 INSERT INTO slc_problem VALUES("Landlord-Tenant", 23, "Appliances", "Landlord-Tenant -> ");
-INSERT INTO slc_problem VALUES("Landlord-Tenant", 47, "Zoning", "Landlord-Tenant -> ");
-INSERT INTO slc_problem VALUES("Landlord-Tenant", 24, "Other Landlord", "Landlord-Tenant -> ");
+INSERT INTO slc_problem VALUES("Landlord-Tenant", 24, "Zoning", "Landlord-Tenant -> ");
+INSERT INTO slc_problem VALUES("Landlord-Tenant", 25, "Other Landlord", "Landlord-Tenant -> ");
 
-INSERT INTO slc_problem VALUES("Law Enforcement Agency", 25, "ASU", "Criminal -> Agency -> ");
-INSERT INTO slc_problem VALUES("Law Enforcement Agency", 26, "Boone Police Department", "Criminal -> Agency -> ");
-INSERT INTO slc_problem VALUES("Law Enforcement Agency", 27, "Sheriff", "Criminal -> Agency -> ");
-INSERT INTO slc_problem VALUES("Law Enforcement Agency", 28, "State Trooper", "Criminal -> Agency -> ");
-INSERT INTO slc_problem VALUES("Law Enforcement Agency", 29, "ALE", "Criminal -> Agency -> ");
+INSERT INTO slc_problem VALUES("Law Enforcement Agency", 26, "ASU", "Criminal -> Agency -> ");
+INSERT INTO slc_problem VALUES("Law Enforcement Agency", 27, "Boone Police Department", "Criminal -> Agency -> ");
+INSERT INTO slc_problem VALUES("Law Enforcement Agency", 28, "Sheriff", "Criminal -> Agency -> ");
+INSERT INTO slc_problem VALUES("Law Enforcement Agency", 29, "State Trooper", "Criminal -> Agency -> ");
+INSERT INTO slc_problem VALUES("Law Enforcement Agency", 30, "ALE", "Criminal -> Agency -> ");
 
-INSERT INTO slc_problem VALUES("Type of Criminal Problem", 30, "Aggressive", "Criminal -> Type -> ");
-INSERT INTO slc_problem VALUES("Type of Criminal Problem", 31, "Search / Seizure", "Criminal -> Type -> ");
-INSERT INTO slc_problem VALUES("Type of Criminal Problem", 32, "Misleading", "Criminal -> Type -> ");
-INSERT INTO slc_problem VALUES("Type of Criminal Problem", 33, "Private Contractor", "Criminal -> Type -> ");
-INSERT INTO slc_problem VALUES("Type of Criminal Problem", 34, "Incorrect Action / No Basis", "Criminal -> Type -> ");
+INSERT INTO slc_problem VALUES("Type of Criminal Problem", 31, "Aggressive", "Criminal -> Type -> ");
+INSERT INTO slc_problem VALUES("Type of Criminal Problem", 32, "Search / Seizure", "Criminal -> Type -> ");
+INSERT INTO slc_problem VALUES("Type of Criminal Problem", 33, "Misleading", "Criminal -> Type -> ");
+INSERT INTO slc_problem VALUES("Type of Criminal Problem", 34, "Private Contractor", "Criminal -> Type -> ");
+INSERT INTO slc_problem VALUES("Type of Criminal Problem", 35, "Incorrect Action / No Basis", "Criminal -> Type -> 
+");
 
-INSERT INTO slc_problem VALUES("Problem", 35, "Traffic", "Other -> ");
-INSERT INTO slc_problem VALUES("Problem", 36, "Family / Relationship", "Other -> ");
-INSERT INTO slc_problem VALUES("Problem", 37, "Civil Suits for Money", "Other -> ");
-INSERT INTO slc_problem VALUES("Problem", 38, "Employment", "Other -> ");
-INSERT INTO slc_problem VALUES("Problem", 39, "Consumer", "Other -> ");
-INSERT INTO slc_problem VALUES("Problem", 40, "Contract", "Other -> ");
-INSERT INTO slc_problem VALUES("Problem", 41, "Civil Rights / Discrimination", "Other -> ");
-INSERT INTO slc_problem VALUES("Problem", 42, "Victim of Crime", "Other -> ");
-INSERT INTO slc_problem VALUES("Problem", 43, "Corporation", "Other -> ");
-INSERT INTO slc_problem VALUES("Problem", 44, "Name Change", "Other -> ");
-INSERT INTO slc_problem VALUES("Problem", 45, "Copyright / Invention", "Other -> ");
-INSERT INTO slc_problem VALUES("Problem", 46, "Other Problem", "Other -> ");
-INSERT INTO slc_problem VALUES("Problem", 47, "Immigration", "Other -> ");
-INSERT INTO slc_problem VALUES("Problem", 48, "Student Organization", "Other -> ");
-
+INSERT INTO slc_problem VALUES("Problem", 36, "Traffic", "Other -> ");
+INSERT INTO slc_problem VALUES("Problem", 37, "Family / Relationship", "Other -> ");
+INSERT INTO slc_problem VALUES("Problem", 38, "Civil Suits for Money", "Other -> ");
+INSERT INTO slc_problem VALUES("Problem", 39, "Employment", "Other -> ");
+INSERT INTO slc_problem VALUES("Problem", 40, "Consumer", "Other -> ");
+INSERT INTO slc_problem VALUES("Problem", 41, "Contract", "Other -> ");
+INSERT INTO slc_problem VALUES("Problem", 42, "Civil Rights / Discrimination", "Other -> ");
+INSERT INTO slc_problem VALUES("Problem", 43, "Victim of Crime", "Other -> ");
+INSERT INTO slc_problem VALUES("Problem", 44, "Corporation", "Other -> ");
+INSERT INTO slc_problem VALUES("Problem", 45, "Name Change", "Other -> ");
+INSERT INTO slc_problem VALUES("Problem", 46, "Copyright / Invention", "Other -> ");
+INSERT INTO slc_problem VALUES("Problem", 47, "Other Problem", "Other -> ");
+INSERT INTO slc_problem VALUES("Problem", 48, "Immigration", "Other -> ");
+INSERT INTO slc_problem VALUES("Problem", 49, "Student Organization", "Other -> ");
 INSERT INTO slc_problem VALUES("Generic", 995, "Law Enforcement Agency", "");
 INSERT INTO slc_problem VALUES("Generic", 998, "Criminal", "");
 
