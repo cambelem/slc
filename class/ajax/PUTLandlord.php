@@ -10,7 +10,7 @@ class PUTLandlord extends AJAX{
         $landlords = LandlordFactory::getLandlords();
         $name = $landlordData['name'];
 
-        if($name.trim() == '')
+        if(trim($name) == '')
         {
         	$this->addResult("msg", "Landlord name is invalid");
 			$this->addResult("errorType", "warning");
