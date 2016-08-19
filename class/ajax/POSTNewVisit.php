@@ -39,21 +39,19 @@ class POSTNewVisit extends AJAX {
 				$pid = null;
 				$llid = null;
 
-				if(array_key_exists('id', $issue))
+				if(isset($issue->id))
 				{
 					$pid = $issue->id;
-				}
-				if(array_key_exists('llID', $issue))
-				{
-					$llid = $issue->llID;
-				}
-
-				if($pid == null)
-				{
+				} else {
 					$warning = "Error with the issue problem id being null.";
 		        	$pdo->rollBack();
 		        	$this->addResult("error", $warning);
 		        	return;
+				}
+
+				if(isset($issue->llID))
+				{
+					$llid = $issue->llID;
 				}
 
 				$i = new \slc\Issue($pid, $llid);

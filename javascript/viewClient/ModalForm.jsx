@@ -68,12 +68,14 @@ var ModalForm = React.createClass({
         // Used by LandlordTenant, checks the given
         // id/ll_id value from the dropbox and if the value is not present,
         // returns a -1.
+
         for(var i = 0; i < this.state.issueData.length; i++)
         {
-            if(this.state.issueData[i]['id'] === type)
-            {
-                return i;
-            }
+            // Used in case that a visit cannot have the same problem id.
+            // if(this.state.issueData[i]['id'] === type)
+            // {
+            //     return i;
+            // }
 
             if(this.state.issueData[i]['id'] === type &&
                this.state.issueData[i]['llID'] === landlord &&
@@ -87,13 +89,13 @@ var ModalForm = React.createClass({
     findProblemName: function(pid){
         // Determines the problem name based off of the pid.
         var types = this.props.issueTreeData.tree;
-        for (var type in types)
+        for (var t in types)
         {
-            for (var key in types[type])
+            for (var key in types[t])
             {
-                if (pid ==  types[type][key].problem_id)
+                if (pid ==  types[t][key].problem_id)
                 {
-                    return types[type][key].name;
+                    return types[t][key].name;
                 }
             }
         }
@@ -159,7 +161,6 @@ var ModalForm = React.createClass({
         var landlords = this.props.issueTreeData.landlords;
         var removeItem = this.removeItem;
         var dData = '';
-        console.log(this.state.issueData)
 
         // Creates a drop box/add box based on the button pressed
         if (this.state.type != '')
@@ -263,7 +264,7 @@ var ShowSelectedIssues = React.createClass({
                     <ul className="list-group">
                         {this.props.issueData.map(function (key) {
                             return (
-                                <PrintIssues key        = {key.id}
+                                <PrintIssues key        = {key.name+key.llName}
                                              name       = {key.name}
                                              llID       = {key.llID}
                                              id         = {key.id}

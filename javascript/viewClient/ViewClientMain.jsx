@@ -391,7 +391,7 @@ var ViewVisits = React.createClass({
         var postEmail = this.props.postEmail;
         var issues = this.props.issues.map(function (data) {
             return (
-                <ViewIssues key             = {data.name}
+                <ViewIssues key             = {data.name+data.id}
                             id              = {data.id}
                             counter         = {data.counter}
                             landlord_name   = {data.landlord_name}
