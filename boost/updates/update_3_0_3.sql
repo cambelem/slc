@@ -1,0 +1,1 @@
+INSERT INTO slc_problem VALUES('Problem', 50, 'Expungement', 'Other ->');

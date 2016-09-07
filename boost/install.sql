@@ -148,6 +148,7 @@ INSERT INTO slc_problem VALUES("Problem", 46, "Copyright / Invention", "Other ->
 INSERT INTO slc_problem VALUES("Problem", 47, "Other Problem", "Other -> ");
 INSERT INTO slc_problem VALUES("Problem", 48, "Immigration", "Other -> ");
 INSERT INTO slc_problem VALUES("Problem", 49, "Student Organization", "Other -> ");
+INSERT INTO slc_problem VALUES('Problem', 50, 'Expungement', 'Other ->');
 INSERT INTO slc_problem VALUES("Generic", 995, "Law Enforcement Agency", "");
 INSERT INTO slc_problem VALUES("Generic", 998, "Criminal", "");
 
