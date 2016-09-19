@@ -68,7 +68,6 @@ CREATE TABLE IF NOT EXISTS slc_student_data (
 INSERT INTO slc_referral_type VALUES(1, "Friend/Word of Mouth");
 INSERT INTO slc_referral_type VALUES(2, "Former Client");
 INSERT INTO slc_referral_type VALUES(3, "Parents");
-INSERT INTO slc_referral_type VALUES(4, "Off-Campus Community Relations Office");
 INSERT INTO slc_referral_type VALUES(5, "Student Conduct");
 INSERT INTO slc_referral_type VALUES(6, "Housing, Res. Life");
 INSERT INTO slc_referral_type VALUES(7, "Counseling Center");
@@ -81,9 +80,10 @@ INSERT INTO slc_referral_type VALUES(13, "Flyer in Residence Hall");
 INSERT INTO slc_referral_type VALUES(14, "Other Advertising");
 INSERT INTO slc_referral_type VALUES(15, "Other Referral");
 INSERT INTO slc_referral_type VALUES(16, "Internet");
-INSERT INTO slc_referral_type VALUES(17, "Off-campus presentation");
+INSERT INTO slc_referral_type VALUES(17, "Presentation");
 INSERT INTO slc_referral_type VALUES(18, "Orientation");
-INSERT INTO slc_referral_type VALUES(19, "Meet and Greet packet");
+INSERT INTO slc_referral_type VALUES(20, "Electronic Signboard");
+INSERT INTO slc_referral_type VALUES(21, "Other Student Development Office");
 
 
 -- Landlords

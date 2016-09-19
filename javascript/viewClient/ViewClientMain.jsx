@@ -438,11 +438,15 @@ var ViewIssues = React.createClass({
         this.props.postEmail();
     },
     render: function() {
+        if (this.props.landlord_name != null){
+            conditions = <span>{this.props.name} <span style={{'fontStyle':'italic'}}> with </span> {this.props.landlord_name}</span>;
+        } else {            
+            conditions = this.props.name
+        }
         return (
             <div className="row" style={{marginBottom: "1.5em"}}>
                 <div className="col-md-7" >
-                    {this.props.name}<span style={{'fontStyle':'italic'}}> with </span>{this.props.landlord_name}
-
+                    {conditions}
                     <br />
 
                     <div style={{borderBottom: "1px solid #CCC"}} />
