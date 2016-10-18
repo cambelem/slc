@@ -31,6 +31,9 @@ class RunReport {
             case 'LawByAgency':
             	$report = new ReportLawByAgency($startDate, $endDate);
             	break;   
+            case 'TransferIntern':
+                $report = new ReportTransferIntern($startDate, $endDate);
+                break;
         	default:
         		throw new \InvalidArgumentException("Unknown Report Name");         	            	
         }

@@ -60,7 +60,9 @@ class GETStudentClientData extends AJAX {
                             'major'             => $client->getMajor(),
                             'living_location'   => $client->getLivingLocation(),
                             'referral'          => $client->getReferral(),
-                            'referralString'    => $client->getReferralString());
+                            'referralString'    => $client->getReferralString(),
+                            'transfer'          => $client->getTransfer(),
+                            'international'     => $client->getInternational());
 
         // Replace the 'FR' with 'Freshman', 'SO' with 'Sophomore', and so on
 

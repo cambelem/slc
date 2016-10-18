@@ -13,12 +13,17 @@ class Client {
 	public $living_location;
 	public $referral;
 	public $referralString;
+	public $transfer;
+	public $international;
 	
 	public function __construct($id, $class = "unknown", $major = "unknown", $livingLocation = "unknown") {
 		$this->id = $id;
 		$this->classification = $class;
 		$this->major = $major;
 		$this->living_location = $livingLocation;
+
+		$this->transfer = 0;
+		$this->international = 0;
 
 		$time = timestamp();
         $this->first_visit = $time;
@@ -75,6 +80,16 @@ class Client {
 		return $this->referralString;
 	}
 
+	public function getTransfer()
+	{
+		return $this->transfer;
+	}
+
+	public function getInternational()
+	{
+		return $this->international;
+	}
+
 
 
 	public function setId($id)
@@ -125,6 +140,16 @@ class Client {
 	public function setReferralString($referralString)
 	{
 		$this->referralString = $referralString;
+	}
+
+	public function setTransfer($transfer)
+	{
+		$this->transfer = $transfer;
+	}
+
+	public function setInternational($international)
+	{
+		$this->international = $international; 
 	}
 }
 

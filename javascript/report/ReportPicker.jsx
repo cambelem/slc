@@ -97,6 +97,7 @@ var ReportPickerList = React.createClass({
                                         <option value="TypeOfCondition">Type of Condition</option>
                                         <option value="TypeOfReferral">Type of Referral</option>
                                         <option value="LawByAgency">Problems With Law Enforcement by Agency</option>
+                                        <option value="TransferIntern">Transfer and International Statistics</option>
                                     </select>
                                 </div>
                             </div>

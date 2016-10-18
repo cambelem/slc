@@ -145,6 +145,52 @@ var ViewClientMain = React.createClass({
             });
         }
     },
+    postTransfer: function(tChecked) {
+        var client = this.state.clientData.client;
+        var tData = { id      : client.id,
+                      fname   : client.fname,
+                      lname   : client.lname,
+                      fullName: client.name,
+                      checked : tChecked,
+                      sType   : 'transfer' };
+
+        var transferData = JSON.stringify(tData);
+
+        $.ajax({
+            url: 'index.php?module=slc&action=POSTTransferInternat',
+            type: 'POST',
+            data: transferData,
+            dataType: 'json',
+            success: function() {
+            }.bind(this),
+            error: function(xhr, status, err) {
+                console.error(this.props.url, status, err.toString());
+            }.bind(this)
+        });
+    },
+    postInternational: function(iChecked) {
+        var client = this.state.clientData.client;
+        var iData = { id      : client.id,
+                      fname   : client.fname,
+                      lname   : client.lname,
+                      fullName: client.name,
+                      checked : iChecked,
+                      sType   : 'international' };
+
+        var internationalData = JSON.stringify(iData);
+
+        $.ajax({
+            url: 'index.php?module=slc&action=POSTTransferInternat',
+            type: 'POST',
+            data: internationalData,
+            dataType: 'json',
+            success: function() {
+            }.bind(this),
+            error: function(xhr, status, err) {
+                console.error(this.props.url, status, err.toString());
+            }.bind(this)
+        });
+    },
     render: function() {
         if (this.state.clientData == null)
         {
@@ -219,6 +265,13 @@ var ViewClientMain = React.createClass({
                     </div>
                     <div className="col-md-6">
                         <span id="first_visit" className="pull-right">First Visit: {client.first_visit}</span>
+                    </div>
+                </div>
+
+                <div className="row">
+                    <div className="col-md-3">
+                        <TransferInternCheck name="Transfer" checked = {client.transfer} postSType = {this.postTransfer}/>
+                        <TransferInternCheck name="International" checked = {client.international} postSType = {this.postInternational}/>
                     </div>
                 </div>
 
@@ -514,6 +567,30 @@ var EmailSurvey = React.createClass({
                     <input type="checkbox" value="" checked={this.state.isChecked} onChange={this.handleSurvey} /> Send Follow Up Survey
                 </label>
             </div>
+        )
+    }
+});
+
+var TransferInternCheck = React.createClass({
+    getInitialState: function(){
+        return { isChecked: null };
+    },
+    componentWillMount: function(){
+        // this.props.checked comes back as a string, must
+        // convert to int for boolean expression.
+        var checked = parseInt(this.props.checked);
+        this.setState({ isChecked: checked});
+    },
+    handleCheck: function(e){
+        // Determine if the checkbox is checked.
+        this.setState({ isChecked: e.target.checked });
+        this.props.postSType(e.target.checked);
+    },
+    render: function() {
+        return(
+            <label className="checkbox-inline">
+                <input type="checkbox" value="" checked={this.state.isChecked} onChange={this.handleCheck}/> {this.props.name}      
+            </label>
         )
     }
 });
