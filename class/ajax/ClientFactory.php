@@ -18,7 +18,7 @@ class ClientFactory
 						'transfer'=>$client->getTransfer(),
 						'international' => $client->getInternational());
 
-        $query = 'INSERT INTO slc_client (id, first_visit, classification, living_location, major, referral)
+        $query = 'INSERT INTO slc_client (id, first_visit, classification, living_location, major, referral, transfer, international)
         		  VALUES (:id, :fv, :classification, 
         		  		  :ll, :major, :referral,
         		  		  :transfer, :international)';

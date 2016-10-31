@@ -13,7 +13,7 @@ class PostTransferInternat extends AJAX {
         if($tiData['sType'] === "transfer"){
         	$client->setTransfer($tiData['checked']);
         } else {
-        	$client->setTransfer($tiData['checked']);
+        	$client->setInternational($tiData['checked']);
         }
         
         ClientFactory::updateClient($client);

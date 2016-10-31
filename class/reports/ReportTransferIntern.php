@@ -39,45 +39,21 @@ class ReportTransferIntern extends Report {
         {
             $visitIds[0] = '';
         }
-        // Get # of initial visits. Equivalent to this query:
-        // SELECT COUNT(DISTINCT(v_id)) FROM slc_visit_issue_index
-        // WHERE v_id IN $visitIds;
-        $db = new \PHPWS_DB('slc_issue');
-        $db->addColumn('v_id', null, null, true, true);
-        $db->addWhere('v_id', $visitIds, 'IN', 'AND');
-        $initialVisits = $db->select('one');
 
-        
-        // Get the array of different 'counts' greater than 1. Equivalent to this query:
-        // SELECT DISTINCT(counter) FROM slc_visit_issue_index WHERE counter>'1' ORDER BY counter DESC;
+
         $db = \Database::newDB();
         $pdo = $db->getPDO();
-        $query = 'SELECT distinct(slc_issue.counter)
-                  FROM slc_issue
-                    WHERE (slc_issue.counter > 0)
-                  GROUP BY slc_issue.counter
-                  ORDER BY slc_issue.counter desc';
+        $query = 'SELECT sum(transfer) as transfer, sum(international) as international
+                  FROM slc_client';
         $sth = $pdo->prepare($query);
         $sth->execute();
-        $counters = $sth->fetchAll(\PDO::FETCH_COLUMN, 0);
-
-
+        $result = $sth->fetch();
+   
         $content = array();
 
-        $content['TRANSFER'] = $clients;
-        $content['INTERNAT'] = $initialVisits;
+        $content['TRANSFER'] = $result['transfer'];
+        $content['INTERNAT'] = $result['international'];
 
-        if ($clients == 0)
-        {
-            $content['TRANSFER'] = 0;
-            $content['INTERNAT'] = 0;
-        }
-        else
-        {
-
-            $content['I_WO'] = $issuesWO;
-            $content['I_WITH'] = $issuesWith;
-        }
 
         $this->content = $content;
 	}

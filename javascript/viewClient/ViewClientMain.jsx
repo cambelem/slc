@@ -270,8 +270,11 @@ var ViewClientMain = React.createClass({
 
                 <div className="row">
                     <div className="col-md-3">
-                        <TransferInternCheck name="Transfer" checked = {client.transfer} postSType = {this.postTransfer}/>
-                        <TransferInternCheck name="International" checked = {client.international} postSType = {this.postInternational}/>
+                        <TransferInternCheck tChecked           = {client.transfer} 
+                                             iChecked           = {client.international} 
+                                             postTransfer       = {this.postTransfer}
+                                             postInternational  = {this.postInternational} />
+                        
                     </div>
                 </div>
 
@@ -573,25 +576,70 @@ var EmailSurvey = React.createClass({
 
 var TransferInternCheck = React.createClass({
     getInitialState: function(){
-        return { isChecked: null };
+        return { isTChecked: null,
+                 isIChecked: null };
     },
     componentWillMount: function(){
         // this.props.checked comes back as a string, must
         // convert to int for boolean expression.
-        var checked = parseInt(this.props.checked);
-        this.setState({ isChecked: checked});
+
+        var tChecked = parseInt(this.props.tChecked);
+        var iChecked = parseInt(this.props.iChecked);
+
+        this.setState({ isTChecked: tChecked,
+                        isIChecked: iChecked });
     },
-    handleCheck: function(e){
+    handleTCheck: function(e){
         // Determine if the checkbox is checked.
-        this.setState({ isChecked: e.target.checked });
-        this.props.postSType(e.target.checked);
+        this.setState({ isTChecked: e.target.checked });
+        this.props.postTransfer(e.target.checked);
+    },
+    handleICheck: function(e){
+        // Determine if the checkbox is checked.
+        this.setState({ isIChecked: e.target.checked });
+        this.props.postInternational(e.target.checked);
     },
     render: function() {
-        return(
-            <label className="checkbox-inline">
-                <input type="checkbox" value="" checked={this.state.isChecked} onChange={this.handleCheck}/> {this.props.name}      
-            </label>
-        )
+        var iChecked = this.state.isIChecked;
+        var tChecked = this.state.isTChecked;
+        if(iChecked == 1) {
+            return(
+                <div> 
+                    <label className="checkbox-inline disabled">
+                        <input type="checkbox" value="" disabled checked={this.state.isTChecked} onChange={this.handleTCheck}/> Transfer      
+                    </label>
+
+                    <label className="checkbox-inline">
+                        <input type="checkbox" value="" checked={this.state.isIChecked} onChange={this.handleICheck}/> International      
+                    </label>
+                </div>
+            )
+        } else if(tChecked == 1) {
+            return(
+                <div> 
+                    <label className="checkbox-inline">
+                        <input type="checkbox" value="" checked={this.state.isTChecked} onChange={this.handleTCheck}/> Transfer      
+                    </label>
+
+                    <label className="checkbox-inline disabled">
+                        <input type="checkbox" value="" disabled checked={this.state.isIChecked} onChange={this.handleICheck}/> International      
+                    </label>
+                </div>
+            )
+        } else {
+            return(
+                <div> 
+                    <label className="checkbox-inline">
+                        <input type="checkbox" value="" checked={this.state.isTChecked} onChange={this.handleTCheck}/> Transfer      
+                    </label>
+
+                    <label className="checkbox-inline">
+                        <input type="checkbox"  value="" checked={this.state.isIChecked} onChange={this.handleICheck}/> International      
+                    </label>
+                </div>
+            )
+        }
+        
     }
 });
 
@@ -599,3 +647,26 @@ React.render(
     <ViewClientMain />,
     document.getElementById('clientviews')
 );
+
+
+/*
+    if(this.props.name == "Transfer" && this.props.iChecked > 0){
+        return(
+            <label className="checkbox-inline disabled">
+                <input type="checkbox" value="" checked={this.state.isChecked} disabled/> {this.props.name}      
+            </label>
+        )
+    } else if(this.props.name == "International" && this.props.tChecked > 0){
+        return(
+            <label className="checkbox-inline disabled">
+                <input type="checkbox" value="" checked={this.state.isChecked} disabled/> {this.props.name}      
+            </label>
+        )
+    } else {
+        return(
+            <label className="checkbox-inline">
+                <input type="checkbox" value="" checked={this.state.isChecked} onChange={this.handleCheck}/> {this.props.name}      
+            </label>
+        )
+    }
+*/
