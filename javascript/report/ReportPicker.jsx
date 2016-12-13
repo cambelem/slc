@@ -86,31 +86,27 @@ var ReportPickerList = React.createClass({
                         <form role="form">
                             <div className="form-group">
                                 <label>Select report:</label>
-                                 <div className="col-md-10">
-                                    <select className="form-control" onChange={this.handleDrop} ref="reportPicker">
-                                        <option value="-1">[ choose report type ]</option>
-                                        <option value="AppointmentStats">Appointment Statistics</option>
-                                        <option value="IntakeProblemType">Intake by Problem Type</option>
-                                        <option value="LandlordTenant">Landlord Tenant</option>
-                                        <option value="ConditionByLandlord">Condition by Landlord</option>
-                                        <option value="ProblemByYear">Problem by Year in School</option>
-                                        <option value="TypeOfCondition">Type of Condition</option>
-                                        <option value="TypeOfReferral">Type of Referral</option>
-                                        <option value="LawByAgency">Problems With Law Enforcement by Agency</option>
-                                        <option value="TransferIntern">Transfer and International Statistics</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <br />
-                            <div className="form-group">
-                                <label >Date of visit:</label>
+                               
+                                <select className="form-control" onChange={this.handleDrop} ref="reportPicker">
+                                    <option value="-1">[ choose report type ]</option>
+                                    <option value="AppointmentStats">Appointment Statistics</option>
+                                    <option value="IntakeProblemType">Intake by Problem Type</option>
+                                    <option value="LandlordTenant">Landlord Tenant</option>
+                                    <option value="ConditionByLandlord">Condition by Landlord</option>
+                                    <option value="ProblemByYear">Problem by Year in School</option>
+                                    <option value="TypeOfCondition">Type of Condition</option>
+                                    <option value="TypeOfReferral">Type of Referral</option>
+                                    <option value="LawByAgency">Problems With Law Enforcement by Agency</option>
+                                    <option value="TransferIntern">Transfer and International Statistics</option>
+                                </select>
+                            
+                       
                                 <br />
-
+                                <label>Date of visit:</label>
+                                <br />
                                 <DatePickerBox handleDates = {this.handleDates} date="start" />
-
-                                <label>to </label>
+                                <label>to</label>
                                 <br />
-
                                 <DatePickerBox handleDates = {this.handleDates} date="end" />
                             </div>
                         </form>
