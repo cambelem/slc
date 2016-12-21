@@ -25,8 +25,10 @@ CREATE TABLE IF NOT EXISTS slc_client (
     first_visit     int not null,
     classification  varchar(50),
     living_location varchar(50),
-    major	    varchar(50),
-    referral	    int,
+    major	          varchar(50),
+    referral	      int,
+    transfer        int default 0,
+    international   int default 0,
     PRIMARY KEY   (id)
 );
 
@@ -131,8 +133,7 @@ INSERT INTO slc_problem VALUES("Type of Criminal Problem", 31, "Aggressive", "Cr
 INSERT INTO slc_problem VALUES("Type of Criminal Problem", 32, "Search / Seizure", "Criminal -> Type -> ");
 INSERT INTO slc_problem VALUES("Type of Criminal Problem", 33, "Misleading", "Criminal -> Type -> ");
 INSERT INTO slc_problem VALUES("Type of Criminal Problem", 34, "Private Contractor", "Criminal -> Type -> ");
-INSERT INTO slc_problem VALUES("Type of Criminal Problem", 35, "Incorrect Action / No Basis", "Criminal -> Type -> 
-");
+INSERT INTO slc_problem VALUES("Type of Criminal Problem", 35, "Incorrect Action / No Basis", "Criminal -> Type -> ");
 
 INSERT INTO slc_problem VALUES("Problem", 36, "Traffic", "Other -> ");
 INSERT INTO slc_problem VALUES("Problem", 37, "Family / Relationship", "Other -> ");

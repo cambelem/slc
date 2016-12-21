@@ -8,9 +8,9 @@ class GETStudentClientData extends AJAX {
 		$student = ClientFactory::getClientByBannerId($_REQUEST['banner_id']);
 
 		// Encode the banner id.
-        $encryptedBanner = encode($_REQUEST['banner_id']);
+    $encryptedBanner = encode($_REQUEST['banner_id']);
 
-        // Grabs a client object based on the student.
+    // Grabs a client object based on the student.
 		$client = ClientFactory::getClientByEncryBanner($encryptedBanner,  $student->getFirstName(),
                                                $student->getLastName(),
                                                $student->getFirstName() . ' ' . $student->getLastName());
@@ -20,22 +20,23 @@ class GETStudentClientData extends AJAX {
 		{
 			$client = new \slc\Client($encryptedBanner, $student->getClassification(),
 											   $student->getMajor(), $student->getLivingLocation());
-            $client->setName($student->getFirstName() . ' ' . $student->getLastName());
-            $client->setFirstName($student->getFirstName());
-            $client->setLastName($student->getLastName());
+      $client->setName($student->getFirstName() . ' ' . $student->getLastName());
+      $client->setFirstName($student->getFirstName());
+      $client->setLastName($student->getLastName());
 			ClientFactory::saveClient($client);
 		}
+
 		// Turns the epoch value to a better date and time.
 		$client->setFirstVisit(prettyTime($client->getFirstVisit()));
 
 
-        $cReferral = $client->getReferral();
+    $cReferral = $client->getReferral();
 		 // Check if existing client has referral set
 		if ($cReferral > 0)
 		{
-        	$results = ClientFactory::getReferralType($cReferral);
-        	$client->setReferralString($results[0]["name"]);
-        }
+    	$results = ClientFactory::getReferralType($cReferral);
+    	$client->setReferralString($results[0]["name"]);
+    }
 
 
 		//Get Visits

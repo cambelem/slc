@@ -20,9 +20,9 @@ class AJAXFactory {
 		return $calls[$call];
 	}
 
-	public function loadCall($action) {		
-        $action = "\\slc\\ajax\\".$action;
-        $this->call = new $action();
+	public function loadCall($action) {
+    $action = "\\slc\\ajax\\".$action;
+    $this->call = new $action();
 	}
 
 	public function setData($data) {
